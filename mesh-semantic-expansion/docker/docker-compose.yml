@@ -1,0 +1,15 @@
+version: "3.9" ## Docker Compose file format version
+
+services:
+  mesh_api: ## Main FastAPI service for MeSH Semantic Expansion
+    build: .. ## Build image from project root (Dockerfile in docker/)
+    container_name: mesh_semantic_expansion_api ## Container name
+    ports:
+      - "8000:8000" ## Expose FastAPI port
+    env_file:
+      - ../.env ## Load environment variables
+    volumes:
+      - ../data:/app/data ## Persist data directory
+      - ../logs:/app/logs ## Persist logs directory
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 ## Start FastAPI app
+    restart: unless-stopped ## Restart policy
