@@ -1,0 +1,16 @@
+version: "3.9"                                   # Docker Compose version
+
+services:
+  app:                                           # Main application service
+    build:
+      context: .                                 # Project root as build context
+      dockerfile: Dockerfile                     # Dockerfile used for build
+    container_name: doc-classification-app       # Container name
+    volumes:
+      - .:/app                                   # Mount full project
+      - ./data:/app/data                         # Mount data directory
+      - ./artifacts:/app/artifacts               # Mount artifacts directory
+      - ./logs:/app/logs                         # Mount logs directory
+    env_file:
+      - .env                                     # Environment variables
+    command: python main.py --run-all             # Run full classification pipeline

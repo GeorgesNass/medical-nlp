@@ -1,0 +1,6 @@
+"""
+__author__ = "Georges Nassopoulos"
+__version__ = "1.0.0"
+__status__ = "Dev"
+__desc__ = "Utility helpers: logging, loading, and CSV exporting for the doc-classification project."
+"""
