@@ -18,6 +18,13 @@ mesh-semantic-expansion/tmp/
 mesh-semantic-expansion/**/mesh.db
 mesh-semantic-expansion/**/*.xml
 mesh-semantic-expansion/**/*.sha*
+doc-classification/.*/
+doc-classification/logs/
+doc-classification/tmp/
+doc-classification/**/mesh.db
+doc-classification/**/*.xml
+doc-classification/**/*.sha*
+
 
 ## Pytest cache (anywhere)
 .pytest_cache/
