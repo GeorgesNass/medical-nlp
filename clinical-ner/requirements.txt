@@ -1,0 +1,7 @@
+python-dotenv
+pydantic
+pytest
+transformers
+torch
+spacy
+sentence-transformers
