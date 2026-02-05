@@ -12,19 +12,27 @@ local_*/
 tmp/
 
 ## (Optional) Ensure logs/tmp are ignored
-
 mesh-semantic-expansion/.*/
 mesh-semantic-expansion/logs/
 mesh-semantic-expansion/tmp/
 mesh-semantic-expansion/**/mesh.db
 mesh-semantic-expansion/**/*.xml
 mesh-semantic-expansion/**/*.sha*
+mesh-semantic-expansion/**/*.csv
 doc-classification/.*/
 doc-classification/logs/
 doc-classification/tmp/
 doc-classification/**/mesh.db
 doc-classification/**/*.xml
 doc-classification/**/*.sha*
+doc-classification/**/*.csv
+clinical-ner/.*/
+clinical-ner/logs/
+clinical-ner/tmp/
+clinical-ner/**/mesh.db
+clinical-ner/**/*.xml
+clinical-ner/**/*.sha*
+clinical-ner/**/*.csv
 
 ## Pytest cache (anywhere)
 .pytest_cache/
