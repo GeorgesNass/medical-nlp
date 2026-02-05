@@ -1,0 +1,29 @@
+version: "3.9" ## Docker Compose file format version
+
+services:
+  clinical_ner: ## Main Clinical NER service (CLI / batch execution)
+    container_name: clinical-ner ## Container name
+    image: clinical-ner:latest ## Docker image name
+
+    build:
+      context: .. ## Build context set to project root
+      dockerfile: docker/Dockerfile ## Dockerfile location
+
+    env_file:
+      - ../.env ## Load environment variables
+
+    environment:
+      PYTHONPATH: /app ## Ensure src imports work
+
+    volumes:
+      - ..:/app ## Mount full project for data, logs and configs
+
+    working_dir: /app ## Set working directory inside container
+
+    command: > ## Run Clinical NER main CLI (default: unlabeled mode)
+      python main.py
+      --unlabeled-texts data/raw
+      --output-csv artifacts/exports/clinical_ner_records.csv
+
+    tty: true ## Enable TTY for readable logs
+    stdin_open: true ## Allow interactive usage if needed
