@@ -33,6 +33,16 @@ clinical-ner/**/mesh.db
 clinical-ner/**/*.xml
 clinical-ner/**/*.sha*
 clinical-ner/**/*.csv
+icd10-prediction/.*/
+icd10-prediction/logs/
+icd10-prediction/tmp/
+icd10-prediction/**/mesh.db
+icd10-prediction/**/*.xml
+icd10-prediction/**/*.sha*
+icd10-prediction/**/*.png*
+icd10-prediction/**/*.jpeg*
+icd10-prediction/**/*.jpg*
+icd10-prediction/**/*.csv*
 
 ## Pytest cache (anywhere)
 .pytest_cache/
