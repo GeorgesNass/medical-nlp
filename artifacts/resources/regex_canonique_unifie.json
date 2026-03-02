@@ -1,0 +1,236 @@
+{
+  "date": {
+    "value": "(\\d{0,2} ?\\/ ?\\d{2} ?\\/ ?\\d{2,4})|(\\d{2} ?- ?\\d{2} ?- ?\\d{2,4})|(- ?\\d{2} ?- ?\\d{2,4})|(\\d{2} ?\\. ?\\d{2} ?\\. ?\\d{2,4})",
+    "variants": [
+      {
+        "pattern": "(\\d{0,2} ?\\/ ?\\d{2} ?\\/ ?\\d{2,4})|(\\d{2} ?- ?\\d{2} ?- ?\\d{2,4})|(- ?\\d{2} ?- ?\\d{2,4})|(\\d{2} ?\\. ?\\d{2} ?\\. ?\\d{2,4})",
+        "sources": [
+          "regex.json",
+          "regex_labo.json"
+        ]
+      }
+    ],
+    "sources": [
+      "regex.json",
+      "regex_labo.json"
+    ]
+  },
+  "day_first_no_space": {
+    "value": "(?:(?<![-\\d/])((0[\\t ]*[1-9][\\t ]*|[12][\\t ]*\\d[\\t ]*|30[\\t ]*|31[\\t ]*)[-/\\.]*([\\t ]*0[\\t ]*[1-9][\\t ]*|[\\t ]*1[\\t ]*[0-2][\\t ]*)[-/\\.]*([\\t ]*\\d{4}))(?![-\\d/]))|(?:(?<![-\\d/])((0\\s*[1-9]\\s*|[12]\\s*\\d\\s*|30\\s*|31\\s*)[-/\\.]*(\\s*0\\s*[1-9]\\s*|\\s*1\\s*[0-2]\\s*)[-/\\.]*(\\s*\\d{4}))(?![-\\d/]))",
+    "variants": [
+      {
+        "pattern": "(?<![-\\d/])((0[\\t ]*[1-9][\\t ]*|[12][\\t ]*\\d[\\t ]*|30[\\t ]*|31[\\t ]*)[-/\\.]*([\\t ]*0[\\t ]*[1-9][\\t ]*|[\\t ]*1[\\t ]*[0-2][\\t ]*)[-/\\.]*([\\t ]*\\d{4}))(?![-\\d/])",
+        "sources": [
+          "regex.json"
+        ]
+      },
+      {
+        "pattern": "(?<![-\\d/])((0\\s*[1-9]\\s*|[12]\\s*\\d\\s*|30\\s*|31\\s*)[-/\\.]*(\\s*0\\s*[1-9]\\s*|\\s*1\\s*[0-2]\\s*)[-/\\.]*(\\s*\\d{4}))(?![-\\d/])",
+        "sources": [
+          "regex_labo.json"
+        ]
+      }
+    ],
+    "sources": [
+      "regex.json",
+      "regex_labo.json"
+    ]
+  },
+  "days": {
+    "value": "(?:(0?[\\t ]*[1-9][\\t ]*|[12][\\t ]*\\d[\\t ]*|30[\\t ]*|31[\\t ]*))|(?:(0?[1-9]\\s*|[12]\\d\\s*|30\\s*|31\\s*))",
+    "variants": [
+      {
+        "pattern": "(0?[\\t ]*[1-9][\\t ]*|[12][\\t ]*\\d[\\t ]*|30[\\t ]*|31[\\t ]*)",
+        "sources": [
+          "regex.json"
+        ]
+      },
+      {
+        "pattern": "(0?[1-9]\\s*|[12]\\d\\s*|30\\s*|31\\s*)",
+        "sources": [
+          "regex_labo.json"
+        ]
+      }
+    ],
+    "sources": [
+      "regex.json",
+      "regex_labo.json"
+    ]
+  },
+  "man": {
+    "value": "(^|\\W)[Mm][Rr].? |(^|\\W)M. |(^|\\W)[Mm][Oo][nN][Ss][Ii][Ee][Uu][Rr] |[Ss]exe[ \\t]*:?[ \\t]*[Mm](?:asculin)?",
+    "variants": [
+      {
+        "pattern": "(^|\\W)[Mm][Rr].? |(^|\\W)M. |(^|\\W)[Mm][Oo][nN][Ss][Ii][Ee][Uu][Rr] |[Ss]exe[ \\t]*:?[ \\t]*[Mm](?:asculin)?",
+        "sources": [
+          "regex.json",
+          "regex_labo.json"
+        ]
+      }
+    ],
+    "sources": [
+      "regex.json",
+      "regex_labo.json"
+    ]
+  },
+  "monthL": {
+    "value": "(janv?(?:ier|\\.)?(?!\\w)|f[èeé]vr(?:ier)?(?!\\w)|f[eéè]b\\.?(?!\\w)|mar(?:s|\\.)?(?!\\w)|a[vp]r?(?:il|\\.)?(?!\\w)|ma[iy]\\.?(?!\\w)|jui?n\\.?(?!\\w)|juill(?:et)?|jull\\.?(?!\\w)|ao[uû]t|aug\\.?(?!\\w)|sept(?:embre|\\.?)?(?!\\w)|oct(?:obre|\\.?)?(?!\\w)|nov(?:embre|\\.)?(?!\\w)|d[éèe]c(?:embre|\\.)?(?!\\w))",
+    "variants": [
+      {
+        "pattern": "(janv?(?:ier|\\.)?(?!\\w)|f[èeé]vr(?:ier)?(?!\\w)|f[eéè]b\\.?(?!\\w)|mar(?:s|\\.)?(?!\\w)|a[vp]r?(?:il|\\.)?(?!\\w)|ma[iy]\\.?(?!\\w)|jui?n\\.?(?!\\w)|juill(?:et)?|jull\\.?(?!\\w)|ao[uû]t|aug\\.?(?!\\w)|sept(?:embre|\\.?)?(?!\\w)|oct(?:obre|\\.?)?(?!\\w)|nov(?:embre|\\.)?(?!\\w)|d[éèe]c(?:embre|\\.)?(?!\\w))",
+        "sources": [
+          "regex.json",
+          "regex_labo.json"
+        ]
+      }
+    ],
+    "sources": [
+      "regex.json",
+      "regex_labo.json"
+    ]
+  },
+  "months": {
+    "value": "(?:([\\t ]*0?[\\t ]*[1-9][\\t ]*|[\\t ]*1[\\t ]*[0-2][\\t ]*))|(?:(\\s*0?\\s*[1-9]\\s*|\\s*1\\s*[0-2]\\s*))",
+    "variants": [
+      {
+        "pattern": "([\\t ]*0?[\\t ]*[1-9][\\t ]*|[\\t ]*1[\\t ]*[0-2][\\t ]*)",
+        "sources": [
+          "regex.json"
+        ]
+      },
+      {
+        "pattern": "(\\s*0?\\s*[1-9]\\s*|\\s*1\\s*[0-2]\\s*)",
+        "sources": [
+          "regex_labo.json"
+        ]
+      }
+    ],
+    "sources": [
+      "regex.json",
+      "regex_labo.json"
+    ]
+  },
+  "numbers": {
+    "value": "une?(?!\\w+)|deux|trois|quatre|cinq|six|sept|huit|neuf|dix|onze|douze|treize|quatorze|quinze|seize|vingt|trente|quarante|cinquante|soixante",
+    "variants": [
+      {
+        "pattern": "une?(?!\\w+)|deux|trois|quatre|cinq|six|sept|huit|neuf|dix|onze|douze|treize|quatorze|quinze|seize|vingt|trente|quarante|cinquante|soixante",
+        "sources": [
+          "regex.json"
+        ]
+      }
+    ],
+    "sources": [
+      "regex.json"
+    ]
+  },
+  "session_date": {
+    "value": "(?:(?:s[éèe]ance|examen|consultation)[\\u202F\\u00A0[\\t ]]*du[\\u202F\\u00A0 \\t\\.\\w]*)|(?:(?:s[éèe]ance|examen|consultation)[\\u202F\\u00A0\\s]*du[\\u202F\\u00A0 \\t\\.\\w]*)",
+    "variants": [
+      {
+        "pattern": "(?:s[éèe]ance|examen|consultation)[\\u202F\\u00A0[\\t ]]*du[\\u202F\\u00A0 \\t\\.\\w]*",
+        "sources": [
+          "regex.json"
+        ]
+      },
+      {
+        "pattern": "(?:s[éèe]ance|examen|consultation)[\\u202F\\u00A0\\s]*du[\\u202F\\u00A0 \\t\\.\\w]*",
+        "sources": [
+          "regex_labo.json"
+        ]
+      }
+    ],
+    "sources": [
+      "regex.json",
+      "regex_labo.json"
+    ]
+  },
+  "time": {
+    "value": "(((?<![2-9])[0-1]?[0-9]|[2][0-3])[ \\t]*([hH](?:eures?|rs)?(?![aA-zZÀ-ÿ])[ \\t]*([0-5][0-9])?|:(?![aA-zZÀ-ÿ])[ \\t]*([0-5][0-9])){1,2}[ \\t]*([AaPp]\\.?[Mm]|\\D*([Mm]atin|[aA]pr[éèe]s[ \\-\\t]*[Mm]idi))?|[mM]inuit|[Mm]idi)|((?<![2-9])[0-1]?[0-9]|[2][0-3])[ \\t]*[ \\t]*([0-5][0-9])?[ \\t]*([AaPp]\\.?[Mm]|\\D*([Mm]atin|[aA]pr[éèe]s[ \\-\\t]*[Mm]idi))",
+    "variants": [
+      {
+        "pattern": "(((?<![2-9])[0-1]?[0-9]|[2][0-3])[ \\t]*([hH](?:eures?|rs)?(?![aA-zZÀ-ÿ])[ \\t]*([0-5][0-9])?|:(?![aA-zZÀ-ÿ])[ \\t]*([0-5][0-9])){1,2}[ \\t]*([AaPp]\\.?[Mm]|\\D*([Mm]atin|[aA]pr[éèe]s[ \\-\\t]*[Mm]idi))?|[mM]inuit|[Mm]idi)|((?<![2-9])[0-1]?[0-9]|[2][0-3])[ \\t]*[ \\t]*([0-5][0-9])?[ \\t]*([AaPp]\\.?[Mm]|\\D*([Mm]atin|[aA]pr[éèe]s[ \\-\\t]*[Mm]idi))",
+        "sources": [
+          "regex.json",
+          "regex_labo.json"
+        ]
+      }
+    ],
+    "sources": [
+      "regex.json",
+      "regex_labo.json"
+    ]
+  },
+  "time_of_day": {
+    "value": "(?:([AaPp]\\.?[Mm])(?!\\w)|\\D*([Mm]atin|[aA]pr[éèe]s[ \\-\\t]*[Mm]idi))",
+    "variants": [
+      {
+        "pattern": "(?:([AaPp]\\.?[Mm])(?!\\w)|\\D*([Mm]atin|[aA]pr[éèe]s[ \\-\\t]*[Mm]idi))",
+        "sources": [
+          "regex.json"
+        ]
+      }
+    ],
+    "sources": [
+      "regex.json"
+    ]
+  },
+  "woman": {
+    "value": "(^|\\W)[Mm]lle.? |(^|\\W)[Mm]me.? |(^|\\W)[Mm][Aa][Dd][Aa][Mm][Ee] |[Ss]exe[ \\t]*:?[ \\t]*[Ff](?:[éèe]?minin)?",
+    "variants": [
+      {
+        "pattern": "(^|\\W)[Mm]lle.? |(^|\\W)[Mm]me.? |(^|\\W)[Mm][Aa][Dd][Aa][Mm][Ee] |[Ss]exe[ \\t]*:?[ \\t]*[Ff](?:[éèe]?minin)?",
+        "sources": [
+          "regex.json",
+          "regex_labo.json"
+        ]
+      }
+    ],
+    "sources": [
+      "regex.json",
+      "regex_labo.json"
+    ]
+  },
+  "year_first_no_space": {
+    "value": "(?:(?<![-\\d/])(([\\t ]*\\d{4})[-/\\.]*([\\t ]*0[\\t ]*[1-9][\\t ]*|[\\t ]*1[\\t ]*[0-2][\\t ]*)[-/\\.]*(0[\\t ]*[1-9][\\t ]*|[12][\\t ]*\\d[\\t ]*|30[\\t ]*|31[\\t ]*))(?![-\\d/]))|(?:(?<![-\\d/])((\\s*\\d{4})[-/\\.]*(\\s*0\\s*[1-9]\\s*|\\s*1\\s*[0-2]\\s*)[-/\\.]*(0\\s*[1-9]\\s*|[12]\\s*\\d\\s*|30\\s*|31\\s*))(?![-\\d/]))",
+    "variants": [
+      {
+        "pattern": "(?<![-\\d/])(([\\t ]*\\d{4})[-/\\.]*([\\t ]*0[\\t ]*[1-9][\\t ]*|[\\t ]*1[\\t ]*[0-2][\\t ]*)[-/\\.]*(0[\\t ]*[1-9][\\t ]*|[12][\\t ]*\\d[\\t ]*|30[\\t ]*|31[\\t ]*))(?![-\\d/])",
+        "sources": [
+          "regex.json"
+        ]
+      },
+      {
+        "pattern": "(?<![-\\d/])((\\s*\\d{4})[-/\\.]*(\\s*0\\s*[1-9]\\s*|\\s*1\\s*[0-2]\\s*)[-/\\.]*(0\\s*[1-9]\\s*|[12]\\s*\\d\\s*|30\\s*|31\\s*))(?![-\\d/])",
+        "sources": [
+          "regex_labo.json"
+        ]
+      }
+    ],
+    "sources": [
+      "regex.json",
+      "regex_labo.json"
+    ]
+  },
+  "years": {
+    "value": "(?:([\\t ]*\\d{4}|[\\t ]*\\d{2}))|(?:(\\s*\\d{4}|\\s*\\d{2}))",
+    "variants": [
+      {
+        "pattern": "([\\t ]*\\d{4}|[\\t ]*\\d{2})",
+        "sources": [
+          "regex.json"
+        ]
+      },
+      {
+        "pattern": "(\\s*\\d{4}|\\s*\\d{2})",
+        "sources": [
+          "regex_labo.json"
+        ]
+      }
+    ],
+    "sources": [
+      "regex.json",
+      "regex_labo.json"
+    ]
+  }
+}

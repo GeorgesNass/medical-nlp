@@ -1,0 +1,2756 @@
+[
+  {
+    "category": "antibiogram",
+    "analyte_key": "acidenalidixique",
+    "display_name": "acidenalidixique",
+    "regex": "acide[ \\t]*nalidixique([ \\t\\.\\+\\w]*)(r[éÉÈèe]sistant|sensible)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": true,
+    "valeur": {
+      "valeur": [
+        0,
+        1
+      ]
+    }
+  },
+  {
+    "category": "antibiogram",
+    "analyte_key": "amikacine",
+    "display_name": "amikacine",
+    "regex": "(amikacine[ \\t\\.\\+\\w]*)(r[éÉÈèe]sistant|sensible)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": true,
+    "valeur": {
+      "valeur": [
+        0,
+        1
+      ]
+    }
+  },
+  {
+    "category": "antibiogram",
+    "analyte_key": "amoxicilline",
+    "display_name": "amoxicilline",
+    "regex": "(amoxicilline[ \\t\\.\\+\\w]*)(r[éÉÈèe]sistant|sensible)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": true,
+    "valeur": {
+      "valeur": [
+        0,
+        1
+      ]
+    }
+  },
+  {
+    "category": "antibiogram",
+    "analyte_key": "ampicilline",
+    "display_name": "ampicilline",
+    "regex": "(ampicilline[ \\t\\.\\+\\w]*)(r[éÉÈèe]sistant|sensible)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": true,
+    "valeur": {
+      "valeur": [
+        0,
+        1
+      ]
+    }
+  },
+  {
+    "category": "antibiogram",
+    "analyte_key": "cefixime",
+    "display_name": "cefixime",
+    "regex": "(c[éÉÈèe]fixime[ \\t\\.\\+\\w]*)(r[éÉÈèe]sistant|sensible)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": true,
+    "valeur": {
+      "valeur": [
+        0,
+        1
+      ]
+    }
+  },
+  {
+    "category": "antibiogram",
+    "analyte_key": "cefotaxime",
+    "display_name": "cefotaxime",
+    "regex": "(c[éÉÈèe]fotaxime[ \\t\\.\\+\\w]*)(r[éÉÈèe]sistant|sensible)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": true,
+    "valeur": {
+      "valeur": [
+        0,
+        1
+      ]
+    }
+  },
+  {
+    "category": "antibiogram",
+    "analyte_key": "cefoxitine",
+    "display_name": "cefoxitine",
+    "regex": "(c[éÉÈèe]foxitine[ \\t\\.\\+\\w]*)(r[éÉÈèe]sistant|sensible)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": true,
+    "valeur": {
+      "valeur": [
+        0,
+        1
+      ]
+    }
+  },
+  {
+    "category": "antibiogram",
+    "analyte_key": "ceftazidime",
+    "display_name": "ceftazidime",
+    "regex": "(c[éÉÈèe]ftazidime[ \\t\\.\\+\\w]*)(r[éÉÈèe]sistant|sensible)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": true,
+    "valeur": {
+      "valeur": [
+        0,
+        1
+      ]
+    }
+  },
+  {
+    "category": "antibiogram",
+    "analyte_key": "ceftriaxone",
+    "display_name": "ceftriaxone",
+    "regex": "(c[éÉÈèe]ftriaxone[ \\t\\.\\+\\w]*)(r[éÉÈèe]sistant|sensible)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": true,
+    "valeur": {
+      "valeur": [
+        0,
+        1
+      ]
+    }
+  },
+  {
+    "category": "antibiogram",
+    "analyte_key": "ciprofloxacine",
+    "display_name": "ciprofloxacine",
+    "regex": "(ciprofloxacine[ \\t\\.\\+\\w]*)(r[éÉÈèe]sistant|sensible)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": true,
+    "valeur": {
+      "valeur": [
+        0,
+        1
+      ]
+    }
+  },
+  {
+    "category": "antibiogram",
+    "analyte_key": "cotrimoxazole",
+    "display_name": "cotrimoxazole",
+    "regex": "(cotrimoxazole[ \\t\\.\\+\\w]*)(r[éÉÈèe]sistant|sensible)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": true,
+    "valeur": {
+      "valeur": [
+        0,
+        1
+      ]
+    }
+  },
+  {
+    "category": "antibiogram",
+    "analyte_key": "ertapeneme",
+    "display_name": "ertapeneme",
+    "regex": "([éÉÈèe]rtap[éÉÈèe]n[éÉÈèe]me[ \\t\\.\\+\\w]*)(r[éÉÈèe]sistant|sensible)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": true,
+    "valeur": {
+      "valeur": [
+        0,
+        1
+      ]
+    }
+  },
+  {
+    "category": "antibiogram",
+    "analyte_key": "fosfomycine",
+    "display_name": "fosfomycine",
+    "regex": "(fosfomycine[ \\t\\.\\+\\w]*)(r[éÉÈèe]sistant|sensible)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": true,
+    "valeur": {
+      "valeur": [
+        0,
+        1
+      ]
+    }
+  },
+  {
+    "category": "antibiogram",
+    "analyte_key": "furanes",
+    "display_name": "furanes",
+    "regex": "(furanes?[ \\t\\.\\+\\w]*)(r[éÉÈèe]sistant|sensible)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": true,
+    "valeur": {
+      "valeur": [
+        0,
+        1
+      ]
+    }
+  },
+  {
+    "category": "antibiogram",
+    "analyte_key": "gentamicine",
+    "display_name": "gentamicine",
+    "regex": "(g[éÉÈèe]ntamicine[ \\t\\.\\+\\w]*)(r[éÉÈèe]sistant|sensible)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": true,
+    "valeur": {
+      "valeur": [
+        0,
+        1
+      ]
+    }
+  },
+  {
+    "category": "antibiogram",
+    "analyte_key": "germe",
+    "display_name": "germe",
+    "regex": "(germe[ \\t]*(?:test[éÉÈèe]|[éÉÈèe]tudi[éÉÈèe]))[ \\t:]*([ \\w]+)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": true,
+    "valeur": {
+      "valeur": [
+        0,
+        1
+      ]
+    }
+  },
+  {
+    "category": "antibiogram",
+    "analyte_key": "imipeneme",
+    "display_name": "imipeneme",
+    "regex": "(imip[éÉÈèe]n[éÉÈèe]me[ \\t\\.\\+\\w]*)(r[éÉÈèe]sistant|sensible)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": true,
+    "valeur": {
+      "valeur": [
+        0,
+        1
+      ]
+    }
+  },
+  {
+    "category": "antibiogram",
+    "analyte_key": "mecillinam",
+    "display_name": "mecillinam",
+    "regex": "(m[éÉÈèe]cillinam[ \\t\\.\\+\\w]*)(r[éÉÈèe]sistant|sensible)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": true,
+    "valeur": {
+      "valeur": [
+        0,
+        1
+      ]
+    }
+  },
+  {
+    "category": "antibiogram",
+    "analyte_key": "nitrofurantoine",
+    "display_name": "nitrofurantoine",
+    "regex": "nitrofurantoine([ \\t\\.\\+\\w]*)(r[éÉÈèe]sistant|sensible)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": true,
+    "valeur": {
+      "valeur": [
+        0,
+        1
+      ]
+    }
+  },
+  {
+    "category": "antibiogram",
+    "analyte_key": "ofloxacine",
+    "display_name": "ofloxacine",
+    "regex": "(ofloxacine[ \\t\\.\\+\\w]*)(r[éÉÈèe]sistant|sensible)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": true,
+    "valeur": {
+      "valeur": [
+        0,
+        1
+      ]
+    }
+  },
+  {
+    "category": "antibiogram",
+    "analyte_key": "piperacilline",
+    "display_name": "piperacilline",
+    "regex": "(pip[éÉÈèe]r(?:acilline)?[ \\t\\.\\+\\w]*)(r[éÉÈèe]sistant|sensible)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": true,
+    "valeur": {
+      "valeur": [
+        0,
+        1
+      ]
+    }
+  },
+  {
+    "category": "antibiogram",
+    "analyte_key": "ticarcilline",
+    "display_name": "ticarcilline",
+    "regex": "(ticarcilline[ \\t\\.\\+\\w]*)(r[éÉÈèe]sistant|sensible)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": true,
+    "valeur": {
+      "valeur": [
+        0,
+        1
+      ]
+    }
+  },
+  {
+    "category": "antibiogram",
+    "analyte_key": "tobramycine",
+    "display_name": "tobramycine",
+    "regex": "(tobramycine[ \\t\\.\\+\\w]*)(r[éÉÈèe]sistant|sensible)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": true,
+    "valeur": {
+      "valeur": [
+        0,
+        1
+      ]
+    }
+  },
+  {
+    "category": "antibiogram",
+    "analyte_key": "trimethroprime",
+    "display_name": "trimethroprime",
+    "regex": "(trim[éÉÈèe]throprime[ \\t\\.\\+\\w]*)(r[éÉÈèe]sistant|sensible)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": true,
+    "valeur": {
+      "valeur": [
+        0,
+        1
+      ]
+    }
+  },
+  {
+    "category": "bacteriology",
+    "analyte_key": "antigene",
+    "display_name": "antigene",
+    "regex": "[ \\t]*antig[éÉÈèe]ne[ \\t\\.]*([\\wÀ-ú]+)[ \\t\\.]*(st[éÉÈèe]riles?|n[éÉÈèe]gati(?:ve|f)s?|positi(?:ve|f)s?)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": true,
+    "valeur": {
+      "valeur": [
+        0,
+        1
+      ]
+    }
+  },
+  {
+    "category": "bacteriology",
+    "analyte_key": "aspect",
+    "display_name": "aspect",
+    "regex": "[ \\t]*(?<!sans[ \\t])(aspect(?:\\s*du\\s*s[éÉÈèe]rum)?)[ \\t:\\.]*(?!du|de|d')((?:\\w+[ \\t]*)+)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": true,
+    "valeur": {
+      "valeur": [
+        0,
+        1
+      ]
+    }
+  },
+  {
+    "category": "bacteriology",
+    "analyte_key": "couleur",
+    "display_name": "couleur",
+    "regex": "[ \\t]*(couleur)[ \\t:]*([ \\w]+)|[ \\t]*(couleur)[ \\t\\.]*([ \\w]+)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": true,
+    "valeur": {
+      "valeur": [
+        0,
+        1
+      ]
+    }
+  },
+  {
+    "category": "bacteriology",
+    "analyte_key": "culture",
+    "display_name": "culture",
+    "regex": "[ \\t]*(st[éÉÈèe]riles?|n[éÉÈèe]gati(?:ve|f)s?|positi(?:ve|f)s?)[ \\w]+((?<!\\w)a[éÉÈèe]robiose|ana[éÉÈèe]robiose)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": true,
+    "valeur": {
+      "valeur": [
+        1,
+        0
+      ]
+    }
+  },
+  {
+    "category": "bacteriology",
+    "analyte_key": "presenceapres",
+    "display_name": "presenceapres",
+    "regex": "(germes?[ \\t]*(?:visibles?|pathog[éÉÈèe]nes?)|cristaux|cylindres?|cellules?[ \\t]*épith[éÉÈèe]liales?|levures?)[ \\.:]*(absence|pr[éÉÈèe]sence|rares?)(?!(?: |\\t)\\w)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": true,
+    "valeur": {
+      "valeur": [
+        0,
+        1
+      ]
+    }
+  },
+  {
+    "category": "bacteriology",
+    "analyte_key": "presenceavant",
+    "display_name": "presenceavant",
+    "regex": "^\\s*(absence|pr[éÉÈèe]sence|rares?)(?:[ \\t]*d['e])(germes?[ \\t]*(?:visibles?|pathog[éÉÈèe]nes?)|cristaux|cylindres?|cellules?[ \\t]*épith[éÉÈèe]liales?|levures?)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": true,
+    "valeur": {
+      "valeur": [
+        1,
+        0
+      ]
+    }
+  },
+  {
+    "category": "bacteriology",
+    "analyte_key": "toxinesAB",
+    "display_name": "toxinesAB",
+    "regex": "[ \\t]*(toxines?[ \\t\\.]*a[ \\t\\.]*(?:[ \\t\\.]+|et|\\/)[ \\t\\.]*b)[ \\t\\.]*(st[éÉèe]riles?|n[éÉèe]gati(?:ve|f)s?|positi(?:ve|f)s?)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": true,
+    "valeur": {
+      "valeur": [
+        0,
+        1
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Acide biliaire",
+    "display_name": "Acide biliaire",
+    "regex": "acide[ \\t]*biliaire(?!\\w)|[ \\t]*acide[ \\t]*biliaire(?!\\w)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Acide lactique",
+    "display_name": "Acide lactique",
+    "regex": "acide[ \\t]*lactique|[ \\t]*acide[ \\t]*lactique",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Acide urique",
+    "display_name": "Acide urique",
+    "regex": "acide[ \\t]*urique|[ \\t]*acide[ \\t]*urique",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Albumine",
+    "display_name": "Albumine",
+    "regex": "(?<![-\\w])albumine(?:[ \\t]*s[éÉe]?rique)?(?![ \\t]*/[ \\t]*globulines?)|[ \\t]*(?<![-\\w])albumine(?:[ \\t]*s[éÉe]?rique)?(?![ \\t]*/[ \\t]*globulines?)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Alpha 1 globuline",
+    "display_name": "Alpha 1 globuline",
+    "regex": "alpha[- \\t]*1[- \\t]*globulines?|[ \\t]*alpha[- \\t]*1[- \\t]*globulines?",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Alpha 2 globuline",
+    "display_name": "Alpha 2 globuline",
+    "regex": "alpha[- \\t]*2[- \\t]*globulines?|[ \\t]*alpha[- \\t]*2[- \\t]*globulines?",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Amylase",
+    "display_name": "Amylase",
+    "regex": "amylase(?!\\w)|[ \\t]*amylase(?!\\w)|[ \\t]*taux[ \\t]*d[ \\t']*amylas[éÉÈèe]mie(?!\\w)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Amylase_2",
+    "display_name": "Amylase_2",
+    "regex": "taux[ \\t]*d[ \\t']*amylas[éÉÈèe]mie(?!\\w)",
+    "sources": [
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Beta 1 globuline",
+    "display_name": "Beta 1 globuline",
+    "regex": "b[eÊê]ta[- \\t]*1[- \\t]*globulines?|[ \\t]*b[eÊê]ta[- \\t]*1[- \\t]*globulines?",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Beta 2 globuline",
+    "display_name": "Beta 2 globuline",
+    "regex": "b[eÊê]ta[- \\t]*2[- \\t]*globulines?|[ \\t]*b[eÊê]ta[- \\t]*2[- \\t]*globulines?",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Beta globuline",
+    "display_name": "Beta globuline",
+    "regex": "b[eÊê]ta[- \\t]*globulines?|[ \\t]*b[eÊê]ta[- \\t]*globulines?",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Bilirubine",
+    "display_name": "Bilirubine",
+    "regex": "(?<!\\w)bili(?:rubine)?[ \\t]*(?:totale?)?(?!\\w)|[ \\t]*bilirubine[ \\t]*totale?",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Cholesterol HDL",
+    "display_name": "Cholesterol HDL",
+    "regex": "(?:cholest[éÉe]?rol[ \\t]*)?h[\\. ]?d[\\. ]?l[\\. ]?c?(?![ \\t]*/[ \\t]*l[\\. ]?d[\\. ]?l[\\. ]?)|[ \\t]*cholest[éÉe]?rol[ \\t]*h[\\. ]?d[\\. ]?l[\\. ]?(?![ \\t]*/[ \\t]*l[\\. ]?d[\\. ]?l[\\. ]?)|(?<!/)[ \\t]*h[\\. ]?d[\\. ]?l[\\. ]?[- \\t]*cholest[ée]?rol(?![ \\t]*/[ \\t]*l[\\. ]?d[\\. ]?l[\\. ]?)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Cholesterol HDL_2",
+    "display_name": "Cholesterol HDL_2",
+    "regex": "(?<!/)[ \\t]*h[\\. ]?d[\\. ]?l[\\. ]?[- \\t]*(?:cholest[ée]?rol|c)(?![ \\t]*/[ \\t]*l[\\. ]?d[\\. ]?l[\\. ]?)",
+    "sources": [
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Cholesterol LDL",
+    "display_name": "Cholesterol LDL",
+    "regex": "(?:cholest[éÉe]?rol)?[ \\t]*l[\\. ]?d[\\. ]?l[\\. ]?c?[ \t]*(?:\\(calcul[éèe]\\))?|[ \\t]*cholest[éÉe]?rol[ \\t]*l[\\. ]?d[\\. ]?l[\\. ]?[ \t]*(?:\\(calcul[éèe]\\))?|(?<!/)[ \\t]*l[\\. ]?d[\\. ]?l[\\. ]?[- \\t]*cholest[ée]?rol(?![ \\t]*/[ \\t]*h[\\. ]?d[\\. ]?l[\\. ]?)[ \t]*(?:\\(calcul[éèe]\\))?",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Cholesterol LDL_2",
+    "display_name": "Cholesterol LDL_2",
+    "regex": "(?<!/)[ \\t]*l[\\. ]?d[\\. ]?l[\\. ]?[- \\t]*(?:cholest[ée]?rol|c)(?![ \\t]*/[ \\t]*h[\\. ]?d[\\. ]?l[\\. ]?)[ \t]*(?:\\(calcul[éèe]\\))?",
+    "sources": [
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Cholesterol total",
+    "display_name": "Cholesterol total",
+    "regex": "(?<!rapport )(?<!hdl - )(?<!hdl )(?<!ldl )cholest[ée]?rol[^éè\\w](?![ \\t]*h[\\. ]?d[\\. ]?l[\\. ]?)(?![ \\t]*l[\\. ]?d[\\. ]?l[\\. ]?)(?:total)|[ \\t]*(?<!rapport )(?<!hdl - )(?<!hdl )(?<!ldl )cholest[ée]?rol[^éè\\w](?![ \\t]*h[\\. ]?d[\\. ]?l[\\. ]?)(?![ \\t]*l[\\. ]?d[\\. ]?l[\\. ]?)(?:total)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Corps cetonique",
+    "display_name": "Corps cetonique",
+    "regex": "corps[ \\t]*c[éÉÈèe]toniques?(?!\\w)|[ \\t]*corps[ \\t]*c[éÉÈèe]toniques?(?!\\w)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Creatinine",
+    "display_name": "Creatinine",
+    "regex": "(?:[ \\t]*clairance[ \\t]*de)?[ \\t]*cr[éÉe]?at(?:inine)?(?!\\w)(?:[ \\t]*standard(?:is[éÉèe]?e)?|[ \\t]*urinaire)?|(?:[ \\t]*clairance[ \\t]*de)?[ \\t]*cr[éÉe]?at(?:inine)?(?!\\w)(?:[ \\t]*standard(?:is[éÉèe]?e)?)?|cr[éÉèe]atininurie[ \\t]*(?:de[ \\t]*24h)?",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Creatinine_2",
+    "display_name": "Creatinine_2",
+    "regex": "cr[éÉèe]atininurie[ \\t]*(?:de[ \\t]*24h|urinaire)?",
+    "sources": [
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "DFG",
+    "display_name": "DFG",
+    "regex": "[ \\t]*d[\\. ]?f[\\. ]?g[\\. ]?|d[éÉÈèe]bit[ \\t]*de[ \\t]*filtration[ \\t]*glom[éÉÈèe]rulaire|d[éÉÈèe]bit[ \\t]*de[ \\t]*filtration[ \\t]*glom[éÉÈèe]rulaire|d[\\. ]?f[\\. ]?g[\\. ]?(?!\\w)",
+    "sources": [
+      "keywords.json",
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "DFG_2",
+    "display_name": "DFG_2",
+    "regex": "(?<!\\w)d[\\. ]?f[\\. ]?g[\\. ]?(?!\\w)",
+    "sources": [
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Diurese",
+    "display_name": "Diurese",
+    "regex": "diur[éèe]se(?:[ \\t]*en[ \\t]*\\w+)?|[ \\t]*diur[éèe]se(?:[ \\t]*en[ \\t]*\\w+)?",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Fer",
+    "display_name": "Fer",
+    "regex": "(?:^[ \\t]*|[ \\t]+)fer\\W(?:s[éÉèe]rique)?[ \\t]*(?![aà] cheval)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Ferritine",
+    "display_name": "Ferritine",
+    "regex": "ferr?itine|[ \\t]*ferr?itine",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "GGT",
+    "display_name": "GGT",
+    "regex": "gamma[ -]?glutamyl[ \\t]*transf[éÉÈèe]rase|[ \\t]*gamma[ -]?glutamyl[ \\t]*transf[éÉÈèe]rase|[ \\t]*(?<!\\w)ggt(?!\\w)|[ \\t]*(?<!\\w)gamma[ -]?gt(?!\\w)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "GGT_2",
+    "display_name": "GGT_2",
+    "regex": "(?<!\\w)ggt(?!\\w)",
+    "sources": [
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "GGT_3",
+    "display_name": "GGT_3",
+    "regex": "(?<!\\w)gamma[ -]?gt(?!\\w)",
+    "sources": [
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "GLDH",
+    "display_name": "GLDH",
+    "regex": "glutamate[ \\t]*d[éÉÈèe]shydrog[éÉÈèe]nase|[ \\t]*glutamate[ \\t]*d[éÉÈèe]shydrog[éÉÈèe]nase|[ \\t]*(?<!\\w)gl?dh(?!\\w)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "GLDH_2",
+    "display_name": "GLDH_2",
+    "regex": "(?<!\\w)gl?dh(?!\\w)",
+    "sources": [
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Gamma globuline",
+    "display_name": "Gamma globuline",
+    "regex": "gamma[- \\t]*globulines?|[ \\t]*gamma[- \\t]*globulines?",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Glycemie",
+    "display_name": "Glycemie",
+    "regex": "glyc[éÉe]?mie(?:[ \\t]*[aà]?[ \\t]*jeun)?|(?<!\\w)gaj(?!\\w)[ \\t]*(?=\\d+)|[ \\t]*glyc[éÉe]?mie[ \\t]*[aà]?[ \\t]*jeun|[ \\t]*glucose",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Glycemie_2",
+    "display_name": "Glycemie_2",
+    "regex": "glucose",
+    "sources": [
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "HDL",
+    "display_name": "HDL",
+    "regex": "[ \\t]*cholest[éÉe]?rol[ \\t]*h[\\. ]?d[\\. ]?l[\\. ]?(?![ \\t]*/[ \\t]*l[\\. ]?d[\\. ]?l[\\. ]?)|(?<!/)[ \\t]*h[\\. ]?d[\\. ]?l[\\. ]?[- \\t]*cholest[ée]?rol(?![ \\t]*/[ \\t]*l[\\. ]?d[\\. ]?l[\\. ]?)",
+    "sources": [
+      "keywords.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "LDL",
+    "display_name": "LDL",
+    "regex": "[ \\t]*cholest[éÉe]?rol[ \\t]*l[\\. ]?d[\\. ]?l[\\. ]?[ \t]*(?:\\(calcul[éèe]\\))?|(?<!/)[ \\t]*l[\\. ]?d[\\. ]?l[\\. ]?[- \\t]*cholest[ée]?rol(?![ \\t]*/[ \\t]*h[\\. ]?d[\\. ]?l[\\. ]?)[ \t]*(?:\\(calcul[éèe]\\))?",
+    "sources": [
+      "keywords.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Lipase",
+    "display_name": "Lipase",
+    "regex": "lipase(?!\\w)|[ \\t]*lipase(?!\\w)|[ \\t]*lipas[èÉÈée]mie(?!\\w)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Lipase_2",
+    "display_name": "Lipase_2",
+    "regex": "lipas[èÉÈée]mie(?!\\w)",
+    "sources": [
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Myoglobine",
+    "display_name": "Myoglobine",
+    "regex": "myoglobine|[ \\t]*myoglobine",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Phosphatase alcaline",
+    "display_name": "Phosphatase alcaline",
+    "regex": "phosphat(?:ase|es?)(?:[ \\t]*alcaline?s?)?(?!\\w)|(?<!\\w)pal(?!\\w)|[ \\t]*phosphat(?:ase|es?)(?:[ \\t]*alcaline?s?)?(?!\\w)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Pre-albumine",
+    "display_name": "Pre-albumine",
+    "regex": "pr[éÉèe]?-?albumine(?!\\w)|[ \\t]*pr[éÉèe]?-?albumine(?!\\w)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Pro-calcitonine",
+    "display_name": "Pro-calcitonine",
+    "regex": "pro[ -]*calcitonine|(?<!\\w)pct(?!\\w)|[ \\t]*pro[ -]*calcitonine|[ \\t]*pct",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Proteine C reactive",
+    "display_name": "Proteine C reactive",
+    "regex": "prot[éÉÈèe]ine[ \\t]*c[\\. \\-\t]*r[éÉÈèe]active|[ \\t]*prot[éÉÈèe]ine[ \\t]*c[\\. \\-\t]*r[éÉÈèe]active|(?<!\\w)crp(?!\\w)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Proteine C reactive_2",
+    "display_name": "Proteine C reactive_2",
+    "regex": "(?<!\\w)crp(?!\\w)",
+    "sources": [
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Proteine plasmatique",
+    "display_name": "Proteine plasmatique",
+    "regex": "prot[éÉe]?ines[ \\t]*plasmatiques|protides[ \\t]*totaux|[ \\t]*prot[éÉe]?ines[ \\t]*plasmatiques",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Rapport cholesterol HDL / LDL",
+    "display_name": "Rapport cholesterol HDL / LDL",
+    "regex": "(rapport)?[ \\t]*cholest[éÉe]?rol[ \\t]*[ \\t]*h[\\. ]?d[\\. ]?l[\\. ]?[ \\t]*/[ \\t]*l[\\. ]?d[\\. ]?l[\\. ]?(?:[ \\t]*cholest[ée]?rol)?|[ \\t]*(rapport)?[ \\t]*cholest[éÉe]?rol[ \\t]*[ \\t]*h[\\. ]?d[\\. ]?l[\\. ]?[ \\t]*/[ \\t]*l[\\. ]?d[\\. ]?l[\\. ]?(?:[ \\t]*cholest[ée]?rol)?",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Rapport cholesterol total / HDL",
+    "display_name": "Rapport cholesterol total / HDL",
+    "regex": "rapport[ \\t]*cholest[ée]?rol[ \\t]*total[ \\t]*/[ \\t]*h[\\. ]?d[\\. ]?l[\\. ]?(?:[ \\t]*cholest[ée]?rol)?|[ \\t]*rapport[ \\t]*cholest[ée]?rol[ \\t]*total[ \\t]*/[ \\t]*h[\\. ]?d[\\. ]?l[\\. ]?(?:[ \\t]*cholest[ée]?rol)?",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "SDH",
+    "display_name": "SDH",
+    "regex": "sorbitol[ -]?d[éÉÈèe]shydrog[éÉÈèe]nase|[ \\t]*sorbitol[ -]?d[éÉÈèe]shydrog[éÉÈèe]nase|[ \\t]*(?<!\\w)sdh(?!\\w)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "SDH_2",
+    "display_name": "SDH_2",
+    "regex": "(?<!\\w)sdh(?!\\w)",
+    "sources": [
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Transaminase ALT",
+    "display_name": "Transaminase ALT",
+    "regex": "transaminase[ \\t]*glutam(?:o|ique)[ -]?pyruvique|[ \\t]*transaminase[ \\t]*glutam(?:o|ique)[ -]?pyruvique|[ \\t]*alanine[ -]?(?:aminotransf[èÉÈée]rase|transaminase)|[ \\t]*(?<!\\w)ala?t(?!\\w)|[ \\t]*(?<!\\w)sgpt(?!\\w)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Transaminase ALT_2",
+    "display_name": "Transaminase ALT_2",
+    "regex": "alanine[ -]?(?:aminotransf[èÉÈée]rase|transaminase)",
+    "sources": [
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Transaminase ALT_3",
+    "display_name": "Transaminase ALT_3",
+    "regex": "(?<!\\w)ala?t(?!\\w)",
+    "sources": [
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Transaminase ALT_4",
+    "display_name": "Transaminase ALT_4",
+    "regex": "(?<!\\w)sgpt(?!\\w)|[ \\t]*(?<!\\w)tgp(?!\\w)",
+    "sources": [
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Transaminase AST",
+    "display_name": "Transaminase AST",
+    "regex": "s[éÉÈèe]rum[ \\t]*glutamo[ -]?oxaloac[éÉÈèe]tique[ \\t]*transaminase|[ \\t]*s[éÉÈèe]rum[ \\t]*glutamo[ -]?oxaloac[éÉÈèe]tique[ \\t]*transaminase|[ \\t]*glutamate[ -]?oxaloac[èÉÈée]tate[ -]?transaminase|[ \\t]*aspartate[ -]?aminotransf[èÉÈée]rase|[ \\t]*(?<!\\w)s?got(?!\\w)|[ \\t]*(?<!\\w)asa?t(?!\\w)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Transaminase AST_2",
+    "display_name": "Transaminase AST_2",
+    "regex": "glutamate[ -]?oxaloac[èÉÈée]tate[ -]?transaminase",
+    "sources": [
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Transaminase AST_3",
+    "display_name": "Transaminase AST_3",
+    "regex": "aspartate[ -]?aminotransf[èÉÈée]rase",
+    "sources": [
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Transaminase AST_4",
+    "display_name": "Transaminase AST_4",
+    "regex": "(?<!\\w)s?got(?!\\w)|[ \\t]*(?<!\\w)tgo(?!\\w)",
+    "sources": [
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Transaminase AST_5",
+    "display_name": "Transaminase AST_5",
+    "regex": "(?<!\\w)asa?t(?!\\w)",
+    "sources": [
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Triglyceride",
+    "display_name": "Triglyceride",
+    "regex": "triglyc[éÉe]?rides?|[ \\t]*triglyc[éÉe]?rides?",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Troponine hypersensible",
+    "display_name": "Troponine hypersensible",
+    "regex": "tropo(?:nine)?[-\\. \\t]*T[\\. \\t]*hs[\\. \\t]*\\(hypersensible\\)|[ \\t]*troponine[-\\. \\t]*T[\\. \\t]*hs[\\. \\t]*\\(hypersensible\\)|[ \\t]*troponine(?![ \\t]*[li][ \\t]*ultra[ \\t-]*sensible)[ \\t]*(?:us)?",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Troponine hypersensible_2",
+    "display_name": "Troponine hypersensible_2",
+    "regex": "tropo(?:nine)?(?![ \\t]*[li][ \\t]*ultra[ \\t-]*sensible)[ \\t]*(?:us)?",
+    "sources": [
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Trypsinogene",
+    "display_name": "Trypsinogene",
+    "regex": "trypsinog[éÉÈèe]ne(?!\\w)|[ \\t]*trypsinog[éÉÈèe]ne(?!\\w)|[ \\t]*(?<!\\w)tli(?!\\w)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Trypsinogene_2",
+    "display_name": "Trypsinogene_2",
+    "regex": "(?<!\\w)tli(?!\\w)",
+    "sources": [
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "Uree",
+    "display_name": "Uree",
+    "regex": "(?:^[ \\t]*|[ \\t]+)ur[éÉe]?e(?!ase)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "acideurique",
+    "display_name": "acideurique",
+    "regex": "[ \\t]*acide[ \\t]*urique",
+    "sources": [
+      "keywords.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "albumine",
+    "display_name": "albumine",
+    "regex": "[ \\t]*(?:pr[éÉèe]?)?albumine(?![ \\t]*s[éÉe]?rique)(?![ \\t]*/[ \\t]*globulines?)",
+    "sources": [
+      "keywords.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "albumineglobuline",
+    "display_name": "albumineglobuline",
+    "regex": "[ \\t]*(?:pr[éÉèe]?)?albumine[ \\t]*/[ \\t]*globulines?",
+    "sources": [
+      "keywords.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "albumineserique",
+    "display_name": "albumineserique",
+    "regex": "[ \\t]*(?:pr[éÉèe]?)?albumine[ \\t]*s[éÉe]?rique",
+    "sources": [
+      "keywords.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "alcaline",
+    "display_name": "alcaline",
+    "regex": "[ \\t]*r[éÉe]?serves?[ \\t]*alcalines?",
+    "sources": [
+      "keywords.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "alpha1globuline",
+    "display_name": "alpha1globuline",
+    "regex": "[ \\t]*alpha[- \\t]*1[- \\t]*globulines?",
+    "sources": [
+      "keywords.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "alpha2globuline",
+    "display_name": "alpha2globuline",
+    "regex": "[ \\t]*alpha[- \\t]*2[- \\t]*globulines?",
+    "sources": [
+      "keywords.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "betaglobuline",
+    "display_name": "betaglobuline",
+    "regex": "[ \\t]*b[eÊê]ta[- \\t]*globulines?",
+    "sources": [
+      "keywords.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "calcium",
+    "display_name": "calcium",
+    "regex": "[ \\t]*calcium[ \\t]*(?:corr?ig[éÉèe]?)?|[ \\t]*calc[éÉèe]mie",
+    "sources": [
+      "keywords.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Malartic",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "cholesterol",
+    "display_name": "cholesterol",
+    "regex": "[ \\t]*(?<!rapport )(?<!hdl - )(?<!hdl )(?<!ldl )cholest[ée]?rol[^éè\\w](?![ \\t]*h[\\. ]?d[\\. ]?l[\\. ]?)(?![ \\t]*l[\\. ]?d[\\. ]?l[\\. ]?)(?:total)",
+    "sources": [
+      "keywords.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "creatinine",
+    "display_name": "creatinine",
+    "regex": "(?:[ \\t]*clairance[ \\t]*de)?[ \\t]*cr[éÉe]?at(?:inine)?(?!\\w)(?:[ \\t]*standard(?:is[éÉèe]?e)?)?|cr[éÉèe]atininurie[ \\t]*(?:de[ \\t]*24h)?",
+    "sources": [
+      "keywords.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "dimeres",
+    "display_name": "dimeres",
+    "regex": "^[ \\t]*d[\\. \\t]*dim[èÉée]?res",
+    "sources": [
+      "keywords.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "fer",
+    "display_name": "fer",
+    "regex": "(?:^[ \\t]*|[ \\t]+)fer\\W(?:s[éÉèe]rique)?[ \\t]*(?![aà] cheval)",
+    "sources": [
+      "keywords.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "ferritine",
+    "display_name": "ferritine",
+    "regex": "[ \\t]*ferr?itine",
+    "sources": [
+      "keywords.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "gammaglobuline",
+    "display_name": "gammaglobuline",
+    "regex": "[ \\t]*gamma[- \\t]*globulines?",
+    "sources": [
+      "keywords.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "glycemie",
+    "display_name": "glycemie",
+    "regex": "[ \\t]*glyc[éÉe]?mie[ \\t]*[aà]?[ \\t]*jeun",
+    "sources": [
+      "keywords.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "magnesium",
+    "display_name": "magnesium",
+    "regex": "[ \\t]*magn[éÉèe]?sium[ \\t]*(?:plasmatique|s[éÉèe]?rique)?",
+    "sources": [
+      "keywords.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "myoglobine",
+    "display_name": "myoglobine",
+    "regex": "^[ \\t]*myoglobine",
+    "sources": [
+      "keywords.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "phosphore",
+    "display_name": "phosphore",
+    "regex": "[ \\t]*phosphore",
+    "sources": [
+      "keywords.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "plasmatique",
+    "display_name": "plasmatique",
+    "regex": "[ \\t]*prot[éÉe]?ines[ \\t]*plasmatiques",
+    "sources": [
+      "keywords.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "proteineTotale",
+    "display_name": "proteineTotale",
+    "regex": "[ \\t]*prot[Éée]?ines?[ \\t]*totales?",
+    "sources": [
+      "keywords.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "rapportCholesterol",
+    "display_name": "rapportCholesterol",
+    "regex": "[ \\t]*rapport[ \\t]*cholest[ée]?rol[ \\t]*total[ \\t]*/[ \\t]*h[\\. ]?d[\\. ]?l[\\. ]?(?:[ \\t]*cholest[ée]?rol)?",
+    "sources": [
+      "keywords.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "rapportCholesterol2",
+    "display_name": "rapportCholesterol2",
+    "regex": "[ \\t]*(rapport)?[ \\t]*cholest[éÉe]?rol[ \\t]*[ \\t]*h[\\. ]?d[\\. ]?l[\\. ]?[ \\t]*/[ \\t]*l[\\. ]?d[\\. ]?l[\\. ]?(?:[ \\t]*cholest[ée]?rol)?",
+    "sources": [
+      "keywords.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "transferine",
+    "display_name": "transferine",
+    "regex": "[ \\t]*transfer{1,2}ine",
+    "sources": [
+      "keywords.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "triglycerides",
+    "display_name": "triglycerides",
+    "regex": "[ \\t]*triglyc[éÉe]?rides?",
+    "sources": [
+      "keywords.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "troponine",
+    "display_name": "troponine",
+    "regex": "[ \\t]*troponine[-\\. \\t]*T[\\. \\t]*hs[\\. \\t]*\\(hypersensible\\)|[ \\t]*troponine(?![ \\t]*[li][ \\t]*ultra[ \\t-]*sensible)[ \\t]*(?:us)?",
+    "sources": [
+      "keywords.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "troponinelus",
+    "display_name": "troponinelus",
+    "regex": "[ \\t]*troponine[ \\t]*[li][ \\t]*(?:ultra[ \\t-]*sensible|us)|tropo(?:nine)?[ \\t]*[li][ \\t]*(?:ultra[ \\t-]*sensible|us)",
+    "sources": [
+      "keywords.json",
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "urease",
+    "display_name": "urease",
+    "regex": "[ \\t]*urease",
+    "sources": [
+      "keywords.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "biochemistry",
+    "analyte_key": "uree",
+    "display_name": "uree",
+    "regex": "(?:^[ \\t]*|[ \\t]+)ur[éÉe]?e(?!ase)",
+    "sources": [
+      "keywords.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "coagulation",
+    "analyte_key": "D-dimere",
+    "display_name": "D-dimere",
+    "regex": "[ \\t]*(?<!\\w)d[\\. \\t]*dim[èÉÈée]?res",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "coagulation",
+    "analyte_key": "Fibrinogene",
+    "display_name": "Fibrinogene",
+    "regex": "[ \\t]*fibrinog[éÉÈèe]ne(?!\\w)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "coagulation",
+    "analyte_key": "INR",
+    "display_name": "INR",
+    "regex": "[ \\t]*i[\\.]?n[\\.]?r(?!a)(?!\\w)(?:[ \\t]*\\(n[éÉÈe]?oplastine[ \\t]*il[ \\t]*acl[ \\t]*500\\))?(?![ \\t]*entre)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "coagulation",
+    "analyte_key": "Rapport TCA",
+    "display_name": "Rapport TCA",
+    "regex": "[ \\t]*rapport[ \\t]*p/t(?!\\w)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "coagulation",
+    "analyte_key": "TCA",
+    "display_name": "TCA",
+    "regex": "[ \\t]*temps[ \\t]*de[ \\t]*c[éÉÈèe]phaline[ \\t]*activ[éÉÈèe]e|[ \\t]*(?<!\\w)tca(?!\\w)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "coagulation",
+    "analyte_key": "Taux de prothrombine",
+    "display_name": "Taux de prothrombine",
+    "regex": "[ \\t]*(?:taux[ \\t]*de[ \\t]*)?prothrombine",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "coagulation",
+    "analyte_key": "Temps de Quick",
+    "display_name": "Temps de Quick",
+    "regex": "temps[ \\t\\.]*de[ \\t\\.]*quick[ \\t\\.]*du[ \\t\\.]*patient",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "coagulation",
+    "analyte_key": "Temps de saignement",
+    "display_name": "Temps de saignement",
+    "regex": "[ \\t]*temps[ \\t]*de[ \\t]*saignement",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "cytobacteriology",
+    "analyte_key": "Hematie",
+    "display_name": "Hematie",
+    "regex": "[ \\t]*h[éeÉŽŻZØê]?maties?",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "cytobacteriology",
+    "analyte_key": "Leucocyte",
+    "display_name": "Leucocyte",
+    "regex": "[ \\t]*leucocytes?",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "hematology",
+    "analyte_key": "CCMH",
+    "display_name": "CCMH",
+    "regex": "[ \\t]*c[\\. ]?c[\\. ]?m[\\. ]?h|c[\\. ]?c[\\. ]?m[\\. ]?h",
+    "sources": [
+      "keywords.json",
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "hematology",
+    "analyte_key": "Carboxy-hemoglobine",
+    "display_name": "Carboxy-hemoglobine",
+    "regex": "carboxy[ \\t-]*h[éeèÉŽŻZØê]moglobine|[ \\t]*carboxy[ \\t-]*h[éeèÉŽŻZØê]moglobine",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "hematology",
+    "analyte_key": "Hematie",
+    "display_name": "Hematie",
+    "regex": "h[éeÉŽŻZØê]?maties?|[ \\t]*h[éeÉŽŻZØê]?maties?",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "hematology",
+    "analyte_key": "Hematocrite",
+    "display_name": "Hematocrite",
+    "regex": "h[éeèÉŽŻZØê]?matocrites?|[ \\t]*h[éeèÉŽŻZØê]?matocrites?",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "hematology",
+    "analyte_key": "Hemoglobine",
+    "display_name": "Hemoglobine",
+    "regex": "(?<!carboxy)(?<!carboxy )(?<!-)h[éeèÉŽŻZØê]?moglobi?n?e?s?[ \\t]*(?:art[éèÉe]?rielles?)?|(?<!\\w)hb(?!\\w)|[ \\t]*(?<!carboxy)(?<!carboxy )(?<!-)h[éeèÉŽŻZØê]?moglobi?n?e?s?[ \\t]*(?:art[éèÉe]?rielles?)?",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "hematology",
+    "analyte_key": "IDR",
+    "display_name": "IDR",
+    "regex": "[ \\t]*i[\\. ]?d[\\. ]?r|i[\\. ]?d[\\. ]?r",
+    "sources": [
+      "keywords.json",
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "hematology",
+    "analyte_key": "INR",
+    "display_name": "INR",
+    "regex": "[ \\t]*i[\\. ]?n[\\. ]?r(?!a)(?:[ \\t]*\\(n[éÉe]?oplastine[ \\t]*il[ \\t]*acl[ \\t]*500\\))?(?![ \\t]*entre)",
+    "sources": [
+      "keywords.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "hematology",
+    "analyte_key": "Leucocyte",
+    "display_name": "Leucocyte",
+    "regex": "leuco(?:cyte)?s?|(?<!\\w)gb(?!\\w)|[ \\t]*globules?[ \\t]*blancs?|[ \\t]*leucocytes?",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "hematology",
+    "analyte_key": "Lymphocyte",
+    "display_name": "Lymphocyte",
+    "regex": "lymphocytes?|[ \\t]*lymphocytes?",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "hematology",
+    "analyte_key": "Monocyte",
+    "display_name": "Monocyte",
+    "regex": "monocytes?|[ \\t]*monocytes?",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "hematology",
+    "analyte_key": "Plaquette",
+    "display_name": "Plaquette",
+    "regex": "plaq(?:uettes?)?(?!\\w)|[ \\t]*plaquettes?",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "hematology",
+    "analyte_key": "Polynucleaire basophile",
+    "display_name": "Polynucleaire basophile",
+    "regex": "(?:polyn?u?c?l?[éeŽŻZÉØê]?a?i?r?e?s?)?[\\.\\t ]*basop?h?[îi]?l?e?s?|[ \\t]*(?:polyn?u?c?l?[éeŽŻZÉØê]?a?i?r?e?s?)?[\\.\\t ]*basop?h?[îi]?l?e?s?",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "hematology",
+    "analyte_key": "Polynucleaire eosinophile",
+    "display_name": "Polynucleaire eosinophile",
+    "regex": "(?:polyn?u?c?l?[éeŽÉŻZØê]?a?i?r?e?s?)?[\\.\\t ]*[eéÉŽŻZØê]?os[îi]nop?h?[îi]?l?e?s?|[ \\t]*(?:polyn?u?c?l?[éeŽÉŻZØê]?a?i?r?e?s?)?[\\.\\t ]*[eéÉŽŻZØê]?os[îi]nop?h?[îi]?l?e?s?",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "hematology",
+    "analyte_key": "Polynucleaire neutrophile",
+    "display_name": "Polynucleaire neutrophile",
+    "regex": "(?:polyn?u?c?l?[éeÉŽŻZØê]?a?i?r?e?s?)?[\\.\\t ]*neutrop?h?[îi]?l?e?s?|(?<!\\w)pnn(?!\\w)|[ \\t]*(?:polyn?u?c?l?[éeÉŽŻZØê]?a?i?r?e?s?)?[\\.\\t ]*neutrop?h?[îi]?l?e?s?",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "hematology",
+    "analyte_key": "TCMH",
+    "display_name": "TCMH",
+    "regex": "[ \\t]*t[\\. ]?[cg][\\. ]?m[\\. ]?h|t[\\. ]?[cg][\\. ]?m[\\. ]?h",
+    "sources": [
+      "keywords.json",
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "hematology",
+    "analyte_key": "VGM",
+    "display_name": "VGM",
+    "regex": "[ \\t]*v[\\. ]?g[\\. ]?m|v[\\. ]?g[\\. ]?m",
+    "sources": [
+      "keywords.json",
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "hematology",
+    "analyte_key": "VPM",
+    "display_name": "VPM",
+    "regex": "[ \\t]*v[\\. ]?p[\\. ]?m|v[\\. ]?p[\\. ]?m",
+    "sources": [
+      "keywords.json",
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "hematology",
+    "analyte_key": "carboxyhemoglobine",
+    "display_name": "carboxyhemoglobine",
+    "regex": "[ \\t]*carboxy[ \\t-]*h[éeèÉŽŻZØê]moglobine",
+    "sources": [
+      "keywords.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "hematology",
+    "analyte_key": "hematie",
+    "display_name": "hematie",
+    "regex": "[ \\t]*h[éeÉŽŻZØê]?maties?",
+    "sources": [
+      "keywords.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "hematology",
+    "analyte_key": "hematocrite",
+    "display_name": "hematocrite",
+    "regex": "[ \\t]*h[éeèÉŽŻZØê]?matocrites?",
+    "sources": [
+      "keywords.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "hematology",
+    "analyte_key": "hemoglobine",
+    "display_name": "hemoglobine",
+    "regex": "(?<!carboxy)(?<!carboxy )(?<!-)h[éeèÉŽŻZØê]?moglobi?n?e?s?[ \\t]*(?:art[éèÉe]?rielles?)?",
+    "sources": [
+      "keywords.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "hematology",
+    "analyte_key": "leucocytes",
+    "display_name": "leucocytes",
+    "regex": "[ \\t]*leucocytes?",
+    "sources": [
+      "keywords.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "hematology",
+    "analyte_key": "lymphocytes",
+    "display_name": "lymphocytes",
+    "regex": "[ \\t]*lymphocytes?",
+    "sources": [
+      "keywords.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "hematology",
+    "analyte_key": "monocytes",
+    "display_name": "monocytes",
+    "regex": "[ \\t]*monocytes?",
+    "sources": [
+      "keywords.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "hematology",
+    "analyte_key": "plaquettes",
+    "display_name": "plaquettes",
+    "regex": "[ \\t]*plaquettes?",
+    "sources": [
+      "keywords.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "hematology",
+    "analyte_key": "polybaso",
+    "display_name": "polybaso",
+    "regex": "[ \\t]*(?:polyn?u?c?l?[éeŽŻZÉØê]?a?i?r?e?s?)?[\\.\\t ]*basop?h?[îi]?l?e?s?",
+    "sources": [
+      "keywords.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "hematology",
+    "analyte_key": "polyeosino",
+    "display_name": "polyeosino",
+    "regex": "[ \\t]*(?:polyn?u?c?l?[éeŽÉŻZØê]?a?i?r?e?s?)?[\\.\\t ]*[eéÉŽŻZØê]?os[îi]nop?h?[îi]?l?e?s?",
+    "sources": [
+      "keywords.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "hematology",
+    "analyte_key": "polyneutro",
+    "display_name": "polyneutro",
+    "regex": "[ \\t]*(?:polyn?u?c?l?[éeÉŽŻZØê]?a?i?r?e?s?)?[\\.\\t ]*neutrop?h?[îi]?l?e?s?",
+    "sources": [
+      "keywords.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "La Manche",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "immunohematology",
+    "analyte_key": "coombs",
+    "display_name": "coombs",
+    "regex": "([ \\t]*(?:r[ \\.]?a[ \\.]?i[ \\t\\.]*)?coombs(?:[ \\t\\.]*direct)?)[ \\t\\.]*(positif|n[éèe]gatif)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": true,
+    "valeur": {
+      "valeur": [
+        0,
+        1
+      ]
+    }
+  },
+  {
+    "category": "immunohematology",
+    "analyte_key": "groupesang",
+    "display_name": "groupesang",
+    "regex": "[ \\t]*(groupe(?!\\w)[ \\t]*(?:sanguin)?|rh[éèe]sus)(?:[ \\t\\.]+[\\wÀ-ú]{3,}[ \\t\\.]+|[ \\t\\.]*)((?:[OAB]{1,2}(?![\\wÀ-ú])[ \\t\\.]*(?:positif|n[éèe]gatif)|(?:[OAB]{1,2}(?![\\wÀ-ú])[ \\t\\.]*|(?:positif|n[éèe]gatif))))",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": true,
+    "valeur": {
+      "valeur": [
+        0,
+        1
+      ]
+    }
+  },
+  {
+    "category": "immunohematology",
+    "analyte_key": "kell",
+    "display_name": "kell",
+    "regex": "[ \\t]*(ph[éÉÈeè]notype[ \\t\\.]*kell)[ \\t\\.]*(positif|n[éèe]gatif)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": true,
+    "valeur": {
+      "valeur": [
+        0,
+        1
+      ]
+    }
+  },
+  {
+    "category": "immunohematology",
+    "analyte_key": "rhesus",
+    "display_name": "rhesus",
+    "regex": "[ \\t]*(ph[éeÉÈè]notype[ \\t\\.]*rh[éÉÈèe]sus)[ \\t\\.]*([ce+-]+)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": true,
+    "valeur": {
+      "valeur": [
+        0,
+        1
+      ]
+    }
+  },
+  {
+    "category": "ionogram___blood",
+    "analyte_key": "Ammonium",
+    "display_name": "Ammonium",
+    "regex": "[ \\t]*(?<!\\w)ammonium(?!\\w)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "ionogram___blood",
+    "analyte_key": "Calcium",
+    "display_name": "Calcium",
+    "regex": "[ \\t]*calcium[ \\t]*(?:corr?ig[éÉèe]?)?|[ \\t]*calc[éÉèe]mie",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Malartic",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "ionogram___blood",
+    "analyte_key": "Chlore",
+    "display_name": "Chlore",
+    "regex": "[ \\t]*(?<!\\w)chlore|(?<!\\w)cl(?!\\w)[ \\t:=]*(?=\\d+)|[ \\t]*(?<!\\w)chlore",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "ionogram___blood",
+    "analyte_key": "Magnesium",
+    "display_name": "Magnesium",
+    "regex": "[ \\t]*magn[éÉèe]?sium[ \\t]*(?:plasmatique|s[éÉèe]?rique)?",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "ionogram___blood",
+    "analyte_key": "Phosphore",
+    "display_name": "Phosphore",
+    "regex": "[ \\t]*phosphore",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "ionogram___blood",
+    "analyte_key": "Potassium",
+    "display_name": "Potassium",
+    "regex": "[ \\t]*(?<!\\w)potassium|(?<!\\w)k(?!\\w)[ \\t:=]*(?=\\d+)|[ \\t]*(?<!\\w)potassium",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "ionogram___blood",
+    "analyte_key": "Proteine totale",
+    "display_name": "Proteine totale",
+    "regex": "[ \\t]*prot[Éée]?ines?[ \\t]*totales?",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "ionogram___blood",
+    "analyte_key": "Sodium",
+    "display_name": "Sodium",
+    "regex": "[ \\t]*(?<!\\w)sodium|(?<!\\w)na(?!\\w)[ \\t:=]*(?=\\d+)|[ \\t]*(?<!\\w)sodium",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "ionogram___blood",
+    "analyte_key": "Transferrine",
+    "display_name": "Transferrine",
+    "regex": "[ \\t]*transfer{1,2}ine",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Chantilly",
+        "Malartic",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "ionogram___urinary",
+    "analyte_key": "Ammonium",
+    "display_name": "Ammonium",
+    "regex": "[ \\t]*(?<!\\w)ammonium(?!\\w)",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "ionogram___urinary",
+    "analyte_key": "Calcium",
+    "display_name": "Calcium",
+    "regex": "[ \\t]*calcium[ \\t]*(?:corr?ig[éÉèe]?)?|[ \\t]*calc[éÉèe]mie",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "Malartic",
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "ionogram___urinary",
+    "analyte_key": "Chlore",
+    "display_name": "Chlore",
+    "regex": "[ \\t]*(?<!\\w)chlore|(?<!\\w)cl(?!\\w)[ \\t:=]*(?=\\d+)|[ \\t]*(?<!\\w)chlore",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "ionogram___urinary",
+    "analyte_key": "Magnesium",
+    "display_name": "Magnesium",
+    "regex": "[ \\t]*magn[éÉèe]?sium[ \\t]*(?:plasmatique|s[éÉèe]?rique)?",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "ionogram___urinary",
+    "analyte_key": "Microalbuminurie",
+    "display_name": "Microalbuminurie",
+    "regex": "[ \\t]*micro[ \\t]*albuminurie",
+    "sources": [
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "ionogram___urinary",
+    "analyte_key": "Phosphore",
+    "display_name": "Phosphore",
+    "regex": "[ \\t]*phosphore",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false,
+    "extra": {
+      "cliniques": [
+        "St Brice"
+      ]
+    }
+  },
+  {
+    "category": "ionogram___urinary",
+    "analyte_key": "Potassium",
+    "display_name": "Potassium",
+    "regex": "[ \\t]*(?<!\\w)potassium|(?<!\\w)k(?!\\w)[ \\t:=]*(?=\\d+)|[ \\t]*(?<!\\w)potassium",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "ionogram___urinary",
+    "analyte_key": "Proteinurie",
+    "display_name": "Proteinurie",
+    "regex": "[ \\t]*prot[éÉÈèe]inurie(?:[ \\t\\.]*de[ \\t\\.]*24[ \\t]*h)?",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  },
+  {
+    "category": "ionogram___urinary",
+    "analyte_key": "Sodium",
+    "display_name": "Sodium",
+    "regex": "[ \\t]*(?<!\\w)sodium|(?<!\\w)na(?!\\w)[ \\t:=]*(?=\\d+)|[ \\t]*(?<!\\w)sodium",
+    "sources": [
+      "keywordsAnalysis.json",
+      "keywords_analysis.json"
+    ],
+    "has_valeur": false
+  }
+]

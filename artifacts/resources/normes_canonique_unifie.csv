@@ -1,0 +1,136 @@
+categorie,Type,source_files,Enfant,Femme,Homme,Metric,Diagnostic probable (< à la norme),Diagnostic probable (> à la norme)
+biochemistry,Acide biliaire,Normes - Biochemistry.csv | normes_biochemistry.csv,<10,<10,<10,μmol/L,,
+biochemistry,Acide lactique,Normes - Biochemistry.csv | normes_biochemistry.csv,"<19,8","<19,8","<19,8",mg/dL,,
+biochemistry,Acide lactique,Valeurs normales - Biochimie.csv,"<19,8","<19,8","<19,8",mg/dL,-,"insuffisance respiratoire, insuffisance rénale, diabète, hépatite"
+biochemistry,Acide urique,Normes - Biochemistry.csv | normes_biochemistry.csv,150-240,180-300,240-360,µmol/L,,
+biochemistry,Acide urique,Valeurs normales - Biochimie.csv,150-240,180-300,240-360,µmol/L,"insuffisance hépathique, maladie de Hodgkin","goutte, diabète, insuffisance rénale"
+biochemistry,Albumine,Normes - Biochemistry.csv | normes_biochemistry.csv,34-54,34-54,34-54,g/L,,
+biochemistry,Albumine,Valeurs normales - Biochimie.csv,34-54,34-54,34-54,g/L,"atteinte des reins, cirrhose, hépatite, ascites, maladie inflammatoire, eczéma","déshydratation, diabète"
+biochemistry,Alpha 1 globuline,Normes - Biochemistry.csv | normes_biochemistry.csv,1-5,1-5,1-5,g/L,,
+biochemistry,Alpha 2 globuline,Normes - Biochemistry.csv | normes_biochemistry.csv,4-8,4-8,4-8,g/L,,
+biochemistry,Alpha1 globuline,Valeurs normales - Biochimie.csv,,1-5,1-5,g/L,"insuffisance hépatique, inflammation",
+biochemistry,Alpha2 globuline,Valeurs normales - Biochimie.csv,,4-8,4-8,g/L,"insuffisance hépatique, malnutrition",inflammation
+biochemistry,Amylase,Normes - Biochemistry.csv | normes_biochemistry.csv,12-62,12-62,12-62,UI/L,,
+biochemistry,Beta,Valeurs normales - Biochimie.csv,,5-12,5-12,g/L,"insuffisance hépatique, malnutrition","carence en fer, hypothyroïdie "
+biochemistry,Beta 1 globuline,Normes - Biochemistry.csv | normes_biochemistry.csv,3-6,3-6,3-6,g/L,,
+biochemistry,Beta 2 globuline,Normes - Biochemistry.csv | normes_biochemistry.csv,2-5,2-5,2-5,g/L,,
+biochemistry,Beta globuline,Normes - Biochemistry.csv | normes_biochemistry.csv,5-12,5-12,5-12,g/L,,
+biochemistry,Bilirubine,Normes - Biochemistry.csv | normes_biochemistry.csv,<12,<12,<12,mg/L,,
+biochemistry,Bilirubine totale,Valeurs normales - Biochimie.csv,<12,<12,<12,mg/L,-,"anémie hémolythique, maladie de Gilbert, syndrome de Criggler-Najjar, calcul biliaire, néoplasie, hépatite, cirrhose, pancréatite"
+biochemistry,Calcium,Valeurs normales - Biochimie.csv,"2,2-2,6 ","2,2-2,6 ","2,2-2,6 ",mmol/L,"carence en magnésium, carence en vitamine D, hypoparathyroïdie, pancréatite",cancer
+biochemistry,Calcium ionisé,Valeurs normales - Biochimie.csv,,"1,18-1,34","1,18-1,34",mmol/L,"carence en magnésium, carence en vitamine D, hypoparathyroïdie, pancréatite",cancer
+biochemistry,Cholesterol,Valeurs normales - Biochimie.csv,"0,65-0,8","0,65-0,8","0,65-0,8",g/L,"hyperthyroïdie, insuffisance hépatique, maladie cœliaque, maladies infectieuses",effet secondaire suite à la prise de médicaments
+biochemistry,Cholesterol HDL,Normes - Biochemistry.csv | normes_biochemistry.csv,">0,35",">0,35",">0,35",g/L,,
+biochemistry,Cholesterol HDL,Valeurs normales - Biochimie.csv,">0,35",">0,35",">0,35",g/L,risque d'accidents cardiovasculaires,-
+biochemistry,Cholesterol LDL,Normes - Biochemistry.csv | normes_biochemistry.csv,"<1,6","<1,6","<1,6",g/L,,
+biochemistry,Cholesterol LDL,Valeurs normales - Biochimie.csv,"<1,6","<1,6","<1,6",g/L,-,risque d’hypertension artérielle
+biochemistry,Cholesterol total,Normes - Biochemistry.csv | normes_biochemistry.csv,"1,5-2,5","1,5-2,5","1,5-2,5",g/L,,
+biochemistry,Corps cetonique,Normes - Biochemistry.csv | normes_biochemistry.csv,"<1,5","<1,5","<1,5",mmol/L,,
+biochemistry,Creatinine,Normes - Biochemistry.csv | normes_biochemistry.csv,3-10,7-10,9-13,mg/L,,
+biochemistry,Creatinine,Valeurs normales - Biochimie.csv,3-10,7-10,9-13,mg/L,myopathie,insuffisance rénale
+biochemistry,DFG,Normes - Biochemistry.csv | normes_biochemistry.csv,>60,>60,>60,mL/min/1.73m2,,
+biochemistry,Dfg,Valeurs normales - Biochimie.csv,>90,>90,>90,mL/min/1.73m2,insuffisance rénale,-
+biochemistry,Diurese,Normes - Biochemistry.csv | normes_biochemistry.csv,800-1500,800-1500,800-1500,mL,,
+biochemistry,Diurese,Valeurs normales - Biochimie.csv,800-1500,800-1500,800-1500,mL,"anurie, retention d'urine",syndrome polyuro-polydipsique
+biochemistry,Fer,Normes - Biochemistry.csv | normes_biochemistry.csv,,"12,5-30",11-30,mmol/L,,
+biochemistry,Fer,Valeurs normales - Biochimie.csv,,"12,5-30",11-30,mmol/L,anémie,"cirrhose, cancer, insuffisance cardiaque, diabète"
+biochemistry,Ferritine,Normes - Biochemistry.csv | normes_biochemistry.csv,7-140,18-160,18-270,µg/L,,
+biochemistry,Ferritine,Valeurs normales - Biochimie.csv,7-140,18-160,18-270,µg/L,carence en fer,"hémochromatose, maladie de Hodgkin"
+biochemistry,GGT,Normes - Biochemistry.csv | normes_biochemistry.csv,<33,<39,<66,UI/L,,
+biochemistry,GLDH,Normes - Biochemistry.csv | normes_biochemistry.csv,,<5,<7,UI/L,,
+biochemistry,Gamma,Valeurs normales - Biochimie.csv,,8-16,8-16,g/L,déficit immunitaire ,"inflammation chronique, infection, hémopathie"
+biochemistry,Gamma globuline,Normes - Biochemistry.csv | normes_biochemistry.csv,8-16,8-16,8-16,g/L,,
+biochemistry,Glycemie,Normes - Biochemistry.csv | normes_biochemistry.csv,"0,7-1,1","0,7-1,1","0,7-1,1",g/L,,
+biochemistry,Glycemie,Valeurs normales - Biochimie.csv,"0,7-1,1","0,7-1,1","0,7-1,1",g/L,hypoglycémie,diabète
+biochemistry,Lipase,Normes - Biochemistry.csv | normes_biochemistry.csv,50-240,50-240,50-240,UI/L,,
+biochemistry,Magnésium,Valeurs normales - Biochimie.csv,"0,75-0,96","0,75-0,96","0,75-0,96",mmol/L,"syndrome de malabsorption, dénutrition",insuffisance rénale
+biochemistry,Myoglobine,Normes - Biochemistry.csv | normes_biochemistry.csv,,25-58,28-72,ng/mL,,
+biochemistry,Myoglobine,Valeurs normales - Biochimie.csv,,25-58,28-72,ng/mL,,"infarctus du myocarde, ischémie musculaire, myopathies, insuffisance rénale"
+biochemistry,Phosphatase alcaline,Normes - Biochemistry.csv | normes_biochemistry.csv,30-100,30-100,30-100,UI/L,,
+biochemistry,Phosphore,Valeurs normales - Biochimie.csv,"1,5-2","0,8-1,5","0,8-1,5",mmol/L,malabsorption,diabète 
+biochemistry,Pre-albumine,Normes - Biochemistry.csv | normes_biochemistry.csv,"0,15-0,35","0,2-0,4","0,2-0,4",,,
+biochemistry,Pro-calcitonine,Normes - Biochemistry.csv | normes_biochemistry.csv,"<0,5","<0,5","<0,5",ng/mL,,
+biochemistry,Procalcitonine,Valeurs normales - Biochimie.csv,,"<0,5","<0,5",ng/mL,-,infection bactérienne
+biochemistry,Proteine C reactive,Normes - Biochemistry.csv | normes_biochemistry.csv,<6,<6,<6,mg/L,,
+biochemistry,Proteine c,Valeurs normales - Biochimie.csv,,<6,<6,mg/L,-,"infection bactérienne, infection virale chronique, maladie auto-immune, pathologie rhumatologique, trouble digestif"
+biochemistry,Proteine plasmatique,Normes - Biochemistry.csv | normes_biochemistry.csv,58-83,58-83,58-83,g/L,,
+biochemistry,Proteine plasmatique,Valeurs normales - Biochimie.csv,58-83,58-83,58-83,g/L,"dénutrition, syndrome de malabsorption, cirrhoses, hépatites, brûlures, syndromes néphrotiques, glomérulonéphrites","myélome multiple, maladie de Waldenström,lupus érythémateux disséminé, maladies du collagène, rhumatisme articulaire aigu, diabète insipide, déshydratation, hypertension artérielle"
+biochemistry,Proteine totale ,Valeurs normales - Biochimie.csv,58-83,58-83,58-83,g/L,"dénutrition, syndrome de malabsorption, cirrhoses, hépatites, brûlures, syndromes néphrotiques, glomérulonéphrites","myélome multiple, maladie de Waldenström,lupus érythémateux disséminé, maladies du collagène, rhumatisme articulaire aigu, diabète insipide, déshydratation, hypertension artérielle"
+biochemistry,Proteinurie,Normes - Biochemistry.csv | normes_biochemistry.csv,"<0,3","<0,3","<0,3",g/L,,
+biochemistry,Proteinurie,Valeurs normales - Biochimie.csv,"<0,3","<0,3","<0,3",g/L,-,"stress, grossesse"
+biochemistry,Rapport Cholesterol H.D.L. / L.D.L.,Valeurs normales - Biochimie.csv,<5,<5,<5,-,-,risque artériel
+biochemistry,Rapport Cholesterol Total / H.D.L.,Valeurs normales - Biochimie.csv,<5,<5,<5,-,-,risque artériel
+biochemistry,Rapport cholesterol HDL / LDL,Normes - Biochemistry.csv | normes_biochemistry.csv,<5,<5,<5,-,,
+biochemistry,Rapport cholesterol total / HDL,Normes - Biochemistry.csv | normes_biochemistry.csv,<5,<5,<5,-,,
+biochemistry,Reserve alcaline,Valeurs normales - Biochimie.csv,25-28,25-28,25-28,mmol/L,"cirrhose, hépatite","maladie hépatique, maladie osseuse"
+biochemistry,Transaminase ALT,Normes - Biochemistry.csv | normes_biochemistry.csv,<300,<300,<300,UI/L,,
+biochemistry,Transaminase AST,Normes - Biochemistry.csv | normes_biochemistry.csv,<350,<350,<350,UI/L,,
+biochemistry,Transferrine,Valeurs normales - Biochimie.csv,2-4,"1,8-3,82","1,74-3,64",g/L,"surcharge de fer, inflammation, insuffisance du foie, cancer, malnutrition",anémie ferriprive
+biochemistry,Triglyceride,Normes - Biochemistry.csv | normes_biochemistry.csv,"<0,9","0,4-1,6","0,35-1,5",g/L,,
+biochemistry,Triglyceride,Valeurs normales - Biochimie.csv,"<0,9","0,4-1,6","0,35-1,5",g/L,"hyperthyroïdie, malnutrition, syndrome de malabsorption","pancréatite aiguë, cirrhose, diabète, insuffisance rénale, hyperuricémie, infarctus du myocarde"
+biochemistry,Troponine,Valeurs normales - Biochimie.csv,,<14,<16,µg/L,-,"embolie pulmonaire, myocardite, insuffisance cardiaque, insuffisance rénale"
+biochemistry,Troponine hypersensible,Normes - Biochemistry.csv | normes_biochemistry.csv,,<14,<16,µg/L,,
+biochemistry,Trypsinogene,Normes - Biochemistry.csv | normes_biochemistry.csv,<55,<55,<55,μg/l,,
+biochemistry,Uree,Normes - Biochemistry.csv | normes_biochemistry.csv,"0,1-0,5","0,1-0,5","0,1-0,5",g/L,,
+biochemistry,Uree,Valeurs normales - Biochimie.csv,"0,1-0,5","0,1-0,5","0,1-0,5",g/L,"maladie hépatique, hyperhydratation, malnutrition",dysfonctionnement rénal
+coagulation,D-dimere,Normes - Coagulation.csv | normes_coagulation.csv,<500,<500,<500,µg/L,,
+coagulation,Fibrinogene,Normes - Coagulation.csv | normes_coagulation.csv,2-4,2-4,2-4,g/L,,
+coagulation,INR,Normes - Coagulation.csv | normes_coagulation.csv,"0,8-1,2","0,8-1,2","0,8-1,2",-,,
+coagulation,Rapport TCA,Normes - Coagulation.csv | normes_coagulation.csv,,"0,8-1,2","0,8-1,2",-,,
+coagulation,TCA,Normes - Coagulation.csv | normes_coagulation.csv,<38,<38,<38,sec,,
+coagulation,Taux de prothrombine,Normes - Coagulation.csv | normes_coagulation.csv,>70,>70,>70,%,,
+coagulation,Temps de Quick,Normes - Coagulation.csv | normes_coagulation.csv,11-13,11-13,11-,sec,,
+coagulation,Temps de saignement,Normes - Coagulation.csv | normes_coagulation.csv,<5,<5,<5,min,,
+cytobacteriology,Hematie,Normes - Cytobacteriology.csv | normes_cytobacteriology.csv,<1000,<1000,<1000,/mL,,
+cytobacteriology,Leucocyte,Normes - Cytobacteriology.csv | normes_cytobacteriology.csv,<10000,<10000,<10000,/mL,,
+hematology,CCMH,Normes - Hematology.csv | normes_hematology.csv,315-360,315-360,315-360,g/L,,
+hematology,Carboxy-hemoglobine,Normes - Hematology.csv | normes_hematology.csv,"<1,5","<1,5","<1,5",%,,
+hematology,Carboxyhemoglobine ,Valeurs normales - Hematologie.csv,"<1,5","<1,5","<1,5",%,-,intoxication au monoxyde de carbone
+hematology,Ccmh,Valeurs normales - Hematologie.csv,315-360,315-360,315-360,g/L,"anémie ferriprive, insuffisance rénale",maladie de Minkowski-Chauffard
+hematology,Hematie,Normes - Hematology.csv | normes_hematology.csv,"3,6-4,8","3,8-5,3","4,6-5,8",T/L,,
+hematology,Hematie,Valeurs normales - Hematologie.csv,"3,6-4,8","3,8-5,3","4,6-5,8",T/L,"carence en fer, carence en vitamine B12, carence en folates",risque de thrombose
+hematology,Hematocrite,Normes - Hematology.csv | normes_hematology.csv,32-45,35-49,40-52,%,,
+hematology,Hematocrite,Valeurs normales - Hematologie.csv,32-45,35-49,40-52,%,anémie,"anémie macrocytaire, polyglobulie"
+hematology,Hemoglobine,Normes - Hematology.csv | normes_hematology.csv,">11,5",12-16,13-18,g/dL,,
+hematology,Hemoglobine,Valeurs normales - Hematologie.csv,">11,5",12-16,13-18,g/dL,anémie ,"maladie de Vaquez, insuffisance respiratoire"
+hematology,IDR,Normes - Hematology.csv | normes_hematology.csv,11-15,11-15,11-15,%,,
+hematology,Idr,Valeurs normales - Hematologie.csv,11-15,11-15,11-15,%,anisocytose,anisocytose
+hematology,Leucocyte,Normes - Hematology.csv | normes_hematology.csv,4000-10000,4000-10000,4000-10000,/mm3,,
+hematology,Leucocyte,Valeurs normales - Hematologie.csv,4000-10000,4000-10000,4000-10000,/mm3,"infections virales, infections parasitaires, anémie, cancer","inflammation, leucémie"
+hematology,Lymphocyte,Normes - Hematology.csv | normes_hematology.csv,20-40,20-40,20-40,%,,
+hematology,Lymphocyte,Valeurs normales - Hematologie.csv,20-40,20-40,20-40,%,"leucémie, SIDA, cancer","infections virales, troubles endocriniens, leucémie, maladie de Crohn"
+hematology,Monocyte,Normes - Hematology.csv | normes_hematology.csv,"0,16-1","0,16-1","0,16-1",G/L,,
+hematology,Monocyte,Valeurs normales - Hematologie.csv,"0,16-1","0,16-1","0,16-1",G/L,-,"monocytose, infections fongiques, tuberculose, endocardites bactériennes"
+hematology,Plaquette,Normes - Hematology.csv | normes_hematology.csv,175-420,170-375,160-350,G/L,,
+hematology,Plaquette,Valeurs normales - Hematologie.csv,175-420,170-375,160-350,G/L,"réaction allergique, réaction auto-immune, infections virales, CIVD, leucémie","splénectomie, carence en fer chronique, maladie de Hodgkin, cirrhose, pancréatite, risque de thrombose"
+hematology,Polynucleaire basophile,Normes - Hematology.csv | normes_hematology.csv,"<0,1","<0,1","<0,1",G/L,,
+hematology,Polynucleaire basophile,Valeurs normales - Hematologie.csv,"<0,1","<0,1","<0,1",G/L,-,"réaction allergique, conditions inflammatoires, leucémie myéloïde chronique"
+hematology,Polynucleaire eosinophile,Normes - Hematology.csv | normes_hematology.csv,"0,04-0,4","0,04-0,4","0,04-0,4",G/L,,
+hematology,Polynucleaire eosinophile,Valeurs normales - Hematologie.csv,"0,04-0,4","0,04-0,4","0,04-0,4",G/L,-,"réaction allergique, asthme, maladies de peau"
+hematology,Polynucleaire neutrophile,Normes - Hematology.csv | normes_hematology.csv,"2-7,5","2-7,5","2-7,5",G/L,,
+hematology,Polynucleaire neutrophile,Valeurs normales - Hematologie.csv,"2-7,5","2-7,5","2-7,5",G/L,"carence en vitamine B12, carence en vitamine B9, cancer",infection bactérienne
+hematology,Reticulocyte,Valeurs normales - Hematologie.csv,25000-100000,25000-100000,25000-100000,/mm3,"anémie non régénérative,  myélome, leucémie, carence en vitamine B12, carence en fer, insuffisance rénale","hémorragie, hémolyse, maladies respiratoires"
+hematology,TCMH,Normes - Hematology.csv | normes_hematology.csv,27-32,27-32,27-32,pg,,
+hematology,Tcmh,Valeurs normales - Hematologie.csv,27-32,27-32,27-32,pg,anémie hypochrome,"anémie macrocytaire, insuffisance thyroïdienne"
+hematology,VGM,Normes - Hematology.csv | normes_hematology.csv,80-98 ,80-98 ,80-98,fL,,
+hematology,VPM,Normes - Hematology.csv | normes_hematology.csv,6-10,6-10,6-10,fL,,
+hematology,Vgm,Valeurs normales - Hematologie.csv,80-98 ,80-98 ,80-98,fL,anémie microcytaire,anémie macrocytaire
+hematology,Vpm,Valeurs normales - Hematologie.csv,6-10,6-10,6-10,fL,"tuberculose, colites ulcéreuses, lupus érythémateux disséminé, maladies néoplasiques","maladies cardio-vasculaires, maladies respiratoires, insuffisances rénales, maladies intestinales, maladies rhumatoïdes, diabète, cancer"
+ionogram_blood,Ammonium,Normes - Ionogram - Blood.csv | normes_ionogram_blood.csv,<40,<40,<40,mmol/L,,
+ionogram_blood,Calcium,Normes - Ionogram - Blood.csv | normes_ionogram_blood.csv,"2,2-2,6 ","2,2-2,6 ","2,2-2,6 ",mmol/L,,
+ionogram_blood,Chlore,Normes - Ionogram - Blood.csv | normes_ionogram_blood.csv,95-105,95-105,95-105,mmol/L,,
+ionogram_blood,Magnesium,Normes - Ionogram - Blood.csv | normes_ionogram_blood.csv,"0,7-0,9","0,7-0,9","0,7-0,9",mmol/L,,
+ionogram_blood,Phosphore,Normes - Ionogram - Blood.csv | normes_ionogram_blood.csv,"1,5-2","0,8-1,5","0,8-1,5",mmol/L,,
+ionogram_blood,Potassium,Normes - Ionogram - Blood.csv | normes_ionogram_blood.csv,"3,5-5","3,5-5","3,5-5",mmol/L,,
+ionogram_blood,Proteine totale,Normes - Ionogram - Blood.csv | normes_ionogram_blood.csv,58-83,58-83,58-83,g/L,,
+ionogram_blood,Sodium,Normes - Ionogram - Blood.csv | normes_ionogram_blood.csv,135-145,135-145,135-145,mmol/L,,
+ionogram_blood,Transferrine,Normes - Ionogram - Blood.csv | normes_ionogram_blood.csv,2-4,"1,8-3,82","1,74-3,64",g/L,,
+ionogram_urinary,Ammonium,Normes - Ionogram - Urinary.csv | normes_ionogram_urinary.csv,20-70,20-70,20-70,mmol/L,,
+ionogram_urinary,Calcium,Normes - Ionogram - Urinary.csv | normes_ionogram_urinary.csv,150-300,150-300,150-300,mg/24h,,
+ionogram_urinary,Chlore,Normes - Ionogram - Urinary.csv | normes_ionogram_urinary.csv,80-200,80-200,80-200,mmol/24h,,
+ionogram_urinary,Magnesium,Normes - Ionogram - Urinary.csv | normes_ionogram_urinary.csv,3-7,3-7,3-7,mmol/24h,,
+ionogram_urinary,Microalbuminurie,Normes - Ionogram - Urinary.csv | normes_ionogram_urinary.csv,30-300,30-300,30-300,mg/24h,,
+ionogram_urinary,Phosphore,Normes - Ionogram - Urinary.csv | normes_ionogram_urinary.csv,"0,08","0,02","0,02",g/kg/24h,,
+ionogram_urinary,Potassium,Normes - Ionogram - Urinary.csv | normes_ionogram_urinary.csv,50-100,50-100,50-100,mmol/24h,,
+ionogram_urinary,Proteinurie,Normes - Ionogram - Urinary.csv | normes_ionogram_urinary.csv,"<0,3","<0,3","<0,3",g/L,,
+ionogram_urinary,Sodium,Normes - Ionogram - Urinary.csv | normes_ionogram_urinary.csv,50-300,50-300,50-300,mmol/24h,,
