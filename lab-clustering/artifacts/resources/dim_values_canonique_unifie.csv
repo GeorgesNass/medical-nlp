@@ -1,0 +1,34 @@
+source_files,Type,Condition,Explication,DP,DAS,indications
+DIM_values - Anemie.csv | dim_values_anemie.csv,VGM,inf,MICROCYTAIRE,D50.0 ou D50.8,D50.0 ou D50.8 ou D50.9,"anemie regenarative (péripherique), voir si il faut faire: transfusion ou traitment martiale (medicaments avec du fer)"
+DIM_values - Anemie.csv | dim_values_anemie.csv,TCMH,inf,FERRIPRIVE,D50.0 ou D50.8,D50.0 ou D50.8 ou D50.9,"anemie regenarative (péripherique), voir si il faut faire: transfusion ou traitment martiale (medicaments avec du fer)"
+DIM_values - Anemie.csv | dim_values_anemie.csv,Hemoglobine ,inf mais sup à 8,Traitement medicaments (exemple tardyferon),D50.0 ou D50.8,D50.0 ou D50.8 ou D50.9,"anemie regenarative (péripherique), voir si il faut faire: transfusion ou traitment martiale (medicaments avec du fer)"
+DIM_values - Anemie.csv | dim_values_anemie.csv,Hemoglobine,inf et inf à 8,Transfusion,D50.0 ou D50.8,D50.0 ou D50.8 ou D50.9,"anemie regenarative (péripherique), voir si il faut faire: transfusion ou traitment martiale (medicaments avec du fer)"
+DIM_values - Anemie.csv | dim_values_anemie.csv,Hematie,inf,"anemie aregenartive d'origine centrale (aplasie medulaire)
+
+- la moelle osseuse ne produit pas de globules rouges",D50.0 ou D50.8 ou D61.9,D50.0 ou D50.8 ou D61.9,
+DIM_values - Anemie.csv | dim_values_anemie.csv,Hematie;Plaquette;Leucocyte,au moins 2 inf,Bicytopénie = baisse de 2 lignées parmi les globules rouges et les thrombocytes ou les leucocytes.,D50.0 ou D50.8,D50.0 ou D50.8,
+DIM_values - Anemie.csv | dim_values_anemie.csv,Hematie;Plaquette;Leucocyte,inf,"Pancytopénie, aplasie = baisse des trois lignées",D50.0 ou D50.8,D50.0 ou D50.8,
+DIM_values - Anemie.csv | dim_values_anemie.csv,vitamine B;Hematie,inf,"Cause probables :
+
+- C'est tres probable pour les chirurgies bariatrique (obseité) par exemple aneau gastrique
+- maladie autoimmune 
+- anemie de biermer (maladie de l'estomac)",D50.0 ou D50.8,D50.0 ou D50.8,"(salades, endives, lentilles) Cause probables : tres probable pour les chirurgies bariatrique (obseité) par exemple aneau gastrique  ou maladie autoimmune"
+DIM_values - Anemie.csv,"VGM
+",sup,"Cause probables :
+
+- C'est tres probable pour les chirurgies bariatrique (obseité) par exemple aneau gastrique
+- autohimune
+- anemie macrocytaire",D50.0 ou D50.8 ou D52.9,D50.0 ou D50.8 ou D52.9,
+DIM_values - Anemie.csv | dim_values_anemie.csv,Hematie,inf,Anémie au cours thalassémie (maladie genetique de l'enfant),D50.0 ou D50.8 ou D56.9,D50.0 ou D50.8 ou D56.9,anemie aregenartive d'origine centrale (aplasie medulaire) - la moelle osseuse ne produit pas de globules rouges
+DIM_values - Anemie.csv | dim_values_anemie.csv,Hematie,ìnf,Aplasie avec chimio,D61.1Aplasie,D61.1Aplasie,"Bilan serum inflamatoire; anemie aregenartive d'origine centrale (aplasie medulaire)
+
+- la moelle osseuse ne produit pas de globules rouges"
+DIM_values - Anemie.csv | dim_values_anemie.csv,Taut de proteine C-reactive,sup,Anémie au cours de maladies tumorales,D63.0,D63.0,
+DIM_values - Anemie.csv | dim_values_anemie.csv,"Creatine
+",Débit de filtration glomrulaire (CKD EPI) - < 90 stade 1 - > 60 et < 89 stade 2 - > 30 et < 59 stade 3 - > 15 et < 29 stade 4 - < 15 stade 5 terminale,Insuffisance rénale; Anémie au cours d'autres maladies chroniques ,D63.8,D63.8,
+dim_values_anemie.csv,"VGM
+",sup,"Cause probables :
+
+- C'est tres probable pour les chirurgies bariatrique (obseité) par exemple aneau gastrique
+- autohimune
+- anemie macrocytaire",D50.0 ou D50.8 ou D52.9,D50.0 ou D50.8 ou D52.9,

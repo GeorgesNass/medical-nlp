@@ -1,0 +1,381 @@
+swagger: "2.0"
+host: "localhost:8000"
+
+info:
+  version: 1.0.0
+  title: Lab Clustering API
+  description: "Local API for parsing laboratory TXT files, building datasets, running unsupervised clustering, exporting artifacts, and EDA."
+
+tags:
+- name: "labClustering"
+  description: "Parse -> Dataset -> Cluster -> Export"
+
+schemes:
+- "http"
+
+paths:
+  /health:
+    get:
+      tags:
+      - "labClustering"
+      summary: "Healthcheck"
+      description: "Simple service healthcheck."
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/HealthResponse"
+
+  /parse:
+    post:
+      tags:
+      - "labClustering"
+      summary: "Parse TXT reports"
+      description: "Parse one or multiple raw .txt files located in data/raw and export structured CSV files."
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/ParseTxtRequest"
+      responses:
+        200:
+          description: "Parsing completed"
+          schema:
+            $ref: "#/definitions/ParseTxtResponse"
+        400:
+          description: "Parsing error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+  /dataset:
+    post:
+      tags:
+      - "labClustering"
+      summary: "Build clustering dataset"
+      description: "Build a long or wide dataset from structured CSV files."
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/BuildDatasetRequest"
+      responses:
+        200:
+          description: "Dataset built"
+          schema:
+            $ref: "#/definitions/BuildDatasetResponse"
+        400:
+          description: "Dataset build error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+  /cluster:
+    post:
+      tags:
+      - "labClustering"
+      summary: "Run clustering"
+      description: "Run preprocessing, clustering, evaluation, MLflow tracking, and export artifacts."
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/RunClusteringRequest"
+      responses:
+        200:
+          description: "Clustering completed"
+          schema:
+            $ref: "#/definitions/RunClusteringResponse"
+        400:
+          description: "Clustering error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+  /export:
+    post:
+      tags:
+      - "labClustering"
+      summary: "Export artifacts"
+      description: "Export clustering and/or EDA artifacts for a given run_id."
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/ExportRequest"
+      responses:
+        200:
+          description: "Export completed"
+          schema:
+            $ref: "#/definitions/ExportResponse"
+        400:
+          description: "Export error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+definitions:
+  HealthResponse:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "ok"
+      service:
+        type: "string"
+        example: "lab_clustering"
+      version:
+        type: "string"
+        example: "1.0.0"
+    required:
+    - status
+    - service
+    - version
+
+  ParseTxtRequest:
+    type: "object"
+    properties:
+      filenames:
+        type: "array"
+        items:
+          type: "string"
+        example:
+        - "report_001.txt"
+        - "report_002.txt"
+      overwrite:
+        type: "boolean"
+        example: false
+    required:
+    - filenames
+
+  ParseTxtResponse:
+    type: "object"
+    properties:
+      parsed_files:
+        type: "array"
+        items:
+          type: "string"
+        example:
+        - "report_001.csv"
+      failed_files:
+        type: "array"
+        items:
+          type: "string"
+        example:
+        - "report_999.txt"
+      message:
+        type: "string"
+        example: "Parsing completed"
+    required:
+    - parsed_files
+    - failed_files
+    - message
+
+  BuildDatasetRequest:
+    type: "object"
+    properties:
+      structured_csv_files:
+        type: "array"
+        items:
+          type: "string"
+        example:
+        - "report_001.csv"
+        - "report_002.csv"
+      dataset_format:
+        type: "string"
+        enum:
+        - "long"
+        - "wide"
+        example: "wide"
+      overwrite:
+        type: "boolean"
+        example: false
+    required:
+    - dataset_format
+
+  BuildDatasetResponse:
+    type: "object"
+    properties:
+      dataset_path:
+        type: "string"
+        example: "./data/interim/datasets/dataset_wide.parquet"
+      n_rows:
+        type: "integer"
+        format: "int32"
+        example: 120
+      n_cols:
+        type: "integer"
+        format: "int32"
+        example: 85
+      message:
+        type: "string"
+        example: "Dataset built successfully"
+    required:
+    - dataset_path
+    - n_rows
+    - n_cols
+    - message
+
+  ClusteringParams:
+    type: "object"
+    properties:
+      algorithm:
+        type: "string"
+        enum:
+        - "kmeans"
+        - "agglomerative"
+        - "dbscan"
+        - "birch"
+        - "affinity_propagation"
+        - "kmodes"
+        example: "kmeans"
+      params:
+        type: "object"
+        additionalProperties: true
+        example:
+          n_clusters: 3
+    required:
+    - algorithm
+    - params
+
+  RunClusteringRequest:
+    type: "object"
+    properties:
+      dataset_path:
+        type: "string"
+        example: "./data/interim/datasets/dataset_wide.parquet"
+      clustering:
+        $ref: "#/definitions/ClusteringParams"
+      preprocess:
+        type: "object"
+        additionalProperties: true
+        example:
+          impute_strategy: "median"
+          apply_pca: false
+          pca_n_components: 2
+      overwrite:
+        type: "boolean"
+        example: false
+    required:
+    - dataset_path
+    - clustering
+
+  RunClusteringResponse:
+    type: "object"
+    properties:
+      run_id:
+        type: "string"
+        example: "2026-02-27_10-30-12"
+      mlflow_run_id:
+        type: "string"
+        example: "c0a8012f3b4c4d5e8f90123456789abc"
+      n_clusters:
+        type: "integer"
+        format: "int32"
+        example: 3
+      metrics:
+        type: "object"
+        additionalProperties: true
+        example:
+          n_clusters: 3
+          silhouette_score: 0.41
+      exports:
+        type: "array"
+        items:
+          type: "string"
+        example:
+        - "./artifacts/exports/clustering/cluster_assignments.csv"
+        - "./artifacts/exports/clustering/cluster_profiles.csv"
+      message:
+        type: "string"
+        example: "Clustering completed successfully"
+    required:
+    - run_id
+    - n_clusters
+    - metrics
+    - exports
+    - message
+
+  ExportRequest:
+    type: "object"
+    properties:
+      run_id:
+        type: "string"
+        example: "2026-02-27_10-30-12"
+      export_eda:
+        type: "boolean"
+        example: true
+      export_clustering:
+        type: "boolean"
+        example: true
+    required:
+    - run_id
+
+  ExportResponse:
+    type: "object"
+    properties:
+      exports:
+        type: "array"
+        items:
+          type: "string"
+        example:
+        - "./artifacts/exports/eda/structured_eda_summary.json"
+        - "./artifacts/exports/clustering/cluster_assignments.csv"
+      message:
+        type: "string"
+        example: "Export completed"
+    required:
+    - exports
+    - message
+
+  ErrorResponse:
+    type: "object"
+    properties:
+      error:
+        type: "string"
+        example: "ParsingError"
+      message:
+        type: "string"
+        example: "TXT parsing failed"
+      details:
+        type: "object"
+        additionalProperties: true
+        example:
+          error: "File not found"
+    required:
+    - error
+    - message

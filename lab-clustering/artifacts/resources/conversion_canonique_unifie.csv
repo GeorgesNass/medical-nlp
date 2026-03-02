@@ -1,0 +1,180 @@
+Type,In,Out,Factor,source_files
+Acide urique,µmol/l,mg/l,"0,168",conversion.csv | facteurs_conversion.csv
+Acide urique,mg/l,µmol/l,"5,948",conversion.csv | facteurs_conversion.csv
+Acide urique,mg/24h,mmol/24h,"0,005952",conversion.csv | facteurs_conversion.csv
+Acide urique,mmol/24h,mg/24h,168,conversion.csv | facteurs_conversion.csv
+Albumine,g/l,µmol/l,15,conversion.csv | facteurs_conversion.csv
+Albumine,µmol/l,g/l,"0,0667",conversion.csv | facteurs_conversion.csv
+Albumine,g/l,g/dl,"0,1",conversion.csv | facteurs_conversion.csv
+Albumine,g/dl,g/l,10,conversion.csv | facteurs_conversion.csv
+Albumine,µmol/l,g/dl,"0,00689",conversion.csv | facteurs_conversion.csv
+Albumine,g/dl,µmol/l,145,conversion.csv | facteurs_conversion.csv
+Bilirubine,µmol/l,mg/l,"0,58",conversion.csv | facteurs_conversion.csv
+Bilirubine,mg/l,µmol/l,"1,71",conversion.csv | facteurs_conversion.csv
+Bilirubine,mg/l,µmol/l,17,conversion.csv | facteurs_conversion.csv
+Bilirubine,µmol/l,mg/l,"0,059",conversion.csv | facteurs_conversion.csv
+Calcemie,mg/l,µmol/l,"0,03",conversion.csv | facteurs_conversion.csv
+Calcemie,µmol/l,mg/l,40,conversion.csv | facteurs_conversion.csv
+Calcium,mmol/l,mg/l,40,conversion.csv | facteurs_conversion.csv
+Calcium,mg/l,mmol/l,"0,025",conversion.csv | facteurs_conversion.csv
+Calcium,mg/dl,mmol/l,"0,25",conversion.csv | facteurs_conversion.csv
+Calcium,mmol/l,mg/dl,4,conversion.csv | facteurs_conversion.csv
+Calcium,g/l,mg/dl,100,conversion.csv | facteurs_conversion.csv
+Calcium,mg/dl,g/l,"0,01",conversion.csv | facteurs_conversion.csv
+Calcium,g/l,mmol/l,"24,9513",conversion.csv | facteurs_conversion.csv
+Calcium,mmol/l,g/l,"0,040078",conversion.csv | facteurs_conversion.csv
+CCMH,g/l,g/dl,"0,1",conversion.csv | facteurs_conversion.csv
+CCMH,g/dl,g/l,10,conversion.csv | facteurs_conversion.csv
+CCMH,g/100ml,mmol/l,"0,6",conversion.csv | facteurs_conversion.csv
+CCMH,mmol/l,g/100ml,2,conversion.csv | facteurs_conversion.csv
+CCMH,g/dl,g/100ml,1,conversion.csv | facteurs_conversion.csv
+CCMH,g/100ml,g/dl,1,conversion.csv | facteurs_conversion.csv
+Cholesterol total,mmol/l,g/l,"0,39",conversion.csv
+Cholesterol total,g/l,mmol/l,"2,58",conversion.csv
+Cholesterol total,mg/dl,mmol/l,"0,026",conversion.csv
+Cholesterol total,mmol/l,mg/dl,"38,941",conversion.csv
+Cholesterol total,g/l,mg/dl,100,conversion.csv
+Cholesterol total,mg/dl,g/l,"0,01",conversion.csv
+Cholesterol HDL,mmol/l,g/l,"0,39",conversion.csv
+Cholesterol HDL,g/l,mmol/l,"2,58",conversion.csv
+Cholesterol HDL,mg/dl,mmol/l,"0,026",conversion.csv
+Cholesterol HDL,mmol/l,mg/dl,"38,941",conversion.csv
+Cholesterol HDL,g/l,mg/dl,100,conversion.csv
+Cholesterol HDL,mg/dl,g/l,"0,01",conversion.csv
+Cholesterol LDL,mmol/l,g/l,"0,39",conversion.csv
+Cholesterol LDL,g/l,mmol/l,"2,58",conversion.csv
+Cholesterol LDL,mg/dl,mmol/l,"0,026",conversion.csv
+Cholesterol LDL,mmol/l,mg/dl,"38,941",conversion.csv
+Cholesterol LDL,g/l,mg/dl,100,conversion.csv
+Cholesterol LDL,mg/dl,g/l,"0,01",conversion.csv
+Creatinine,µmol/l,mg/l,"0,1131",conversion.csv | facteurs_conversion.csv
+Creatinine,mg/l,µmol/l,"8,84",conversion.csv | facteurs_conversion.csv
+Creatinine,µmol/l,mmol/l,"0,001",conversion.csv | facteurs_conversion.csv
+Creatinine,mmol/l,µmol/l,1000,conversion.csv | facteurs_conversion.csv
+Creatinine,mg/dl,mmol/l,"0,0884",conversion.csv | facteurs_conversion.csv
+Creatinine,mg/dl,µmol/l,88,conversion.csv | facteurs_conversion.csv
+Creatinine,µmol/l,mg/dl,"0,011",conversion.csv | facteurs_conversion.csv
+Creatininurie,mg/kg/24h,µmol/kg/24h,9,conversion.csv
+Creatininurie,µmol/kg/24h,mg/kg/24h,"0,1112",conversion.csv
+D-dimere,ng/ml,mg/l,"0,001",conversion.csv
+D-dimere,mg/l,ng/ml,1000,conversion.csv
+D-dimere,ng/ml,µg/l,1,conversion.csv
+D-dimere,µg/l,ng/ml,1,conversion.csv
+D-dimere,µg/ml,mg/l,1,conversion.csv
+D-dimere,mg/l,µg/ml,1,conversion.csv
+Fer,µmol/l,µg/dl,"5,59",conversion.csv | facteurs_conversion.csv
+Fer,µg/dl,µmol/l,"0,179",conversion.csv | facteurs_conversion.csv
+Ferritine,ng/ml,µg/L,1,conversion.csv
+Ferritine,µg/L,ng/ml,1,conversion.csv
+Folate,nmol/l,ng/ml,"0,441",conversion.csv | facteurs_conversion.csv
+Folate,ng/ml,nmol/l,"2,266",conversion.csv | facteurs_conversion.csv
+Glycemie,g/l,mmol/l,"5,6",conversion.csv | facteurs_conversion.csv
+Glycemie,mmol/l,g/l,"0,18",conversion.csv | facteurs_conversion.csv
+Glycemie,mg/dl,g/l,"0,01",conversion.csv | facteurs_conversion.csv
+Glycemie,g/l,mg/dl,100,conversion.csv | facteurs_conversion.csv
+Glycemie,mg/dl,mmol/l,"0,055",conversion.csv | facteurs_conversion.csv
+Glycemie,mmol/l,mg/dl,"18,1818",conversion.csv | facteurs_conversion.csv
+Hematie,M/mm3,T/l,1,conversion.csv | facteurs_conversion.csv
+Hematie,T/l,M/mm3,1,conversion.csv | facteurs_conversion.csv
+Hematie,/ml,/mm3,"0,001",conversion.csv
+Hematie,/mm3,/ml,1000,conversion.csv
+Hematocrite,,%,100,conversion.csv | facteurs_conversion.csv
+Hemoglobine,g/l,g/dl,"0,1",conversion.csv | facteurs_conversion.csv
+Hemoglobine,g/dl,g/l,10,conversion.csv | facteurs_conversion.csv
+Hemoglobine,mmol/l,g/l,"16,1",conversion.csv | facteurs_conversion.csv
+Hemoglobine,g/100ml,mmol/l,"0,6",conversion.csv | facteurs_conversion.csv
+Hemoglobine,mmol/l,g/100ml,"1,6",conversion.csv | facteurs_conversion.csv
+Leucocyte,/mm3,G/l,"0,001",conversion.csv | facteurs_conversion.csv
+Leucocyte,G/l,/mm3,1000,conversion.csv | facteurs_conversion.csv
+Leucocyte,/ml,/mm3,"0,001",conversion.csv
+Leucocyte,/mm3,/ml,1000,conversion.csv
+Lymphocyte,G/l,/mm3,1000,conversion.csv | facteurs_conversion.csv
+Lymphocyte,/mm3,G/l,"0,001",conversion.csv | facteurs_conversion.csv
+Monocyte,G/l,/mm3,1000,conversion.csv | facteurs_conversion.csv
+Monocyte,/mm3,G/l,"0,001",conversion.csv | facteurs_conversion.csv
+Pco2,kPa,mm Hg,"7,5",conversion.csv | facteurs_conversion.csv
+Pco2,mm Hg,kPa,"0,133322",conversion.csv | facteurs_conversion.csv
+Phosphate,mmol/l,mg/l,"30,96",conversion.csv | facteurs_conversion.csv
+Phosphate,mg/l,mmol/l,"0,0323",conversion.csv | facteurs_conversion.csv
+Phosphate,mg/dl,mmol/l,"0,323",conversion.csv | facteurs_conversion.csv
+Phosphate,mmol/l,mg/dl,"3,096",conversion.csv | facteurs_conversion.csv
+Plaquettes,/mm3,G/l,"0,001",conversion.csv | facteurs_conversion.csv
+Plaquettes,G/l,/mm3,1000,conversion.csv | facteurs_conversion.csv
+Po2,kPa,mm Hg,"7,5",conversion.csv | facteurs_conversion.csv
+Po2,mm Hg,kPa,"0,133322",conversion.csv | facteurs_conversion.csv
+Polynucleaire basophile,G/l,/mm3,1000,conversion.csv | facteurs_conversion.csv
+Polynucleaire basophile,/mm3,G/l,"0,001",conversion.csv | facteurs_conversion.csv
+Polynucleaire eosinophile,G/l,/mm3,1000,conversion.csv | facteurs_conversion.csv
+Polynucleaire eosinophile,/mm3,G/l,"0,001",conversion.csv | facteurs_conversion.csv
+Polynucleaire neutrophile,G/l,/mm3,1000,conversion.csv | facteurs_conversion.csv
+Polynucleaire neutrophile,/mm3,G/l,"0,001",conversion.csv | facteurs_conversion.csv
+Proteine C reactive,nmol/l,mg/l,"0,105",conversion.csv
+Proteine C reactive,mg/l,nmol/l,"9,5238",conversion.csv
+Proteine C reactive,nmol/l,mg/dl,"0,0105",conversion.csv
+Proteine C reactive,mg/dl,nmol/l,"95,238",conversion.csv
+Proteine C reactive,nmol/l,mg/100ml,"0,0105",conversion.csv
+Proteine C reactive,mg/100ml,nmol/l,"95,238",conversion.csv
+Proteine C reactive,nmol/l,µg/ml,"0,105",conversion.csv
+Proteine C reactive,µg/ml,nmol/l,"9,5238",conversion.csv
+Proteine C reactive,nmol/l,g/l,"0,0001",conversion.csv
+Proteine C reactive,g/l,nmol/l,10000,conversion.csv
+Proteine totale,mg/l,g/l,"0,001",conversion.csv | facteurs_conversion.csv
+Proteine totale,g/l,mg/l,1000,conversion.csv | facteurs_conversion.csv
+Reticulocyte,/mm3,G/l,"0,001",conversion.csv | facteurs_conversion.csv
+Reticulocyte,G/l,/mm3,1000,conversion.csv | facteurs_conversion.csv
+T4 libre,pmol/l,ng/dl,"0,0776",conversion.csv | facteurs_conversion.csv
+T4 libre,ng/dl,pmol/l,"12,87",conversion.csv | facteurs_conversion.csv
+Transferrine,µmol/l,g/l,"0,0796",conversion.csv | facteurs_conversion.csv
+Transferrine,g/l,µmol/l,"12,5628",conversion.csv | facteurs_conversion.csv
+Transferrine,µmol/l,mg/dl,"7,96",conversion.csv | facteurs_conversion.csv
+Transferrine,mg/dl,µmol/l,"0,125628",conversion.csv | facteurs_conversion.csv
+Transferrine,µmol/l,mg/100ml,"7,96",conversion.csv | facteurs_conversion.csv
+Transferrine,mg/100ml,µmol/l,"0,125628",conversion.csv | facteurs_conversion.csv
+Transferrine,µmol/l,mg/ml,"0,0796",conversion.csv | facteurs_conversion.csv
+Transferrine,mg/ml,µmol/l,"12,5628",conversion.csv | facteurs_conversion.csv
+Triglyceride,mmol/l,g/l,"0,877",conversion.csv | facteurs_conversion.csv
+Triglyceride,g/l,mmol/l,"1,14",conversion.csv | facteurs_conversion.csv
+Triglyceride,mg/dl,mmol/l,"0,011",conversion.csv | facteurs_conversion.csv
+Triglyceride,mmol/l,mg/dl,"88,496",conversion.csv | facteurs_conversion.csv
+Triglyceride,g/l,mg/dl,100,conversion.csv | facteurs_conversion.csv
+Triglyceride,mg/dl,g/l,"0,01",conversion.csv | facteurs_conversion.csv
+Troponine,ng/l,ng/ml,"0,001",conversion.csv | facteurs_conversion.csv
+Troponine,ng/ml,ng/l,1000,conversion.csv | facteurs_conversion.csv
+Troponine,ng/l,µg/l ,"0,001",conversion.csv | facteurs_conversion.csv
+Troponine,µg/l ,ng/l,1000,conversion.csv | facteurs_conversion.csv
+Troponine,ng/ml,µg/l,1,conversion.csv | facteurs_conversion.csv
+Troponine,µg/l,ng/ml,1,conversion.csv | facteurs_conversion.csv
+Sodium,mEq/l,mmol/l,1,conversion.csv
+Sodium,mmol/l,mEq/l,1,conversion.csv
+Uree,mmol/l,g/l,"0,056",conversion.csv | facteurs_conversion.csv
+Uree,g/l,mmol/l,"16,67",conversion.csv | facteurs_conversion.csv
+Uree,mg/dl,mmol/l,"0,357",conversion.csv | facteurs_conversion.csv
+Uree,mmol/l,mg/dl,"2,8",conversion.csv | facteurs_conversion.csv
+VGM,µ3,fl,1,conversion.csv | facteurs_conversion.csv
+VGM,fl,µ3,1,conversion.csv | facteurs_conversion.csv
+Vitamine b12,pmol/l,pg/ml,"1,355",conversion.csv | facteurs_conversion.csv
+Vitamine b12,pg/ml,pmol/l,"0,738",conversion.csv | facteurs_conversion.csv
+Cholesterol,mmol/l,g/l,"0,39",facteurs_conversion.csv
+Cholesterol,g/l,mmol/l,"2,58",facteurs_conversion.csv
+Cholesterol,mg/dl,mmol/l,"0,026",facteurs_conversion.csv
+Cholesterol,mmol/l,mg/dl,"38,941",facteurs_conversion.csv
+Cholesterol,g/l,mg/dl,100,facteurs_conversion.csv
+Cholesterol,mg/dl,g/l,"0,01",facteurs_conversion.csv
+Créatininurie,mg/kg/24h,µmol/kg/24h,9,facteurs_conversion.csv
+Créatininurie,µmol/kg/24h,mg/kg/24h,"0,1112",facteurs_conversion.csv
+D dimere,ng/ml,mg/l,"0,001",facteurs_conversion.csv
+D dimere,mg/l,ng/ml,1000,facteurs_conversion.csv
+D dimere,ng/ml,µg/l,1,facteurs_conversion.csv
+D dimere,µg/l,ng/ml,1,facteurs_conversion.csv
+D dimere,µg/ml,mg/l,1,facteurs_conversion.csv
+D dimere,mg/l,µg/ml,1,facteurs_conversion.csv
+Proteine c reactive,nmol/l,mg/l,"0,105",facteurs_conversion.csv
+Proteine c reactive,mg/l,nmol/l,"9,5238",facteurs_conversion.csv
+Proteine c reactive,nmol/l,mg/dl,"0,0105",facteurs_conversion.csv
+Proteine c reactive,mg/dl,nmol/l,"95,238",facteurs_conversion.csv
+Proteine c reactive,nmol/l,mg/100ml,"0,0105",facteurs_conversion.csv
+Proteine c reactive,mg/100ml,nmol/l,"95,238",facteurs_conversion.csv
+Proteine c reactive,nmol/l,µg/ml,"0,105",facteurs_conversion.csv
+Proteine c reactive,µg/ml,nmol/l,"9,5238",facteurs_conversion.csv
+Proteine c reactive,nmol/l,g/l,"0,0001",facteurs_conversion.csv
+Proteine c reactive,g/l,nmol/l,10000,facteurs_conversion.csv

@@ -1,0 +1,1200 @@
+ID;SEQ;Question;Title
+Q1;1;Entendez-vous des bruits en l'absence d'une source sonore ?;Perception de bruits
+Q2;2;Avez-vous du sang de couleur café dans le vomi ? ;Sang dans le vomi
+Q3;3;Avez-vous besoin d'uriner fréquemment ?;Envie fréquente d'uriner
+Q4;4;Avez-vous des bleus derrière l’oreille ou autour des yeux ?;Bleus sur le visage
+Q5;5;Avez-vous ces derniers temps une humeur changeante ou vous sentez-vous irritable, anxieux(se), coléreux(se) ?;Troubles émotionnelles
+Q6;6;Ressentez-vous de fortes douleurs d'un côté de la tête ou au-dessous de l'œil ?;Douleurs à la tête
+Q7;7;Votre mollet est-il chaud ?;Mollet chaud
+Q8;8;Avez-vous des problèmes au niveau de la compréhension et/ou de l'expression ?;Troubles d'élocution
+Q9;9;Avez-vous une intolérance à la lumière ou aux mouvements ?;Sensibilité à la lumière
+Q10;10;Avez-vous des pertes de sang, même peu importantes, en dehors des règles ?;Pertes vaginales inhabituelles
+Q11;11;Sentez-vous une légère paralysie sur une des parties du corps (par exemple : visage, langue, bras ...) ?;Légère paralysie
+Q12;12;Avez-vous une perte de vision temporaire d'un ou des deux yeux ?;Perte de vision temporaire
+Q13;13;Avez-vous constaté une réduction de votre taille de 4 cm ou plus ?;Réduction de la taille
+Q14;14;Constatez-vous des lésions sur les mains et les pieds, qui ressemblent à une réaction allergique ?;Lésions allergiques sur la peau
+Q15;15;Avez-vous un jugement amoindri dans la prise de décision, surtout en rapport avec l'argent ?;Jugement amoindri
+Q16;16;Avez-vous des difficultés à exécuter des tâches familières ? (conduire en restant sur la voie,  préparer un repas, faire le ménage, etc. );Tâches familières
+Q17;17;Êtes-vous confus ou vous sentez-vous angoissé(e), déprimé(e) ou anxieux(se) ?;Confusion et humeur changeante
+Q18;18;Rangez-vous des objets dans des endroits insolites et sans pouvoir les retrouver ?;Perte d'objets
+Q19;19;Avez-vous des difficultés à écrire, à boutonner votre veste et à effectuer des gestes quotidiens en général ?;Gestes quotidiens 
+Q20;20;Avez-vous des difficultés à lire, à évaluer les distances ou à déterminer les couleurs et les contrastes ?;Troubles de la perception
+Q21;21;Avez-vous des difficultés à vous exprimer à l'oral ou à l'écrit ? (difficulté à poursuivre une discussion, avoir du mal à trouver le mot juste ... );Troubles de communication
+Q22;22;Avez-vous des pertes de mémoire au quotidien ? (demander la même information plusieurs fois, oublier les noms des proches ...);Troubles de mémoire
+Q23;23;Evitez-vous tout contact social en raison de pertes de mémoire ?;Contact social
+Q24;24;Avez-vous constaté une confusion des dates ou de l'endroit où vous vous trouvez ?;Confusion du temps et du lieu
+Q25;25;Avez-vous des difficultés à reconnaître les objets et/ou vos proches ?;Reconnaître ses proches
+Q26;26;Avez-vous des difficultés à résoudre des problèmes avec des chiffres ? (assurer les factures mensuelles, payer au supermarché, etc.);Difficulté avec les chiffres
+Q27;27;Avez-vous une urine foncée (de la couleur du thé) ?;Urines colorées
+Q28;28;Avez-vous un ulcère à la partie interne de la cheville ou de la jambe en général ?;Ulcères des jambes
+Q29;29;Avez-vous perdu ou pris du poids significativement ?;Changement du poids
+Q30;30;Avez-vous perdu du poids significativement ?;Perte de poids
+Q31;31;Avez-vous de l'acné ces derniers temps ?;Poussé d'acné
+Q32;32;Êtes-vous constipé(e) ? ;Constipation
+Q33;33;Avez-vous la sensation de poids et/ou de serrement dans la poitrine ?;Oppression sur la poitrine
+Q34;34;Ressentez-vous de la fatigue ou de la somnolence ?;Fatigue et somnolence
+Q35;35;Avez-vous une fièvre importante (supérieure à 38 °C) ?;Fièvre élevée
+Q36;36;Avez-vous des glaires dans vos selles ?;Glaire dans les selles
+Q37;37;Avez-vous de petites vésicules sur la peau ? ;Vésicules sur la peau
+Q38;38;Avez-vous du retard dans vos règles ?;Retard des règles
+Q39;39;Avez-vous des abcès à l'anus ou une infection anale en général ?;Infection anale
+Q40;40;Avez-vous des gaz intestinaux ?;Ballonnements
+Q41;41;Avez-vous des difficultés à parler ou à tousser ?;Difficulté à parler
+Q42;42;Avez-vous des battements cardiaques rapides ou irréguliers ?;Rythme cardiaque
+Q43;43;Avez-vous des bouffées de chaleur ?;Bouffées de chaleur
+Q44;44;Avez-vous des boutons sur la peau ? ;Boutons sur la peau
+Q45;45;Avez-vous des boutons blancs sur la peau ? ;Boutons blancs sur la peau
+Q46;46;Avez-vous des brûlures d'estomac ?;Brûlures à l'estomac
+Q47;47;Avez-vous des brûlures sous la poitrine jusqu'au ventre ?;Brûlures à l'estomac
+Q48;48;Avez-vous des brûlures quand vous urinez, lorsque l'urine entre en contact avec l'herpès ?;Herpès et brûlures
+Q49;49;Avez-vous des bulles transparentes, remplies de liquide, qui forment un bouquet dans la région génitale ?;Poussé de boutons au pubis
+Q50;50;Avez-vous des contractions subites ou intenses des muscles ?;Contractions musculaires
+Q51;51;Avez-vous des courbatures ou des douleurs articulaires ? ;Sensibilité des articulations et des muscles
+Q52;52;Avez-vous une respiration sifflante ?;Respiration bruyante
+Q53;53;Avez-vous des crampes ou mal au ventre ?;Mal au ventre
+Q54;54;Avez-vous des craquements aux articulations ?;Craquement des articulations
+Q55;55;Avez-vous des déchirures anales ?;Lésions sur l'anus
+Q56;56;Avez-vous des fourmillements à l'anus ?;Fourmillements sur l'anus
+Q57;57;Avez-vous de la diarrhée ? ;Diarrhée
+Q58;58;Avez-vous des difficultés à articuler ou à déglutir ?;Troubles de la mâchoire
+Q59;59;Avez-vous des difficultés à initier des tâches quotidiennes (boutonner vos vêtements, attacher des lacets, etc. ) ?;Gestes quotidiens 
+Q60;60;Avez-vous des difficultés à raisonner, à vous concentrer ou à penser ?;Troubles de la concentration
+Q61;61;Avez-vous du mal à respirer ?;Difficulté à respirer
+Q62;62;Avez-vous des difficultés à rester debout?;Tenir debout
+Q63;63;Avez-vous des difficultés à uriner ?;Difficulté à uriner
+Q64;64;Avez-vous des difficultés d'audition ? ;Troubles d'audition
+Q65;65;Avez-vous des douleurs à l'anus ?;Douleurs à l'anus
+Q66;66;Avez-vous du mal à mastiquer ou à avaler ?;Douleurs à la déglutition
+Q67;67;Avez-vous des douleurs à la gorge, parfois violentes et répétées?;Mal de gorge
+Q68;68;Avez-vous des douleurs ou une sensation de brûlure quand vous urinez ? ;Douleurs en urinant
+Q69;69;Avez-vous des douleurs à la poitrine ?;Douleurs à la poitrine
+Q70;70;Avez-vous des douleurs abdominales intenses ?;Douleurs abdominales
+Q71;71;Avez-vous des douleurs aux articulations ?;Douleurs articulaires
+Q72;72;Avez-vous des douleurs au bas du dos (surtout la partie inférieure) ?;Douleurs au dos
+Q73;73;Avez-vous des douleurs en bas du ventre, sans rapport avec les règles ?;Mal aux ventre
+Q74;74;Avez-vous une sensation générale d’inconfort ou de malaise ?;Inconfort général
+Q75;75;Avez-vous des douleurs aux jambes ?;Douleurs aux jambes
+Q76;76;Avez-vous des douleurs brèves, des fourmillements ou des décharges électriques ?;Fourmillements
+Q77;77;Avez-vous des douleurs intenses tout au long du dos ?;Douleurs au dos
+Q78;78;Avez-vous des douleurs intenses en bas du dos ou sur une fesse ?;Douleurs au dos et aux fesses
+Q79;79;Avez-vous un peu de fièvre (inférieure à 38.5 °C) ?;Fièvre modérée
+Q80;80;Avez-vous des douleurs musculaires, surtout en bas du dos ?;Douleurs au dos
+Q81;81;Avez-vous des douleurs ou brûlures pendant vos rapports sexuels ?;Douleurs pendant les rapports
+Q82;82;Avez-vous des douleurs sous forme de décharges électriques ou bien légères mais constantes ?;Engourdissements
+Q83;83;Avez-vous des douleurs autour du bas du ventre et de la zone génitale ?;Douleurs pelviennes
+Q84;84;Avez-vous des émissions de liquides ou de pus depuis l'anus ?;Infection à l'anus
+Q85;85;Avez-vous eu une paralysie ou des affaiblissements sensitifs soudains ?;Paralysie soudaine
+Q86;86;Avez-vous des excroissances des os au niveau des articulations ?;Excroissances osseuses
+Q87;87;Avez-vous des douleurs lors de la défécation ?;Défécation douloureuse
+Q88;88;Avez-vous des fourmillements aux pieds ou aux jambes ?;Fourmillements aux pieds
+Q89;89;Ressentez-vous des démangeaisons au niveau de la région génitale ?;Démangeaisons à la région génitale
+Q90;90;Avez-vous des frissons ?;Frissons
+Q91;91;Constatez-vous une inflammation des ganglions ?;Inflammation des ganglions
+Q92;92;Avez-vous des gestes, un débit de parole ou certaines fonctions biologiques comme la digestion plus lentes que d'habitude ?;Ralentissement généralisé
+Q93;93;Avez-vous des gonflements aux chevilles, aux orteils ou aux mollets ?;Gonflement partiel des jambes
+Q94;94;Avez-vous des difficultés à bouger la tête à cause d'une raideur de la nuque ?;Difficulté à bouger la tête
+Q95;95;Avez-vous des gonflements du bas-ventre, des seins ou des jambes ?;Gonflements divers du corps
+Q96;96;Avez-vous des hallucinations auditives, de goût, d'odorat ou visuelles ?;Hallucinations variés
+Q97;97;Avez-vous des idées récurrentes de mort ou de suicide ?;Idées noirs
+Q98;98;Avez-vous des insomnies ?;Insomnies
+Q99;99;Avez-vous des grosseurs sur la peau ?;Kystes sur la peau
+Q100;100;Avez-vous des malaises abdominaux ou une sensation générale de plénitude ?;Malaises
+Q101;101;Avez-vous très faim ?;Faim exagérée
+Q102;102;Avez-vous des maux de tête ou avez-vous de la migraine ?;Maux de tête
+Q103;103;Avez-vous des maux de tête soudains et violents ?;Maux de tête violents
+Q104;104;Avez-vous des pertes inhabituelles ou malodorantes, depuis le vagin ou l'anus ?;Pertes vaginales ou anales
+Q105;105;Avez-vous des écoulements vaginaux anormaux, présents plus fréquemment le matin, qui sont ...;Écoulements vaginaux anormaux
+Q106;106;Avez-vous des mouches devant les yeux, une vision double ou une perte temporaire de la vue ?;Troubles de la vue
+Q107;107;Voyez-vous des mouches ou des corps flottants devant vos yeux ?;Mouches devant les yeux
+Q108;108;Avez-vous des nausées ?;Nausées
+Q109;109;Souffrez-vous d'apnées, de gênes respiratoires ou d'asphyxie ?;Difficultés respiratoires sévères
+Q110;110;Avez-vous des pertes de mémoire ?;Troubles de mémoire
+Q111;111;Souffrez-vous d'hypertension ?;Hypertension
+Q112;112;Avez-vous des picotements à la poitrine ?;Picotements à la poitrine
+Q113;113;Avez-vous des plaques rouges sur la peau ? ;Plaques rouges sur la peau
+Q114;114;Avez-vous des points noirs sur la peau ? ;Points noirs sur la peau
+Q115;115;Avez-vous des spasmes et contractures musculaires, souvent déclenchés par des bruits soudains,  au niveau ...;Contractions musculaires
+Q116;116;Avez-vous des spasmes musculaires souvent dans le dos, l'abdomen et les extrémités ?;Contractions musculaires
+Q117;117;Avez-vous des remontées acides ?;Brûlures à l'estomac
+Q118;118;Avez-vous des rots récurrents ?;Rots récurrents
+Q119;119;Avez-vous des rougeurs sur la peau ? ;Rougeurs sur la peau
+Q120;120;Avez-vous des rougeurs et des éruptions sur la peau ou les muqueuses comme les lèvres,  les fosses nasales, etc. ?;Rougeurs sur la peau
+Q121;121;Avez-vous des rougeurs sur le nez et les joues ?;Rougeurs sur le visage
+Q122;122;Ressentez-vous de la tristesse ou du vide quotidiennement ?;Sentiment permanent de tristesse
+Q123;123;Ressentez-vous de la colère, de la crainte ou de l'anxiété ?;Anxiété et humeur changeante
+Q124;124;Avez-vous un bouton rouge dans la région génitale, la région anale ou la gorge, qui disparaît en 1 ou 2 mois ?;Bouton rouge sur le corps
+Q125;125;Sentez-vous une décharge électrique dans l'extrémité des trois ou quatre premiers doigts de la main, ou parfois ascendante vers l'avant-bras ?;Fourmillements dans les extrémités
+Q126;126;Avez-vous des sueurs froides ou la peau moite ?;Sueurs froides
+Q127;127;Avez-vous de la fièvre, des maux de tête, de la fatigue ou des vomissements ... après un rapport sexuel sans préservatif ?;Symptômes grippaux après rapport sexuel
+Q128;128;Avez-vous des tremblements ou une difficulté à contrôler vos mouvements (surtout aux pieds et aux jambes) ? ;Tremblements involontaires
+Q129;129;Avez-vous des pertes de mémoire, des difficultés à vous concentrer ou à parler, des changements d'humeur ou des problèmes d'orientation dans l’espace et dans le temps ?;Troubles cognitifs
+Q130;130;Avez-vous un sommeil agité, limité ou bien exagéré ?;Troubles de sommeil
+Q131;131;Avez-vous des maux d'estomac, de la diarrhée, des nausées, des brûlures ou de la constipation ?;Troubles digestifs
+Q132;132;Avez-vous des difficultés à saisir les objets, même légers ?;Saisir les objets
+Q133;133;Avez-vous des trous de mémoire ou des pertes de connaissance ?;Troubles de mémoire
+Q134;134;Avez-vous des varices aux jambes ?;Varices aux jambes
+Q135;135;Avez-vous des vertiges ou la sensation de la tête qui tourne ?;Vertiges
+Q136;136;Avez-vous des vertiges avec une incapacité à marcher ?;Perte d'équilibre
+Q137;137;Avez-vous des vertiges en position debout ?;Rester debout
+Q138;138;Avez-vous des vésicules rouges sur la peau ? ;Vésicules sur la peau
+Q139;139;Avez-vous une douleur au poignet et à la paume, qui s'étend jusqu'aux doigts, l'avant-bras et parfois l’épaule ?;Douleur de la main jusqu'à l'épaule
+Q140;140;Avez-vous du sang noir dans les selles ?;Sang dans les selles
+Q141;141;Avez-vous du sang dans vos urines ?;Sang dans les urines
+Q142;142;Avez-vous envie plus que d'habitude d'aliments sucrés ou salés ?;Fringales alimentaires
+Q143;143;Avez-vous eu de la fièvre avant l'arrivée des autres symptômes ?;Fièvre avant les symptômes
+Q144;144;Avez-vous eu le sentiment de confusion des dates ou de l'endroit où vous vous trouvez ?;Confusion du temps ou du lieu
+Q145;145;Avez-vous fait une chute récemment ?;Chute récente
+Q146;146;Avez-vous eu une fracture de la base du crâne ?;Fracture au crâne
+Q147;147;Votre oreille coule-t-elle ?;Écoulement depuis l'oreille
+Q148;148;Constatez-vous un engourdissement progressif de la main ?;Engourdissement de la main
+Q149;149;Avez-vous une douleur dans le cou et la gorge, qui éventuellement s'étend jusqu'au bras ?;Douleur du cou jusqu'au bras
+Q150;150;Avez-vous une raideur ou un durcissement des muscles, surtout au niveau de la nuque ?;Raideurs musculaires
+Q151;151;Avez-vous la sensation d'avoir la tête lourde ? ;Tête lourde
+Q152;152;Avez-vous la sensation d'avoir toujours chaud ?;Sensation de chaleur
+Q153;153;Avez-vous le bas-ventre gonflé ?;Ventre gonflé
+Q154;154;Avez-vous le nez bouché ? ;Nez bouché
+Q155;155;Avez-vous le nez bouché ou le nez qui coule ? ;Congestion nasale
+Q156;156;Avez-vous le nez qui coule ?;Nez qui coule
+Q157;157;Avez-vous les jambes lourdes ?;Jambes lourdes
+Q158;158;Avez-vous mal à la tête ?;Mal à la tête
+Q159;159;Avez-vous mal au dos ?;Mal au dos
+Q160;160;Avez-vous mal au ventre ? ;Mal au ventre
+Q161;161;Avez-vous des douleurs ou du sang pendant vos évacuation de selles ?;Sang aux selles
+Q162;162;Avez-vous perdu du poids sans pour autant perdre l'appétit ? ;Perte de poids inexpliqué
+Q163;163;Avez-vous perdu l'appétit ou avez-vous moins d'appétit que d'habitude ? ;Perte d'appétit
+Q164;164;Avez-vous perdu l'odorat ou l'audition ?;Altération des sens
+Q165;165;Avez-vous pris du poids ? ;Prise de poids
+Q166;166;Avez-vous ressenti une légère démangeaison avant l'arrivée de petites vésicules ? ;Démangeaisons de la peau
+Q167;167;Avez-vous des difficultés à comprendre les informations verbales dans un lieu public, comme sur des haut-parleurs, dans les restaurants, les magasins ou au travail ?;Difficulté à l'audition
+Q168;168;Avez-vous soif en permanence ?;Soif permanente
+Q169;169;Constatez-vous un excès de salive sans manger au préalable ?;Hypersalivation
+Q170;170;Constatez-vous un goitre solide au niveau de la gorge (double menton) ?;Goitre
+Q171;171;Avez-vous une perte de vue d'un œil ou voyez-vous les choses en double ?;Troubles de la vue
+Q172;172;Avez-vous un voile noir devant les yeux ? ;Voile noir devant les yeux
+Q173;173;Avez-vous une activité intestinale bruyante ?;Gaz intestinaux
+Q174;174;Avez-vous une baisse du désir sexuel ?;Baisse de la libido
+Q175;175;Avez-vous des difficultés à coordonner vos mouvements ?;Coordination des mouvements
+Q176;176;Avez-vous des difficultés à parler ou à comprendre les autres ?;Troubles de la communication
+Q177;177;Avez-vous des difficultés pour tomber enceinte ou avez-vous eu des fausses couches à répétition ?;Difficulté à tomber enceinte
+Q178;178;Arrivez-vous à comprendre une personne qui vous parle dans un environnement bruyant (restaurant, bar ...) ?;Difficultés d'audition aux lieux bondés
+Q179;179;Avez-vous une douleur au bas du ventre qui se diffuse même au bas du dos ?;Douleurs à la ceinture abdominale
+Q180;180;Avez-vous une douleur étendue dans la partie gauche du corps (bras, main, cou jusqu'à la mâchoire et le dos) ?;Douleurs à la partie gauche du corps
+Q181;181;Avez-vous une douleur qui se propage dans la (ou les) jambe(s) ?;Irradiation des jambes
+Q182;182;Avez-vous une légère paralysie d'un membre de votre corps ?;Légère paralysie
+Q183;183;Avez-vous une perte d'équilibre ?;Perte d'équilibre
+Q184;184;Avez-vous des problèmes à identifier certains sons et/ou à écouter de la musique ?;Difficultés à l'audition de certains sons
+Q185;185;Vous arrive-t-il de ne pas entendre la sonnerie du téléphone ou de la porte ?;Difficultés à l'audition de certains sons
+Q186;186;Avez-vous une sensation de chaleur ou avez-vous de la fièvre ?;Sensation de chaleur
+Q187;187;;Difficultés à l'audition
+Q188;188;Ressentez-vous une pression au niveau des yeux ?;Pesanteurs sous les orbites
+Q189;189;Eprouvez-vous une difficulté à comprendre vos interlocuteurs lorsqu'ils sont éloignés ou au téléphone ?;Difficultés à l'audition
+Q190;190;Transpirez-vous excessivement ?;Sueurs froides
+Q191;191;Etes-vous désintéressé(e) par les activités qui vous procuraient du plaisir auparavant ?;Manque de motivation
+Q192;192;Les douleurs se manifestent-elles surtout sur un côté de l'abdomen ?;Douleurs à une partie de l'abdomen
+Q193;193;Constatez-vous des gonflements ou des rougeurs au niveau de vos articulations ?;Inflammation des articulations
+Q194;194;Avez-vous des infections fréquentes aux  ...;Infections récurrentes
+Q195;195;Avez-vous des petites tâches rougeâtres et plates sur la peau, qui ne blanchissent pas sous la pression du doigt ?;Pétéchies sur la peau
+Q196;196;Avez-vous l'impression que les gens n'articulent pas bien, qu'ils ne sont pas précis ou qu'ils chuchotent ?;Difficultés à l'audition
+Q197;197;Avez-vous des bleus autour les yeux ?;Bleus autour des yeux
+Q198;198;Constatez-vous des traces noires sur l’œil ?;Traces noirs à la vision
+Q199;199;Avez-vous des échauffements, gonflements ou rougeurs dans la région génitale ?;Inflammation de la région génitale
+Q200;200;Constatez-vous une limitation dans vos mouvements au quotidien ?;Limitation des mouvements
+Q201;201;Eprouvez-vous une difficulté à voir des objets, lorsque l'éclairage est faible ?;Troubles de vue
+Q202;202;Constatez-vous une sensibilité au niveau des articulations ?;Sensibilité des articulations
+Q203;203;Constatez-vous une sécheresse de vos yeux ?;Sécheresse des yeux
+Q204;204;Dormez-vous trop ou pas assez ?;Troubles de sommeil
+Q205;205;Effectuez-vous des petits pas en traînant les pieds,  le dos voûté, avec peu ou pas de balancement des bras ?;Tremblements au mouvement
+Q206;206;Avez-vous une vision double, qui est apparue subitement ?;Vision double
+Q207;207;Avez-vous l'impression d'avoir un corps étranger dans l'anus ?;Inconfort à l'anus
+Q208;208;Avez-vous des douleurs aux organes génitaux, à l'aine, au bas de l'abdomen ou au bas du dos ?;Douleurs à la partie inférieure du corps
+Q209;209;Avez-vous une éjaculation difficile et/ou douloureuse ?;Troubles d'éjaculation
+Q210;210;Vos urines, sont-elles purulentes et/ou malodorantes ?;Urines purulentes
+Q211;211;Avez-vous constaté la présence de sang dans l'urine ou dans le sperme ?;Sang dans les urines ou le sperme
+Q212;212;Différents membres sont-ils touchés en même temps (poignets, doigts, chevilles ou pieds) ?;Atteinte symétrique des articulations
+Q213;213;Etes-vous résistant à l'insuline (taux élevé de sucre dans le sang) ?;Résistance à l'insuline 
+Q214;214;Avez-vous un taux élevé de triglycérides (gras) dans le sang ?;Triglycérides élevées 
+Q215;215;Avez-vous un faible taux de HDL (bon cholestérol) dans le sang ?;Bon cholestérol
+Q216;216;Souffrez-vous d'une pression artérielle élevée ?;Pression artérielle
+Q217;217;Souffrez-vous de douleurs musculaires ? ;Douleurs musculaires
+Q218;218;Constatez-vous une dégradation de votre état physique en général (fatigue, perte d’appétit, etc. ) ?;Dégradation de l'état général
+Q219;219;Avez-vous une douleur thoracique qui s’intensifie durant la toux et les inspirations profondes ?;Douleur au thorax
+Q220;220;Après quelques jours, votre toux devient-elle grasse avec des sécrétions jaunâtres, verdâtres ou parfois striées de sang ?;Toux grasse progressive
+Q221;221;Vos doigts, mains ou vos pieds se déforment-ils au niveau des articulations ?;Déformations des articulations
+Q222;222;Vos doigts, mains ou vos pieds sont-ils moins flexibles que d'habitude ?;Articulations raides
+Q223;223;Avez-vous une montée de fièvre soudaine pouvant atteindre 41 ºC ainsi que des frissons importants ?;Montée de fièvre
+Q224;224;Votre enfant a-t-il des démangeaisons ?;Démangeaisons
+Q225;225;Vos douleurs s'accentuent-elles lors des règles ?;Douleurs menstruelles
+Q226;226;Votre enfant a-t-il des maux de tête, une congestion nasale ou des douleurs musculaires ?;Dégradation de l'état général
+Q227;227;Votre enfant a-t-il eu un peu mal pendant la ou les 2 semaines avant l’éruption de la plaque annonciatrice ?;Éruptions douloureuses
+Q228;228;Votre enfant a-t-il des plaques sur le visage, les poignets et les jambes ?;Plaques rouges sur le corps
+Q229;229;Vos douleurs se manifestent-elles au long de la colonne vertébrale jusqu'au fessier ?;Douleurs tout au long du dos
+Q230;230;Est-ce que de nouvelles plaques apparaissent, par vagues, pendant 1 à 2 semaines ?;Nouvelles plaques rouges sur le corps
+Q231;231;Avez-vous constaté, une à trois semaines après la première éruption, de petites plaques rouges qui ressemblent à un arbre de Noël dans le dos ?;Rougeurs sur la peau
+Q232;232;Se coucher soulage-t-il la douleur ?;Soulagement de la douleur
+Q233;233;Avez-vous ressenti une fatigue ou des maux de tête avant la première éruption ?;Douleurs prédécesseurs
+Q234;234;Cette plaque est-elle foncée et plus pâle au centre?;Plaques rouges sur la peau
+Q235;235;Avez-vous des lésions qui siègent surtout au tronc (le dos, thorax, de l’abdomen) ou éventuellement aux cuisses, aux bras et au pubis ?;Lésions saignantes
+Q236;236;Votre enfant a-t-il des démangeaisons à l'anus, surtout la nuit ?;Démangeaisons à l'anus
+Q237;237;Votre enfant a-t-il des diarrhées fréquentes ?;Diarrhées fréquentes
+Q238;238;Votre enfant a-t-il des difficultés à communiquer et à se sociabiliser avec d'autres enfants, en raison de ses changements d'humeur ?;Difficulté de socialisation
+Q239;239;Votre enfant a-t-il des difficultés à comprendre si quelqu'un est triste ou à exprimer ses émotions ?;Troubles émotionnelles
+Q240;240;Avez-vous une grande plaque rouge et écailleuse de forme ronde ovale, de 2 à 5 cm de diamètre et clairement délimitée par une bordure rose ?;Médaillons rouges sur la peau
+Q241;241;Votre enfant a-t-il mal au ventre ?;Mal au ventre
+Q242;242;Votre enfant a-t-il mal au ventre ?;Nausées
+Q243;243;Votre enfant a-t-il perdu son appétit ou moins d'appétit que d'habitude ? ;Perte d'appétit
+Q244;244;Votre enfant a-t-il très faim ?;Faim exagérée
+Q245;245;Remarquez-vous que la peau thoracique est anormalement attirée vers l'intérieur au cours d'une inspiration difficile ? ;Tirage respiratoire
+Q246;246;Votre enfant commence-t-il à parler plus tard que 2 ans et perd des mots ou des phrases déjà acquis ?;Troubles du langage
+Q247;247;Votre enfant effectue-t-il des mouvements répétitifs ou des routines particulières (taper les mains, tourner sur lui-même, etc.) ?  ;Stéréotypies de l'enfant
+Q248;248;Votre enfant est-il nerveux, agité ou irritable la journée ?;Agitation générale
+Q249;249;Boitez-vous au niveau de la hanche ou du genou ?;Boitement
+Q250;250;Votre enfant se plaint-t-il de cauchemars fréquents ?;Cauchemars 
+Q251;251;Votre enfant se ronge-t-il les ongles ?;Onychophagie
+Q252;252;Constatez-vous une diminution de la mobilité de vos articulations ou même un blocage articulaire ? (difficultés à marcher ou à bouger les bras, du mal à fléchir le genou ou le coude, etc.);Blocage des articulations
+Q253;253;Votre enfant vomit-il ?;Vomissements
+Q254;254;La zone affectée est-elle sensible au toucher ?;Sensibilité au toucher
+Q255;255;Souffrez-vous d'un ralentissement respiratoire ou d'une difficulté à inspirer ?;Troubles de respiration
+Q256;256;Avez-vous des douleurs aux articulations qui s’accentuent lors de l’effort et s’atténuent, voire disparaissent, au repos ?;Douleurs articulaires
+Q257;257;Constatez-vous un gonflement ou une sensibilité de l’un ou des deux testicules ?;Inflammation des testicules
+Q258;258;Avez-vous la peau rouge, chaude, sèche ou tendue ?;Inflammation de la peau
+Q259;259;Éternuez-vous plusieurs fois à la suite ?;Éternuements
+Q260;260;Êtes-vous sujet à des sautes d'humeur ? ;Humeur changeante
+Q261;261;Êtes-vous plus frileux que d'habitude ?;Frilosité
+Q262;262;Avez-vous mal à la mâchoire, et surtout à l'avant des oreilles, provoquant éventuellement un gonflement des joues ?;Troubles de la mâchoire
+Q263;263;Avez-vous des difficultés à articuler ou à ouvrir la bouche provoquées par des douleurs à la mâchoire ?;Douleurs à la mâchoire
+Q264;264;Êtes-vous amaigri ? ;Perte de poids
+Q265;265;Perdez-vous les cheveux ?;Perte de cheveux
+Q266;266;Cochez les points qui sont vrais ...;Divers
+Q267;267;Avez-vous des douleurs à l'endroit où vous avez des vésicules ? ;Vésicules douloureuses
+Q268;268;Vous êtes-vous évanouis récemment ?;Perte de connaissance
+Q269;269;Êtes-vous gêné(e) par la lumière ?;Sensibilité à la lumière
+Q270;270;Êtes-vous inexplicablement angoissé(e) ou anxieux(se) ?;Angoisse persistante
+Q271;271;Êtes-vous plus pâle que d'habitude ? ;Pâleur de la peau
+Q272;272;Êtes-vous sujet à des maux de tête intenses ? ;Maux de tête
+Q273;273;Avez-vous fréquemment des aphtes ?;Ulcères dans la bouche
+Q274;274;Avez-vous des spasmes au niveau des bras et des jambes ?;Mouvements involontaires
+Q275;275;Avez-vous un panaris (abcès) sur l'ongle, qui provoque une douleur, du pus ou saigne au moindre contact ? ;Bourrelet sur l'ongle
+Q276;276;Votre peau s'est-elle coupée sur la zone de l'ongle concerné ?;Lésion sur l'ongle
+Q277;277;Votre ongle est-il gonflé ou rouge ?;Inflammation sur l'ongle
+Q278;278;Avez-vous un surplus de graisse réparti dans tout le corps (ventre, fesses, tronc, cou ...) ?;Graisse réparties
+Q279;279;Avez-vous un poids élevé ?;Poids élevée
+Q280;280;Si accouchement récent, avez-vous une douleur dans un sein pendant l'allaitement ?;Allaitement douloureux
+Q281;281;Avez-vous des rougeurs sur le sein, souvent sur les extrémités ?;Rougeur des mamelons
+Q282;282;Avez-vous une sensation de chaleur dans le sein ?;Chaleur aux seins
+Q283;283;Ressentez-vous des démangeaisons ou des picotements sur la peau ? ;Démangeaisons de la peau
+Q284;284;Ressentez-vous un changement dans la vascularisation (flux sanguin) de vos mains ou pieds ?;Vascularisation des extrémités
+Q285;285;Ressentez-vous une faiblesse musculaire ? ;Faiblesse musculaire
+Q286;286;Constatez-vous un gonflement inhabituel de la poitrine ?;Gonflement de la poitrine
+Q287;287;Avez-vous des douleurs au niveau de l'abdomen ou une sensation de brûlure ?;Douleurs à l'abdomen
+Q288;288;Constatez-vous une modification de la couleur de votre peau, suivie éventuellement par des ulcères ?;Couleur de la peau
+Q289;289;Ressentez-vous une sensation de brûlure sur la peau ?;Brûlure sur la peau
+Q290;290;Saignez-vous de l'anus ?;Sang depuis l'anus
+Q291;291;Saignez-vous du nez ?;Saignement du nez
+Q292;292;Saignez-vous énormément pendant vos règles ?;Saignements menstruelles
+Q293;293;Constatez-vous une dilatation des petits vaisseaux sanguins situés à vos jambes ?;Dilatation des veines
+Q294;294;Sentez-vous une urgence quand vous allez à la selle ?;Urgence à la selle
+Q295;295;Avez-vous des œdèmes aux mollets, aux chevilles ou aux pieds ?;Œdèmes aux jambes
+Q296;296;Avez-vous des remords par rapport à vos décisions et vos actes? ;Sentiment de culpabilité
+Q297;297;Vous sentez-vous essoufflé(e) ou avez-vous besoin de tousser pendant l'effort ?;Essoufflement
+Q298;298;Vous sentez-vous irritable ?;Irritabilité
+Q299;299;Avez-vous des crampes musculaires nocturnes ?;Crampes nocturnes
+Q300;300;Sentez-vous nerveux(euse), agité(e) ou irritable ?;Agitation
+Q301;301;Ressentez-vous que vos évacuations sont incomplètes pendant vos selles ?;Défécation incomplète
+Q302;302;Avez-vous des fourmillements ou un besoin irrépressible de bouger les jambes ?;Fourmillements aux jambes
+Q303;303;Sentez-vous une légère paralysie aux pieds ou aux jambes ?;Légère paralysie aux jambes
+Q304;304;Sentez-vous vos jambes lourdes, en particulier en fin de journée ?;Jambes lourdes
+Q305;305;Avez-vous des infections récurrentes (rhume, grippe, pneumonie ...) avec un long rétablissement et calmées par la marche ou une surélévation ?;Infections récurrentes
+Q306;306;Crachez-vous du mucus ?;Toux grasse
+Q307;307;Souffrez-vous de douleurs musculaires ? ;Douleurs musculaires
+Q308;308;Avez-vous une toux persistante qui dure plus de 3 mois ?;Toux persistante
+Q309;309;Toussez-vous pendant la nuit ?;Toux nocturnes
+Q310;310;Toussez-vous ? ;Toux
+Q311;311;Transpirez-vous excessivement ?;Transpiration excessive
+Q312;312;Tremblez-vous au repos ?;Tremblement
+Q313;313;Vomissez-vous ?;Vomissements
+Q314;314;Avez-vous des difficultés à avaler ou à mastiquer des aliments ?;Alimentation douloureuse
+Q315;315;Avez-vous un goût désagréable, métallique ou acide dans la bouche ?;Goût métallique
+Q316;316;Vos cycles menstruels sont-ils perturbés ? (absence de règles par exemple);Menstruations irrégulières
+Q317;317;Votre gorge vous démange-t-elle ? ;Démangeaisons de la gorge
+Q318;318;Avez-vous des douleurs lors de l'ingestion et de la déglutition, surtout quand vous mangez des aliments chauds ?;Alimentation douloureuse
+Q319;319;Vos ongles et vos cheveux sont-ils fragiles ou cassants ?;Cheveux fragiles
+Q320;320;Vos veines sont-elles dilatées ? ;Veines dilatées
+Q321;321;Avez-vous de la fièvre en alternance avec une température normale ?;Température alternée
+Q322;322;Vos yeux sont-ils humides ou pleurent-ils ?;Yeux humides
+Q323;323;Votre cœur bat-t-il plus rapidement que d'habitude ?;Rythme cardiaque irrégulier
+Q324;324;Votre mollet est-il anormalement gonflé ? ;Mollet gonflé
+Q325;325;Votre mollet est-il douloureux ? ;Mollet douloureux
+Q326;326;Votre mollet est-il marbré ? ;Mollet marbré
+Q327;327;Votre mollet est-il rouge ? ;Mollet rouge
+Q328;328;Votre peau est-elle asséchée ? ;Peau asséchée
+Q329;329;Votre peau est-elle plus pâle ou plus sèche que d'habitude ? ;Peau fragile
+Q330;330;Votre teint est-il gris ? ;Teint gris
+Q331;331;Transpirez-vous excessivement, surtout la nuit ?;Transpiration nocturne
+Q332;332;Votre visage est-il bouffi ? ;Visage bouffi
+Q333;333;Votre voix est-elle enrouée ou éteinte ?;Altération de la voix 
+Q334;334;Vous sentez-vous confus ? ;Confusion mentale
+Q335;335;Cochez les points qui sont vrais ...;Divers
+Q336;336;Vous sentez-vous nerveux ? ;Nervosité
+Q337;337;Avez-vous une varice rouge sur le mollet douloureux ? ;Varices douloureuses
+Q338;338;Y a t-il eu un événement déclencheur (choc émotionnel, épisode infectieux, vaccin…) ?;Événements déclenchant
+Q339;339;Avez-vous mal à l'oreille ?;Douleur à l oreille
+Q340;340;Avez-vous des sueurs nocturnes ?;Transpiration nocturne
+Q341;341;Vous sentez-vous essoufflé(e) ou avez-vous une gêne respiratoire ?;Respiration difficile
+Q342;342;Etes-vous essoufflé(e) à l'effort ?;Essoufflement à l'effort
+Q343;343;Souffrez-vous d'anémie ?;Anémie
+Q344;344;Ressentez-vous une fatigue intense ou un manque d'énergie en général ?;Affaiblissement physique
+Q345;345;;
+Q346;346;Avez-vous une toux sèche persistante ?;Toux sèche
+Q347;347;Sentez-vous le besoin de parler très fort ?;Troubles d'audition
+Q348;348;Avez-vous des difficultés à entendre les sons aigus ?;Sons aigus
+Q349;349;Avez-vous des difficultés à percevoir les couleurs ?;Perception des couleurs
+Q350;350;Avez-vous des douleurs ou des ballonnements au bas ventre, le plus souvent du côté droit ?;Douleurs et ballonnements
+Q351;351;Vous sentez-vous gonflé(e) au bas ventre ?;Ventre gonflé
+Q352;352;Avez-vous une infection des voies respiratoires ?;Infections respiratoires
+Q353;353;Souffrez-vous de lésions douloureuses sur n'importe quelle partie du corps ?;Fièvre et lésions douloureuses
+Q354;354;Constatez-vous un gonflement,  non-douloureux,  des ganglions,  des aisselles ou de l’aine ?;Gonflements non-douloureux
+Q355;355;Avez-vous une douleur dans le bras et/ou la jambe ?;Douleurs aux bras et aux jambes
+Q356;356;Sentez-vous des fourmillements dans les mains et/ou les doigts ?;Fourmillements aux extrémités
+Q357;357;Constatez-vous des rougeurs de la vulve sous forme de grandes lèvres gonflées douloureuses pouvant être accompagnées de vésicules ? ;Inflammation de la vulve
+Q358;358;Provoquez-vous des vomissements après avoir mangé, destinés à éviter la prise de poids ?;Troubles alimentaires
+Q359;359;Prenez-vous des diurétiques, des laxatifs ou des lavements, afin d'éviter la prise de poids ?;Produits d'amaigrissements
+Q360;360;Crachez-vous du mucus de couleur ... ?;Crachats colorés
+Q361;361;Constatez-vous des petits points rouges sur votre peau ? ;Blastes sur la peau ou pétéchies ???
+Q362;362;Avez-vous une traînée rouge, douloureuse et chaude au niveau des ganglions ou à la gorge ?;Lésions au niveau de la gorge
+Q363;363;Cette infection est-elle ramollie, fistulisée ou collectée en abcès sur la peau ?;Infection sur la peau
+Q364;364;Êtes-vous pâle à l’intérieur des paupières, au niveau des ongles ou des lèvres ?;Pâleur générale
+Q365;365;Avez-vous une alimentation riche en fer ? (foie d’agneau, viande de cheval, moules, germe de blé, haricot blanc sec, pistâche rôtie, amande etc.);Alimentation riche au fer
+Q366;366;Avez-vous des difficultés à vous concentrer, à vous souvenir ou à lire ?;Troubles cognitifs
+Q367;367;Êtes-vous végétarien(ne), végétalien(ne) ou végan  ?;Alimentation sans viande
+Q368;368;Suivez-vous un traitement à base d’aspirine ou d'anti-inflammatoires non-stéroïdiens (AINS) ?;Traitements médicamenteux
+Q369;369;Sentez-vous un épuisement physique, émotionnel ou psychologique ?;Épuisement général
+Q370;370;Suivez-vous une alimentation stricte (voire refus de s’alimenter), entraînant une perte de poids significative ?  ;Troubles d'alimentation
+Q371;371;Avez-vous une peur intense de prendre du poids ou de devenir obèse ?;Peur de prendre du poids
+Q372;372;Avez-vous une image négative de vous-même en vous regardant dans le miroir ?;Estime de soi
+Q373;373;Est-ce que vous avez tendance à vous isoler de vos proches récemment ?;Isolement social
+Q374;374;Avez-vous une absence de règles ?;Absence de règles
+Q375;375;Pratiquez-vous une activité sportive intense ?;Activité physique intense
+Q376;376;Êtes-vous conscient(e) des conséquences médicales liées à la perte de poids ?;Sensibilisation sur la perte de poids
+Q377;377;Vous pesez-vous tous les jours, voire plusieurs fois par jour ?;Sensibilité au poids
+Q378;378;Mangez-vous d'importantes quantités de nourriture en un temps limité ?;Alimentation excessive
+Q379;379;Mangez-vous de grandes quantités de nourriture même si vous n'avez pas nécessairement faim ?  ;Alimentation excessive
+Q380;380;Ces épisodes surviennent-ils au moins une fois par semaine, depuis plus de 3 mois ?;Épisodes récurrents
+Q381;381;Mangez-vous d'importantes quantités pouvant aller jusqu'à causer des douleurs ou de l'inconfort ?;Alimentation excessive
+Q382;382;Mangez-vous seul(e) en raison d’un sentiment de honte, de dégoût ou de culpabilité lié à la quantité de nourriture ingurgitée ?;Isolement pendant l'alimentation
+Q383;383;Passez-vous par des phases de jeûne, pensant qu'elles pourront rétablir la prise de poids ?;Efforts pour maigrir
+Q384;384;Avez-vous constaté une coloration bleutée de vos doigts et/ou de vos lèvres ?;Coloration bleutée des extrémités
+Q385;385;Avez-vous des courbatures musculaires ? ;Courbatures
+Q386;386;Avez-vous une toux  ... ?;Toux divers
+Q387;387;Crachez-vous plus fréquemment en hiver qu'en été ?;Crachats l'hiver
+Q388;388;Avez-vous des infections respiratoires fréquentes ?;Infections respiratoires
+Q389;389;Avez-vous les jambes gonflées ?;Jambes gonflées
+Q390;390;Avez-vous constaté une coloration de vos muqueuses utérines, nasales et/ou intestinales ?;Colorations des muqueuses
+Q391;391;Avez-vous les signes suivants :;Signes divers
+Q392;392;Est-ce que votre vue a baissé ?;Baisse de vue
+Q393;393;Avez-vous constaté un rétrécissement de votre champ visuel ?;Rétrécissement du champs visuel
+Q394;394;Des tâches sombres obstruent-elles votre vision ?;Taches visuelles
+Q395;395;Avez-vous complètement perdu votre vue ?;Cécité complète
+Q396;396;Avez-vous la peau qui pèle ?;Desquamation de la peau
+Q397;397;Avez-vous des croûtes sur les joues, le cuir chevelu, le front, les bras ou les jambes ?;Croûtes sur le corps
+Q398;398;Avez-vous des plaques rouges et sèches sur la peau qui vous démangent ?;Plaques rouges sur la peau
+Q399;399;Votre peau est-elle anormalement gonflée ? ;Peau gonflée
+Q400;400;Votre peau vous fait-elle souffrir ?;Peau douloureuse
+Q401;401;Constatez-vous une formation de pus sur votre peau ?;Pustules sur la peau
+Q402;402;Avez-vous des lésions ou plaques rougeâtres la plupart du temps, sur la peau ?;Lésions colorées sur la peau
+Q403;403;Avez-vous des cloques sur la peau ?;Cloques sur la peau
+Q404;404;Votre douleur à la partie atteinte est-elle ... ;Niveau de douleur
+Q405;405;Avez-vous un gonflement sur la partie atteinte qui est ... ;Evolution du gonflement
+Q406;406;Avez-vous un bleu sur la partie atteinte qui est ...;Evolution de l'ecchymose
+Q407;407;La peau autour des yeux devient-elle plus sombre ?;Peu sombre autour des yeux
+Q408;408;Avez-vous une bosse dure sous la peau qui ressort rouge et chaude ?;Bosse sur la peau
+Q409;409;Cette bosse s'est-elle ramollie, au fur et à mesure que le pus se forme ?;Evolution de la bosse sur la peau
+Q410;410;Avez-vous des douleurs ou des rougeurs au niveau de la bosse ?;Bosse douloureuse sur la peau
+Q411;411;Cette bosse a-t-elle éclaté au bout de quelques jours ?;Evolution de la bosse sur la peau
+Q412;412;Une fois que la pustule éclate ou ramollit, reste-t-il un petit cratère rouge ?;Croûte rouge sur la pustule
+Q413;413;Vos seins sont-ils douloureux ?;Seins douloureux
+Q414;414;Avez-vous des saignements vaginaux brunâtres ?;Saignements vaginaux colorées
+Q415;415;Vos testicules sont-ils gonflés ?;Gonflement des testicules
+Q416;416;Avez-vous des hémorroïdes ?;Hémorroïdes
+Q417;417;Avez-vous une sensibilité aux gencives ?;Sensibilité des gencives
+Q418;418;Êtes-vous sensible à certaines odeurs ?;Sensibilité aux odeurs
+Q419;419;Etes-vous sujet à des fringales ou à une aversion pour certains aliments ?;Fringales et aversions alimentaires
+Q420;420;Avez-vous des champignons, des gonflements ou des rougeurs dans la région génitale ?  ;Infection vaginale
+Q421;421;Avez-vous des douleurs en bas du ventre qui ressemblent aux douleurs des règles ?;Douleur au ventre
+Q422;422;Sentez-vous un engourdissement ou une douleur aux mains ?;Sensibilité des mains
+Q423;423;Avez-vous des gonflements aux chevilles, aux jambes ou au visage ?;Gonflements sur le corps
+Q424;424;Avez-vous des pertes vaginales, blanches, indolores ou inodores ?;Pertes vaginales
+Q425;425;Avez-vous des nausées, des vomissements, des brûlures, des ballonnements, des maux de l'estomac etc. ?;Troubles digestifs
+Q426;426;Avez-vous des tâches foncées sur le visage suite à une exposition au soleil ?;Taches foncées au visage
+Q427;427;Avez-vous constaté l’apparition d’une ligne brune du nombril jusqu’au pubis ?;Ligne brune au ventre
+Q428;428;Sentez-vous une brûlure, de la démangeaison ou un inconfort dans la région anale ?;Infection anale
+Q429;429;Sentez-vous que l'intérieur du rectum est enflé ?;Rectum enflé
+Q430;430;Avez-vous du sang pendant ou après vos évacuations de selles ?;Sang dans les selles
+Q431;431;Avez-vous de la fièvre ou des sueurs froides en fin de journée ?;Fièvre et sueurs froides
+Q432;432;Constatez-vous une jaunisse de la peau et/ou des yeux ?;Jeunisme de la peau
+Q433;433;Avez-vous des lésions dans les yeux ?;Lésions des yeux
+Q434;434;Avez-vous des tâches rouges sur la peau, des signes d’hémorragies ou des saignements du nez ?;Saignements généralisées
+Q435;435;Avez-vous une diarrhée chronique ou des diarrhées persistantes qui durent plus de 2-3 semaines ?;Diarrhées persistantes
+Q436;436;Avez-vous des plaques rouges sur le corps et le visage ?;Plages rouges sur la peau
+Q437;437;Avez-vous mal à la gorge lorsque vous avalez votre salive ?;Pharyngite
+Q438;438;Avez-vous des ulcérations de la bouche ou sur la partie génitale ?;Ulcérations généralisées
+Q439;439;Avez-vous des troubles d'élocution (blocage en parlant, difficulté à trouver ses mots ...) ?;Troubles d'élocution
+Q440;440;;
+Q441;441;Votre visage est-il pâle ?;Pâleur du visage
+Q442;442;Souffrez-vous d'otites ou de sinusites ?;Inflammations du nez et de l'oreil
+Q443;443;Souffrez-vous de gènes respiratoires pendant le sommeil ?;Apnées du sommeil
+Q444;444;Avez-vous des symptômes comme la fièvre, les maux de tête, la fatigue, les vomissements, etc. ?;Symptômes grippaux
+Q445;445;Avez-vous des vésicules rouges, sensibles, parfois gonflées et accompagnées d'un liquide ?;Forme des vésicules
+Q446;446;Ces vésicules ont-elles tendance à se creuser et s'étendre sur les côtés ?;Forme des vésicules
+Q447;447;Ces vésicules persistent-elles pendant 2 à 3 jours, puis se rompent et leur suintement provoque l'apparition de croûtes jaunes comme du miel ?;Evolution des vésicules
+Q448;448;Ces vésicules apparaissent-elles d'abord autour des orifices (narines, bouche, anus) et éventuellement au cuir chevelu et au reste du corps ?;Localisation des vésicules
+Q449;449;Ces vésicules se propagent-elles par auto contamination après les avoir grattées ?;Propagation des vésicules
+Q450;450;Votre enfant bouge-t-il continuellement, ne tient pas en place, se lance dans des activités physiques dangereuses ou à des gestes maladroits ?;Hyperkinésie de l"enfant
+Q451;451;Votre enfant a-t-il tendance à être impulsif et indiscipliné, à la maison comme à l'école ?;Comportement impulsif de l'enfant
+Q452;452;Votre enfant a-t-il des difficultés à focaliser longtemps son attention ?;Concentration de l'enfant
+Q453;453;Voyez-vous des éclairs lumineux, des lignes de couleurs vives, des choses en double ... ?;Troubles de vue
+Q454;454;Votre enfant a-t-il des troubles durables du langage écrit affectant la lecture, l'orthographe et l'écriture ?;Troubles du langage
+Q455;455;Avez-vous souvent des bleus sur tout le corps ?  ;Ecchymoses généralisés
+Q456;456;Saignez-vous du nez fréquemment et abondamment ?;Saignement du nez
+Q457;457;Avez-vous des gencives qui saignent ?;Saignement des gencives
+Q458;458;Avez-vous des douleurs osseuses ou articulaires ?;Douleurs osseuses et articulaires
+Q459;459;Avez-vous des pertes vaginales qui sont ... ;Pertes vaginales
+Q460;460;Avez-vous besoin d'uriner fréquemment, même pendant la nuit ?;Uriner fréquemment
+Q461;461;Avez-vous des urines malodorantes ?;Urines malodorantes
+Q462;462;Sentez-vous un poids dans le bas du ventre ?;Sensation de pesanteur au ventre
+Q463;463;Avez-vous besoin d'uriner fréquemment, sans nécessairement évacuer beaucoup d'urines ?;Uriner fréquemment
+Q464;464;Avez-vous une mauvaise perception des contrastes ?;Perception des contrastes
+Q465;465;Avez-vous des difficultés à distinguer les reliefs ?;Perception les reliefs
+Q466;466;Avez-vous des difficultés à différencier certaines couleurs comme le noir, le bleu marine ou le violet ?;Perception des couleurs vives
+Q467;467;Avez-vous constaté un jaunissement des couleurs en général ?;Jaunissement des couleurs
+Q468;468;Êtes-vous gêné(e) par la lumière, surtout les couleurs vives et les phénomènes éblouissants (éclaire, tonnerre , etc.)?;Sensibilité à la lumière
+Q469;469;Avez-vous un voile blanc devant les yeux ? ;Voile blanc devant les yeux
+Q470;470;Sentez-vous le besoin de changer vos lunettes ?;Correction visuelle
+Q471;471;Si vous êtes hypermétrope, avez-vous l'impression que votre vision s’améliore ?;Amélioration de la vue
+Q472;472;Sentez-vous une gène au niveau des yeux (ou l'un des deux), comme l'impression d'un grain de sable dans l'œil ?  ;Sable dans les yeux
+Q473;473;Sentez-vous des picotements dans un œil (ou les deux) ?;Picotements dans les yeux
+Q474;474;Avez-vous une sensation de brûlure, d'égratignure ou d'irritation en général dans un œil (ou les deux) ?;Inconfort oculaire
+Q475;475;Constatez-vous du mucus fin et aqueux autour des yeux ?;Sécrétion oculaire
+Q476;476;Avez-vous l’œil ou les deux yeux rouges ?;Rougeur des yeux
+Q477;477;Vos yeux sont-ils humides ou pleurent-ils par réflexe ?;Yeux humides
+Q478;478;Avez-vous les paupières collées au réveil ?;Paupières collées le matin
+Q479;479;Avez-vous un petit bouton rouge sur la bordure de la paupière ?;Orgelet aux paupières
+Q480;480;Avez-vous ressenti une douleur 24 à 48 h après ce petit bouton rouge, près de la racine des cils ?;Paupières douloureuses
+Q481;481;Vos paupières sont-elles gonflées à l’endroit de l’orgelet ?;Paupières gonflées
+Q482;482;Sentez-vous un corps étranger dans l'œil ?;Objet etrangé dans les yeux
+Q483;483;Avez-vous eu du pus dans l’œil lorsque l'orgelet s'est percé ?;Pus dans l'œil
+Q484;484;Sentez-vous des douleurs dans un ou les deux yeux ?;Douleur aux yeux
+Q485;485;Constatez-vous une sécheresse vaginale ?;Sécheresse vaginale
+Q486;486;Avez-vous des fuites urinaires incontrôlables ?;Fuites incontrôlables
+Q487;487;Souffrez-vous souvent d'infections urinaires ?;Infections urinaires
+Q488;488;;
+Q489;489;Vous sentez-vous confus dans vos pensées et vos actes en général ?  ;Confusion mentale
+Q490;490;Vous sentez-vous une démotivation constante par rapport au travail ?;Manque de motivation
+Q491;491;Avez-vous confiance en vos actes et vos capacités ?;Confiance en soi
+Q492;492;Vous préoccupez-vous beaucoup du travail ces derniers temps, par exemple en faisant des heures supplémentaires ?;Travail professionnel excessif
+Q493;493;Souffrez-vous de maux de tête, de douleurs musculaires ou de douleurs gastriques ?;Dégradation de l'état général
+Q494;494;Sentez-vous le besoin de consommer des substances comme l'alcool, le tabac, la drogue, pour tenir le coup ?;Substances psychoactives
+Q495;495;Avez-vous des selles molles ?;Selles molles
+Q496;496;Avez-vous envie d'aller fréquemment à la selle ?;Selles fréquentes
+Q497;497;;
+Q498;498;Mangez-vous de manière équilibrée (fruits, légumes secs, viande, pommes de terres, pain ou riz complet) ?;Alimentation équilibrée
+Q499;499;Consommez-vous de l'alcool ?;Consommation d'alcool
+Q500;500;Ressentez-vous une tolérance à l’alcool ?;Tolérance à l'alcool
+Q501;501;Vous sentez-vous anxieux(se), agité(e), confus(e) ou avez-vous des sueurs, des insomnies, des tremblements quand vous ne buvez pas d'alcool ?  ;Dépendance à alcool
+Q502;502;Vous sentez-vous obligé(e) de répéter certains comportements (laver les mains, répéter silencieusementment des mots, ranger en ordre précis les choses ...) ?;Troubles compulsifs
+Q503;503;Avez-vous peur des microbes, des germes, d'une contamination ?;Microphobie
+Q504;504;Avez-vous des images ou des pensées sexuelles répétitives ?;Pensées sexuelles
+Q505;505;Avez-vous une vie sexuelle hyperactive ?;Vie sexuelle
+Q506;506;Faites-vous des achats inconsidérés ?;Achats impulsifs
+Q507;507;Vous sentez-vous puissant(e), capable de tout faire ?;Estime en soi
+Q508;508;Vous sentez-vous capable de donner votre avis sur des sujets complexes, même si vous ne les maîtrisez pas ?;Estime en soi
+Q509;509;Vous sentez-vous triste ou avez-vous de grosses difficultés à exécuter vos activités quotidiennes ?;Manque de motivation
+Q510;510;Ressentez-vous de la chaleur au niveau du visage ?;Sensation de chaleur au visage
+Q511;511;Avez-vous des difficultés à vous concentrer ou à lire ?;Troubles de concentration
+Q512;512;Entendez-vous des sifflements dans les oreilles ?;Bourdonnements
+Q513;513;Vous êtes-vous exposé(e) au soleil ces derniers temps ?;Exposition au soleil
+Q514;514;Avez-vous fait un long voyage en avion ces derniers temps ?;Voyage en avion
+Q515;515;Avez-vous des ulcères à l'intérieur de la bouche, qui sont blanchâtres et leur contour rouge ?;Ulcères dans la bouche
+Q516;516;Avez-vous mal et une sensation de douleur autour des ulcères ?;Ulcères douloureux
+Q517;517;Avez-vous des douleurs très intenses, voire insupportables, qui se propagent du milieu du dos vers l’aine ?;Douleurs intenses au dos
+Q518;518;Votre nourrisson a-t-il le ventre dur et sensible au toucher ?;Dur au toucher
+Q519;519;Votre nourrisson a-t-il des gaz intestinaux ?;Flatulences
+Q520;520;Votre nourrisson semble-t-il inconsolable, souvent en fin de journée, malgré tous vos efforts pour le calmer ?;Nourrisson inconsolable
+Q521;521;Votre nourrisson devient-il tout rouge, avec le visage crispé ou ses poings serrés ?;Inconfort général du nourrisson
+Q522;522;Êtes-vous réveillé(e) au milieu de la nuit par une douleur soudaine au gros orteil ?;Douleurs nocturnes
+Q523;523;Avez-vous des œdèmes également aux doigts, aux coudes, aux genoux ou aux chevilles ?;Œdèmes généralisés
+Q524;524;Vos articulations atteintes sont-elles chaudes, rouges, enflées et extrêmement douloureuses ?;Inflammation des articulations
+Q525;525;Avez-vous énormément froid aux articulations atteintes ?;Froid aux articulations
+Q526;526;Avez-vous eu mal au bas du dos, après un effort ?;Mal au dos à l'effort
+Q527;527;Cette douleur gagne-t-elle le haut des fesses et s’étend jusqu’à une ou les deux cuisses ?;Sciatique
+Q528;528;Cette douleur est-elle accompagnée de spasmes vous empêchant de vous redresser quand vous êtes penché en avant ? ;Douleurs et blocages musculaires
+Q529;529;Vos règles s'approchent-elles progressivement, durent plus longtemps et peuvent s’accompagner de caillots de sang ?;Règles rapprochées
+Q530;530;Ressentez-vous des démangeaisons dans la région génitale ou l'anus, surtout pendant la nuit ?;Démangeaisons nocturnes
+Q531;531;Vous sentez-vous nerveux(euse), agité(e) ou irritable, à cause de ces démangeaisons ?;Démangeaisons et agitation
+Q532;532;Observez-vous des vers sur vos selles et au fond des sous-vêtements ?;Vers aux selles
+Q533;533;Observez-vous une ou plusieurs petites excroissances ou lésions, rugueuses et bien définies, sur la peau ?;Excroissances sur la peau
+Q534;534;Ces petites excroissances apparaissent-elles sur ... ;Localisation des excroissances
+Q535;535;Constatez-vous des petits points noirs au niveau de ces excroissances ?;Points noirs sur la peau
+Q536;536;Ressentez-vous des démangeaisons au niveau de ces petites excroissances ?;Démangeaisons aux excroissances
+Q537;537;Sentez-vous une douleur au niveau de ces petites excroissances qui se situent aux orteils ou à la plante du pied ?;Excroissances douloureuses sur les pieds
+Q538;538;Avez-vous un peu de fièvre (température inférieure à 38.5 °C) avec éventuellement des maux de tête ?;Fièvre modérée et maux de tête
+Q539;539;Ces éruptions se transforment-elles en petites cloques rondes, de 3 à 4 mm de diamètre et remplies d’un liquide clair ?;Evolution des éruptions
+Q540;540;Au bout de quelques jours et au fil de leurs apparitions, les cloques sèchent-elles pour former une croûte ?;Formation de croûtes
+Q541;541;Ces éruptions évoluent-elles ... ;Évolutions divers
+Q542;542;Ces éruptions évoluent-elles ... ;Évolutions divers
+Q543;543;Avez-vous des douleurs abdominales ou articulaires ?;Douleurs abdominales et articulaires
+Q544;544;Ressentez-vous le besoin de vous faire mal ou de faire du mal aux autres ?;Auto-agressivité
+Q545;545;;
+Q546;;Avez-vous des pensées envahissantes ou des souvenirs (flash-back) que vous ne pouvez pas sortir de votre tête ?;Pensées envahissantes
+Q547;547;Avez-vous des sautes d’humeur qui causent des conflits dans vos relations avec vos amies ou votre famille ?;Relation avec vos proches
+Q548;548;Vous sentez-vous impuissant(e) ou désespéré(e) ?;Estime en soi
+Q549;549;Avez-vous des douleurs inexpliquées ?;Douleurs inexpliquées
+Q550;550;Avez-vous un comportement extrême dans votre façon de manger ou de dormir (trop ou pas assez) ?;Excès de nourriture et de sommeil
+Q551;551;Prenez-vous des décisions impulsives sans nécessairement réfléchir au sujet concerné et à vos proches ?;Décisions impulsives
+Q552;552;Avez-vous des difficultés à gérer votre colère ou avez-vous des comportements impulsifs, parfois dangereux, envers vous-mêmes et vos proches ?;Comportements impulsifs
+Q553;553;Vous sentez-vous envahi par le stress ou fortement anxieux(se) ?;Stress envahissant
+Q554;554;Mangez-vous trop, pas assez ou parfois les deux en alternance ?;Alimentation irrégulière
+Q555;555;Vous sentez-vous déprimé(e) ?;Sentiment de dépression
+Q556;556;Avez-vous des comportements destructeurs, compulsifs ou impulsifs, envers vous-même ?;Auto-agressivité
+Q557;557;Vous haïssez-vous ?;Estime en soi
+Q558;558;Avez-vous une douleur progressive au tendon, qui éventuellement au début était soulagée par l’activité avant de devenir permanente ?;Douleur du tendon
+Q559;559;Constatez-vous une rougeur et une chaleur de la peau au niveau du tendon ?;Inflammation du tendon
+Q560;560;Les mouvements de la partie du corps concernée sont-ils plus difficiles (lever le bras, bouger la main ...)  ?;Rougeur du tendon
+Q561;561;Ressentez-vous des crépitations ou des frottements au niveau du tendon, au moment du mouvement ou au toucher ?;Sensibilité du tendon
+Q562;562;Ressentez-vous un aspect épais du tendon au toucher ?;Epaisseur du tendon
+Q563;563;Votre épaule est-elle raide ?;Raideur de l'épaule
+Q564;564;Avez-vous peur d'être seul(e) ou d'être abandonné(e) ?;Peur d'être seul
+Q565;565;Votre épaule est-elle enflée ou gonflée ?;Œdème de l'épaule
+Q566;566;Avez-vous une sensation de craquement dans l’épaule ?;Craquement de l'épaule
+Q567;567;Constatez-vous une diminution ou une perte de mobilité de l'épaule ?;Mobilité de l'épaule
+Q568;568;Avez-vous une douleur à l’épaule, s’intensifiant lors d’une activité intense ?;Douleur à l'épaule
+Q569;569;Cette douleur irradie-t-elle dans le bras, pouvant aller jusqu’à la main ?;Evolution de la douleur
+Q570;570;Ressentez-vous le besoin d’être continuellement en état d’alerte, prêt à réagir ?;Hypervigilance
+Q571;571;Avez-vous des difficultés à ressentir certaines émotions, comme la tendresse et le désir sexuel ?;Ressentir des émotions
+Q572;572;Avez-vous subi un événement porteur d’une menace vitale ou d’une atteinte à l’intégrité physique (guerre, attentat, accident etc. ) ?;Evénement traumatique
+Q573;573;Avez-vous un sentiment de peur intense, d’horreur et d’impuissance accompagné de ... ;Peur envahissante
+Q574;574;Votre vue vous empêche-t-elle de bien vous orienter dans l’espace (une certaine maladresse ou une mauvaise appréciation des distances) ? ;Orientation dans l'espace
+Q575;575;Voyez-vous double ?;Vision double
+Q576;576;Vos yeux, sont-ils fatigués ?;Yeux fatigués
+Q577;577;Penchez-vous ou tournez-vous la tête pour mieux voir les objets ?;Autres troubles de vision
+Q578;578;Louchez-vous ou vos yeux se ferment-ils s'il y a du soleil ? ;Yeux sensibles au soleil
+Q579;579;Vos yeux ne bougent-ils pas en même temps, ce qui empire au fil de la journée ?;Strabisme
+Q580;580;Avez-vous des difficultés à distinguer ce qui est réel de ce qui ne l'est pas ?;Distinguer le vrai du faux
+Q581;581;Oubliez-vous d'exécuter vos activités quotidiennes (vous habiller, maintenir votre propriété, etc.) ?;Oublis des activités quotidiennes
+Q582;582;Avez-vous des difficultés à communiquer avec les gens en général et surtout avec vos proches ?;Relation avec vos proches
+Q583;583;Vos amis ou vos proches se plaignent-ils de vos discours décousus et confusants ?;Conflits avec vos proches
+Q584;584;Souffrez-vous de phobies ou faites-vous des gestes impulsifs (laver les mains, répéter silencieusement des mots, etc.) ?  ;Phobies et gestes impulsifs
+Q585;585;Avez-vous l'impression que certaines personnes vous veulent du mal ?;Sentiment d'être visé(e)
+Q586;586;Vos amis ou vos proches se plaignent-ils de vos convictions sur divers sujets ?;Conflits sur vos convictions
+Q587;587;Vos ganglions sont-ils gonflés ?;Gonflement des ganglions
+Q588;588;Avez-vous des nausées ou même vomissez-vous ?;Nausées et vomissements
+Q589;589;Des boutons ou rougeurs sont-ils apparus d’abord au cou, au visage et aux plis de flexion (aisselles, coudes et cuisses) ?;Éruptions et rougeurs sur la peau
+Q590;590;Est-ce que ces rougeurs pâlissent à la pression du doigt ?;Réaction des rougeurs au toucher
+Q591;591;Est-ce que 2 à 3 jours plus tard, les éruptions s’étendent au reste du corps (haut du thorax, bas de l’abdomen, visage et extrémités) ?;Evolution des rougeurs
+Q592;592;1 à 2 jours plus tard un enduit blanchâtre sur la langue et des desquamations sur la peau apparaissent-ils ?;Démangeaisons sur les rougeurs
+Q593;593;Vos yeux, pleurent-ils ou sont-ils gonflés et rouges ?;Inflammation des yeux
+Q594;594;;
+Q595;595;Avez-vous des douleurs ou des sensibilités aux articulations, surtout après une période de repos prolongé ou au réveil ?;Sensibilité des articulations
+Q596;596;Avez-vous un débit de parole lent ou une fluidité verbale plus lente que d'habitude ?;Ralentissement de la parole
+Q597;597;Avez-vous des difficultés à exprimer vos émotions ?;Exprimer ses émotions
+Q598;598;Le cuir chevelu vous démange-t-il ?;Démangeaisons à la tête
+Q599;599;Ces démangeaisons sont-elles prédominantes derrière les oreilles et sur la nuque ?;Démangeaisons à la tête
+Q600;600;Constatez-vous des poux ou des lentes, qui sont  facilement visibles sur une chevelure foncée ?;Poux au cheveux
+Q601;601;Avez-vous des palpitations cardiaques ?;Palpitations
+Q602;602;Respirez-vous trop vite ?;Respiration rapide
+Q603;603;Tous ces symptômes se manifestent-ils :;Symptômes divers
+Q604;604;Avez-vous des difficultés à décalotter le prépuce derrière le gland de votre pénis ?;Inconfort du penis
+Q605;605;Constatez-vous des rougeurs, un œdème ou une sensibilité du gland du pénis ?;Inflammation du penis
+Q606;606;Etes-vous gêné(e) au moment de la pénétration ?;Inconfort à la pénétration
+Q607;607;Avez-vous des troubles ou des douleurs à l'érection ?;Troubles d'érection
+Q608;608;Avez-vous des difficultés à maintenir une bonne hygiène du pénis ?;Hygiène du penis
+Q609;609;Arrivez-vous à rétracter le prépuce en arrière du gland de votre penis ?;Rétracter le prépuce
+Q610;610;Votre enfant a-t-il le pharynx ou les amygdales, rouges et enflés ?;Inflammation de la gorge
+Q611;611;Votre enfant a-t-il mal à la gorge ?;Douleurs à la gorge
+Q612;612;Votre enfant a-t-il la gorge sèche ?;Sécheresse de la gorge
+Q613;613;Votre enfant a-t-il la gorge qui démange?;Démangeaisons à la gorge
+Q614;614;Votre enfant a-t-il des difficultés à avaler ou à mastiquer des aliments ?;Difficulté à mastiquer
+Q615;615;Votre enfant a-t-il perdu l'appétit ou moins d'appétit que d'habitude ?;Perte d'appétit
+Q616;616;Votre enfant a-t-il de la fièvre, des maux de tête, de la fatigue, des vomissements, etc. ?;Symptômes grippaux
+Q617;617;Votre enfant crache-t-il du liquide purulent ?;Crachats purulents
+Q618;618;Votre enfant tousse-t-il ?;Toux
+Q619;619;Avez-vous eu un rapport non-protégé récemment ?;Rapport non-protégé
+Q620;620;Avez-vous des démangeaisons dans la région génitale et à l’anus, qui s'aggravent la nuit ?;Démangeaisons nocturnes
+Q621;621;Ces démangeaisons se manifestent-elles environ 5 jours après la première exposition ?;Apparition des démangeaisons
+Q622;622;Constatez-vous des petits points bleus sur la partie génital ou l'anus ?;Ecchymoses sur la région pelvienne
+Q623;623;Constatez-vous des œufs (lentes) ou des poux à la base des poils ?;Poux à la région génitale
+Q624;624;Votre gorge est-elle enflée, rouge ou recouverte de dépôts blancs et de membranes ?;Inflammation de la gorge
+Q625;625;Avez-vous de la fièvre élevée (température supérieure ou égale à 38.5 °C) avec des frissons,  pendant 7 à 14 jours ?;Fièvre élevée persistante
+Q626;626;Si vous avez pris des antibiotiques, constatez-vous des plaques rouges sur le tronc, les cuisses ou les bras ?;Antibiotiques et effets secondaires
+Q627;627;Constatez-vous une augmentation du volume de la rate ?;Volume de la rate
+Q628;628;Avez-vous été piqué(e) par une tique, il y a moins de 6 mois ?;Piqûre d'une tique
+Q629;629;;
+Q630;630;Avez-vous des éruptions cutanées sur la peau ?;Éruptions cutanées sur la peau
+Q631;631;Souffrez-vous de pathologies neurologiques (avc, paralysie faciale, épilepsie, méningite, etc. ) ?;Pathologies neurologiques
+Q632;632;Souffrez-vous d'infections ophtalmologiques (conjonctivite, orgelets, uvéite, etc. ) ?;Infection ophtalmologiques
+Q633;633;Vous êtes-vous évanouis ces derniers temps ou avez-vous des faiblesses, palpitations, malaise, sueurs, etc ?;Dégradation de l'état général
+Q634;634;Votre aine est-elle gonflée ?;Gonflement de l'aine
+Q635;635;Avez-vous des douleurs entre l'abdomen et la cuisse en se penchant, en portant des poids lourds ou en toussant ?;Douleurs de l'abdomen à l'effort
+Q636;636;Vos douleurs sont-elles fortes ?;Intensité de douleurs
+Q637;637;Avez-vous des craquements ou gonflements aux articulations ?;Sensibilité des articulations
+Q638;638;Votre voix est-elle enrouée ou a-t-elle changé ?;Altération de la voix
+Q639;639;Vos mains, aisselles, ventre ou zone génitale vous démangent-elles la nuit ? ;Démangeaisons généralisées nocturnes
+Q640;640;Les éruptions sont-elles...;Type des éruptions sur la peau
+Q641;641;Avez-vous une éruption sur la peau, sous la forme de petites macules rose claires, bien séparées les unes des autres ?;Forme des éruptions sur la peau
+Q642;642;Avez-vous une éruption sur la peau, qui se caractérise par des plaques rouges vifs sans intervalle de peau saine, s'intensifiant dans les plis ?;Forme des éruptions sur la peau
+Q643;643;Avez-vous une éruption sur la peau avec des papules rouges, pouvant confluer en plaques séparées par des espaces de peau saine ?;Forme des éruptions sur la peau
+Q644;644;Avez-vous une faiblesse ou paralysie soudaine d’un côté du corps (la moitié du visage, un bras, la totalité d’un côté, etc. ) ?;Faiblesse soudaine d'un côté du corps
+Q645;645;Ressentez-vous une confusion subite, avec des difficultés de compréhension du langage ?;Trouble d'élocution soudain
+Q646;646;Avez-vous une vision floue ou perte de la vision, qui est apparue subitement dans un ou les deux yeux ?;Trouble de vue soudaine
+Q647;647;Avez-vous subitement des étourdissements ou des vertiges ?;Vertiges soudains
+Q648;648;Avez-vous eu une blessure cutanée à l'orteil ou à un doigt ?;Lésion sur les extrémités
+Q649;649;Quelques jours après la blessure, une zone d'inflammation apparaît-elle avec ...;Evolution des lésions sur la peau
+Q650;650;Cette blessure évolue-t-elle en poche de pus ?;Evolution en abcès 
+Q651;651;Une fois l'abcès apparu, ressentez-vous une douleur intense dans l'aisselle qui éventuellement vous empêche de dormir ? ;Douleur intense sur l'abcès
+Q652;652;Vos amis ou vos proches se plaignent-ils de votre comportement ?;Conflits avec vos proches
+Q653;653;Ressentez-vous une douleur progressive au niveau du pli de l'aine, qui irradie vers l'avant ou l'intérieur de la cuisse ?;Douleur progressive à la jambe
+Q654;654;Ressentez-vous une douleur qui se focalise sur l'arrière de la cuisse ?;Douleur à une partie de la jambe
+Q655;655;Ressentez-vous une douleur localisée sur la face latérale du coude, qui irradie éventuellement dans l’avant-bras ?;Douleur à une partie du bras
+Q656;656;La mobilité du coude étant normale, avez-vous des difficultés à saisir des objets ?;Saisir les objets
+Q657;657;Vos douleurs vous empêchent-elles d'exécuter des tâches (porter des sacs, soulever une tasse de café, serrer une main, etc.) ?;Soulever les objets
+Q658;658;Si toux sèche, avez -vous aussi  ...;Toux et autre symptômes
+Q659;659;Avez-vous des verrues sur la vulve, les parois vaginales ou l'ouverture pour uriner ?;Verrues sur la région génitale
+Q660;660;Avez-vous des saignements lors des rapports sexuels ?;Saignements durant les rapports
+Q661;661;Avez-vous des démangeaisons et de l’inconfort, sur la région génitale ou l'anus ?;Inconfort à la région pelvienne
+Q662;662;Avez-vous des verrues sur le gland, le prépuce, l'ouverture pour uriner ou sur les testicules ?;Verrues sur la région génitale
+Q663;663;Avez-vous des difficultés à reconnaître les objets et les formes ?;Agnosie visuelle
+Q664;664;Ressentez-vous une douleur quand le coude est plié vers l'arrière contre une résistance ?;Douleur à l'appui du bras
+Q665;665;Ressentez-vous une sensibilité au toucher, à l'extérieur du coude ?;Sensibilité du coude
+Q666;666;Ressentez-vous une douleur quand les doigts sont redressés contre une résistance ?;Douleur à l'appui des doigts
+Q667;667;Avez-vous des capacités visuelles réduites dans un environnement sombre ?;Visibilité en manque de lumière
+Q668;668;Constatez-vous une perte de vision brutale ou progressive ?;Perte de vision
+Q669;669;Avez-vous une perte de vision partielle ou totale ?;Perte de vision totale ou partielle
+Q670;670;Avez-vous eu un rhume avec d’importants écoulements nasaux, une toux plutôt sèche, une fièvre légère et un refus de manger ?;Type de rhume
+Q671;671;Durant les 2 à 5 jours suivants, avez-vous eu une fièvre, une toux sèche ou une respiration sifflante ?;Evolution du rhume
+Q672;672;Avez-vous une soif intense, la bouche et la langue sèches, la peau sèche, froide et pâle ... ?;Déshydratation possible
+Q673;673;Avez-vous un ou plusieurs des signes suivants ?;Symptômes divers
+Q674;674;Vos douleurs se sont-elles progressivement accentuées les 6 à 12 dernières heures ?;Evolution des douleurs
+Q675;675;Avez-vous des boutons rouges, gonflés, isolés ou regroupés qui provoquent des démangeaisons ?;Éruptions avec démangeaisons
+Q676;676;Ces boutons réagissent-ils au contact d'une substance étrangère (par exemple une crème) ?;Réaction allergique de la peau
+Q677;677;Avez-vous des éternuements, des démangeaisons au niveau des narines, le nez qui coule ou qui se bouche régulièrement ?;Congestion nasale
+Q678;678;Souffrez-vous d'asthme ?;Asthme
+Q679;679;Avez-vous constaté un gonflement rapide de la peau, des muqueuses et des tissus sous-muqueux sur les lèvres, les yeux ou le cou ? ;Gonflement rapide sur la tête
+Q680;680;Vos articulations sont douloureuses suite à un traumatisme ?;Traumatisme et douleurs articulaires
+Q681;681;Ressentez-vous une épaisseur du cou au toucher ?;Sensation d'épaisseur au toucher
+Q682;682;Souffrez-vous souvent d'infections ?;Sensation d'épaisseur au toucher
+Q683;683;Constatez vous une guérison retardée et prolongée, même de petites blessures ?;Guérison retardée
+Q684;684;Votre peau ou vos cheveux deviennent-ils secs ?;Guérison retardée
+Q685;685;Avez-vous froid ou mal aux extrémités ?;Froid aux extrémités
+Q686;686;Avez-vous mal aux mollets ?;Mal aux mollets
+Q687;687;Constatez-vous une limitation des mouvements causée par vos douleurs articulaires ?;Limitation des mouvements aux articulations
+Q688;688;Avez-vous des courbatures ou des douleurs articulaires, à l'effort ou qui vous réveillent la nuit ?;Courbatures articulaires
+Q689;689;Avez-vous des douleurs osseuses, potentiellement intenses, qui sont apparues progressivement ?;Douleurs osseuses progressives
+Q690;690;Constatez-vous des gonflements ou des rougeurs au niveau de l'os affecté ?;Inflammation des os
+Q691;691;Ressentez-vous une perte de contrôle de vos muscles, par exemple pour marcher ou utiliser vos bras et vos mains ?;Muscles incontrôlables
+Q692;692;Avez-vous des courbatures ou des douleurs musculaires, à l'effort ou qui vous réveillent la nuit ?;Limitation des mouvements aux muscles
+Q693;693;Avez-vous des troubles de la vue ou de la parole, qui sont apparus après les douleurs musculaires ?;Troubles de vue de la parole
+Q694;694;Vous sentez-vous étouffé(e) ou étranglé(e)? ;Sensation d'étouffement
+Q695;695;Avez-vous des bouffées de chaleur ou au contraire des frissons ?;Bouffées de chaleur et frissons
+Q696;696;Vous sentez-vous inquiet(e) ou avez-vous des peurs régulières ?;Inquiétude et peurs
+Q697;697;Constatez-vous un cercle parfois bien visible en périphérie de la cornée de l'œil ?;Cercle autour de la cornée de l'oeil
+Q698;698;Vos gencives sont-elles rouges ?;Gencives  rouges
+Q699;699;Vos gencives sont-elles irritées ou enflées ?;Gencives irritées
+Q700;700;Vos gencives sont-elles rouges ou irritées depuis plusieurs mois ?;Gencives irritées persistantes
+Q701;701;Constatez-vous des lésions blanches crémeuses dans la bouche, sur la langue ou sur l'intérieur des joues ?;Lésions blanches dans la bouche
+Q702;702;Constatez-vous une tâche rouge et douloureuse dans la bouche ?;Tache dans la bouche
+Q703;703;Cette tâche est-elle précédée d'une sensation de chaleur ou de brûlure ?;Brûlure dans la bouche
+Q704;704;Cette tâche a-t-elle un fond jaunâtre ou grisâtre avec un pourtour rouge ?;Tache  jaunâtre ou grisâtre dans la bouche
+Q705;705;Avez-vous une douleur dans le cou qui éventuellement s'étend jusqu'à l’épaule ou au bras ?;Douleur du cou, l'épaule ou le  bras
+Q706;706;Ressentez-vous un engourdissement ou des picotements dans le bras ou la main ?;Engourdissements du bras ou la main
+Q707;707;Constatez-vous des rougeurs sur les doigts, parfois sur les orteils, sur le lobe des oreilles, sur le nez ou sur les lèvres ?;Rougeurs sur la peau
+Q708;708;Les parties touchées deviennent-elles blanches, froides et insensibles ?;Évolution des rougeurs
+Q709;709;Est-ce que ensuite les parties touchées deviennent bleues ?;Évolution des rougeurs
+Q710;710;Enfin sentez-vous des brûlures, des fourmillements ou une inflammation en général aux parties touchées ?;Évolution des rougeurs
+Q711;711;Avez-vous eu une douleur vive, aiguë, voire fulgurante au niveau d'un muscle, au cours d'une activité physique ?;Douleurs pendant une activité physique
+Q712;712;Quand la douleur est apparue, avez-vous entendu le claquement au niveau du muscle ?;Douleur au muscle audible
+Q713;713;Ressentez-vous une douleur de faible intensité mais durable sous forme de décharge électrique au niveau du nerfs atteint ?;Douleur faible mais persistante
+Q714;714;Avez-vous des troubles ...;Troubles variées
+Q715;715;Avez-vous des douleurs qui se situent ...;Douleurs variées
+Q716;716;Avez-vous des troubles musculaires comme ...;Troubles musculaires variées
+Q717;717;Votre peau est-elle ...;Troubles musculaires variées
+Q718;718;Avez-vous des difficultés à rester assis ?;Rester assis et tranquil
+Q719;719;Avez-vous tendance à agir de manière impulsive, à interrompre les autres, à couper la parole ... ?;Décisions impulsives
+Q720;720;Avez-vous des troubles durables du langage écrit affectant la lecture, l'orthographe ou l'écriture ?;Troubles du langage
+Q721;721;Avez-vous des difficultés à résumer une histoire ou à prendre des notes ?;Troubles du langage
+Q722;722;Ressentez-vous une douleur, une sensation de gêne au niveau du ventre ?;Indigestion
+Q723;723;Avez-vous des rots répétés ou des hoquets ?;Rots récurrents
+Q724;724;Souffrez-vous d'un retour d'aliments ou de liquide acide de l'estomac dans la bouche?;Régurgitations
+Q725;725;Vos yeux sont-ils enfoncés ?;Yeux enfoncés
+Q726;726;Lorsque légèrement pincée, votre peau tarde-t-elle à retrouver son aspect initial ?;Pli cutané
+Q727;727;Urinez-vous en petites quantités ?;Difficultés à uriner
+Q728;728;Votre cœur bat-il plus rapidement ou irrégulièrement ?;Rythme cardiaque irrégulier
+Q729;729;Avez-vous des douleurs ou une gêne en général entre l'abdomen et la cuisse ? ;Gêne au niveau de l'abdomen
+Q730;730;Avez-vous des douleurs aux testicules, à l'effort physique ou quand il fait chaud ?;Douleurs aux testicules
+Q731;731;Avez-vous de la constipation ou de la diarrhée ? ;Constipation
+Q732;732;Constatez-vous un jet ininterrompu lorsque vous urinez ?;Jet d'urine
+Q733;733;Avez-vous la sensation d'avoir toujours chaud ou toujours froid ?;Sensation d'avoir chaud ou froid
+Q734;734;Constatez-vous des gonflements, des rougeurs ou un hématome au niveau du corps atteint ?;Gonflement
+Q735;735;Constatez-vous des lésions aux muscles au niveau du corps atteint ?;Lésions musculaires
+Q736;736;L'os est-il disloqué ?;Os disloqué
+Q737;737;Est-ce impossible de bouger le membre touché ?;Membre touché
+Q738;738;Ressentez-vous une douleur à la partie inférieure de la jambe ?;Douleur à la jambe
+Q739;739;Votre douleur se calme-t-elle au repos ?;Douleur calmée au repos
+Q740;740;Votre douleur se localise-t-elle à la partie avant de la jambe ?;Douleur au tibia
+Q741;741;Avez-vous mal au toucher ou à la palpation ?;Douleur au toucher
+Q742;742;Votre jambe est-elle gonflée ?;Jambe gonflée
+Q743;743;Votre jambe est-elle dure et sensible au toucher ?;Dur au toucher
+Q744;744;Avez-vous une ou les deux jambes irritées ou enflées ?;Jambes irritées
+Q745;745;Constatez-vous une coloration bleuâtre ou blanchâtre de la peau, au niveau des jambes ?;Couleur de la peau
+Q746;746;Avez-vous des plaques rouges aux jambes qui vous grattent ?;Plaques rouges aux jambes
+Q747;747;Avez-vous des gaz intestinaux ou une sensation d'inconfort général au ventre ?;Flatulences
+Q748;748;Souffrez-vous d'hypothermie (température dans la bouche entre 32.2 et 35.5 °C) ?;Hypothermie
+Q749;749;Avez-vous soif ou faim en permanence ?;Soif ou faim permanente
+Q750;750;Saignez-vous excessivement quand vous vous coupez ?;Saignements excessives
+Q751;751;Avez-vous des douleurs osseuses ?;Douleurs osseuses
+Q752;752;Avez-vous un taux élevé de triglycérides (gras) dans le sang ?;Triglycérides
+Q753;753;Avez-vous un taux élevé de sucre sanguin ?;Sucre dans le sang
+Q754;754;Vos paupières sont-elles rouges ou gonflées ?;Paupières gonflées
+Q755;755;Avez-vous mal aux yeux ?;Douleur aux yeux
+Q756;756;Votre vue baisse-t-elle sur les extrémités (autour des yeux), comme si vous regardiez dans un tunnel ? ;Troubles de la vue
+Q757;757;Votre vue baisse-t-elle au centre ou dans une autre partie du champ visuel ?;Perte de vision ponctuelle
+Q758;758;Le mouvement des yeux est-il douloureux ? ;Douleur aux yeux
+Q759;759;Avez-vous du mal à vous endormir ?;Mal à s'endormir
+Q760;760;Vous réveillez-vous plusieurs fois pendant la nuit ?;Sommeil non-continu
+Q761;761;Vous réveillez-vous plus tôt que d'habitude le matin ?;Réveil prématuré
+Q762;762;Ressentez-vous une fatigue, de l'irritabilité ou un manque de concentration pendant la journée ?;Mal à l'aise pendant la journée
+Q763;763;Etes-vous angoissé(e) ou anxieux(se) à l'arrivée de la nuit ?;Angoisse à l'arrivée de la nuit
+Q764;764;Vos chevilles, pieds, jambes ou paupières sont-ils gonflés ?;Gonflement des parties du corps
+Q765;765;Avez-vous des douleurs au milieu, en bas du dos ou sur les côtés du bassin ?;Douleurs aux milieu du corps
+Q766;766;Avez-vous des contractions incontrôlables ou des crampes aux muscles ?;Contractions involontaires
+Q767;767;Avez-vous des palpitations cardiaques et des tremblements ?;Palpitations et tremblements
+Q768;768;Vos yeux sont-ils exorbités ?;Yeux exorbités
+Q769;769;Si vos articulations sont gonflées, sentez-vous un kyste relativement souple au toucher ?;Articulations gonflées
+Q770;770;Avez-vous mal au pouce, surtout en saisissant d’un objet  ?;Mal au pouce
+Q771;771;Ressentez-vous une difficulté, voire même une perte de force de la pince de préhension;Force de la pince
+Q772;772;Ressentez-vous une douleur partant de la nuque et éventuellement descendant le long de l’omoplate, de l’épaule, jusqu’au bras et l’avant-bras ?;Douleur du cou, l'épaule ou le  bras
+Q773;773;Ressentez-vous une paralysie partielle, voire totale, des doigts qui vous empêche d'effectuer des gestes quotidiens ?;Fourmillements aux extrémités
+Q774;774;Ressentez-vous des démangeaisons ou des picotements sur la peau ? ;Démangeaisons sur la peau
+Q775;775;Avez-vous des maux de tête, une congestion nasale ou des douleurs musculaires ?;Symptômes grippaux (maux de tête, douleurs musculaires ...)
+Q776;776;Avez-vous eu un peu mal pendant la ou les 2 semaines avant l’éruption de la plaque annonciatrice ?;Douleurs avant l'éruption sur la peau
+Q777;777;Avez-vous des plaques sur le visage, les poignets et les jambes ?;Plaques rouges sur la peau
+Q778;778;Avez-vous des démangeaisons à l'anus, surtout la nuit ?;Démangeaisons nocturnes sur l'anus
+Q779;779;Avez-vous des diarrhées fréquentes ?;Diarrhées fréquentes
+Q780;780;Avez-vous des difficultés à communiquer avec d'autres personnes, en raison de vos changements d'humeur ?;Humeur changeante
+Q781;781;Avez-vous des difficultés à comprendre si quelqu'un est triste ou à exprimer vos émotions ?;Difficultés sur la compréhension est les émotions
+Q782;782;Avez-vous très faim ?;Faim excessive
+Q783;783;Effectuez-vous des mouvements répétitifs ou des routines particulières (taper les mains, tourner sur lui-même, etc.) ?  ;Mouvements répétitifs compulsifs
+Q784;784;Rongez-vous les ongles ?;Ronger les ongles
+Q785;785;Vomissez-vous ?;Vomissements
+Q786;786;Avez-vous des difficultés de rester tranquil(e) sur place ?;Incapacité de rester tranquil(e) sur pace
+Q787;787;Avez-vous des troubles durables du langage écrit affectant la lecture, l'orthographe et l'écriture ?;Troubles durables du  langage écrit
+Q788;788;Avez-vous le pharynx ou les amygdales, rouges et enflés ?;Pharynx enflé
+Q789;789;Avez-vous mal à la gorge ?;Mal de gorge
+Q790;790;Votre gorge est-elle sèche ?;Gorge sèche
+Q791;791;Avez-vous des difficultés à avaler ou à mastiquer des aliments ?;Douleur à la déglutition
+Q792;792;Crachez-vous du liquide purulent ?;Crachats purulents
+F1;1;J'ai déjà enlevé toutes mes dents de sagesse;Dents de sagesse enlevées
+F2;2;J'ai fait un malaise;Malaise
+F3;3;J'ai un abcès au nez;Abcès au nez
+F4;4;J'ai une carie dentaire apparente;Carie dentaire
+F5;5;Je consomme des boissons trop chaudes ou trop froides;Boissons trop chaudes/froides
+F6;6;Je mange beaucoup;Hyperphagie
+F7;7;Ma dent est sensible au toucher;Dent sensible au toucher
+F8;8;J'ai , à ma connaissance, des grosses amygdales;Amygdales enflées
+F9;9;J'ai accouché récemment;Accouchement récent
+F10;10;J'ai accouché récemment ou je suis enceinte;Accouchement récent/enceinte
+F11;11;J'ai arrêté récemment le tabac;Arrêt récent du tabac
+F12;12;J'ai arrêté(e) récemment l'alcool ou des médicaments;Arrêt récent de l'alcool ou des médicaments
+F13;13;J'ai bu des boissons (alcoolisées ou pas);Boissons alcoolisés et non-alcoolisés
+F14;14;J'ai de la fièvre;Fièvre
+F15;15;J'ai de la fièvre constante;Fièvre constante
+F16;16;J'ai de la hypoglycémie;Hypoglycémie diagnostiqué
+F17;17;J'ai de la tachycardie ou de la tension artérielle;Tachycardie
+F18;18;J'ai des allergies;Allergies
+F19;19;J'ai des allergies respiratoires (exemple: au pollen);Allergies Respiratoires
+F20;20;J'ai des antécédents familiaux;Antécédents familiaux
+F21;21;J'ai des antécédents ophtalmologiques;Antécédents ophtalmologiques
+F22;22;J'ai des antécédents pulmonaires;Antécédents pulmonaires
+F23;23;J'ai des antécédents urinaires;Antécédents urinaires
+F24;24;J'ai des bouffées de chaleur;Bouffées de chaleur
+F25;25;J'ai des boutons infectés (rouges, avec du pus ...);Boutons infectés
+F26;26;J'ai des crampes;Contraction des muscles
+F27;27;J'ai des déchirures musculaires;Déchirures musculaires
+F28;28;J'ai des épisodes incessants;Épisodes incessants
+F29;29;J'ai des fissures ou cicatrise à l'anus;Fissure anal
+F30;30;J'ai des fractures aux articulations;Fractures aux articulations
+F31;31;J'ai des grains de beauté;Grains de beauté
+F32;32;J'ai des hémorroïdes;Rectorragie ou Hémorragie digestive rouge
+F33;33;J'ai des nausées ou des vomissements;Nausées ou Vomissements
+F34;34;J'ai des poils très raides et rêches;Poils très raides ou rêches
+F35;35;J'ai des problèmes d'oreille (douleur, perte d'audition ...);Problèmes aux oreilles
+F36;36;J'ai des problèmes veineux;Varicosités
+F37;37;J'ai des remontées acides;Pyrosis
+F38;38;J'ai des remontées acides surtout en position allongé;Pyrosis en position allongé
+F39;39;J'ai des symptômes de grippe;Symptômes grippaux
+F40;40;J'ai des troubles de concentration;Trouble de concentration
+F41;41;J'ai des troubles de mémoire;Troubles de la mémoire
+F42;42;J'ai des troubles du sommeil;Troubles de sommeil
+F43;43;J'ai des troubles neurologiques diagnostiqués;Troubles neurologiques diagnostiqués
+F44;44;J'ai des troubles visuelles;Troubles de la vue
+F45;45;J'ai des vertiges;Vertiges
+F46;46;J'ai du diabète;Diabète diagnostiqué
+F47;47;J'ai du mauvais cholestérol;Mauvais cholestérol
+F48;48;J'ai du mauvais cholestérol ou un autre problème hématologique;Mauvais cholestérol ou problème hématologique
+F49;49;J'ai du stress au travail;Stress au travail
+F50;50;J'ai du surpoids;Prise de poids
+F51;51;J'ai été exposé(e) aux pesticides;Exposition aux pesticides
+F52;52;J'ai eu ce soucis au passé;Soucis similaire au passé
+F53;53;J'ai eu mes dernières règles il y a plus d'un mois;Pas de règles depuis 1 mois
+F54;54;J'ai eu récemment des fractures aux os;Fractures des os récentes
+F55;55;J'ai eu récemment un épisode cérébrale ou ischémique;AVC ou épisode Ischémique
+F56;56;J'ai eu récemment un rapport sexuel;Rapport sexuel récent
+F57;57;J'ai eu récemment un traumatisme aux yeux;Traumatisme aux yeux
+F58;58;J'ai eu un accident de sport;Accident du sport
+F59;59;J'ai eu un choc émotionnel (décès, séparation ...);Choc émotionnel récent
+F60;60;J'ai eu un traumatisme récent;Traumatisme récent
+F61;61;J'ai eu une chute de tension;Chute de tension
+F62;62;J'ai eu une chute récemment;Chute récente
+F63;63;J'ai fais beaucoup de sport;Surpoids
+F64;64;J'ai fais beaucoup ou pas du tout de sport;Manque ou exagération d'activité physique
+F65;65;J'ai fais un mouvement brusque (en brossant les dents, en mastiquant ...);Mouvement brusque avec la bouche (en brossant les dents, en mastiquant ...)
+F66;66;J'ai fait récemment un manucure;Manucure récent
+F67;67;J'ai fait récemment un voyage;Voyage récent
+F68;68;J'ai fait un repas important le soir;Repas lourd le soir
+F69;69;J'ai fait une épilation récemment;Epilation récent
+F70;70;J'ai la gale;La gale
+F71;71;J'ai la voix bouchée ou ma voix est très basse;Dysphonie ou Aphonie
+F72;72;J'ai le nez qui coule;Rhinorrhée
+F73;73;J'ai le tampon troué à l'oreille;Tampon d'oreille troué
+F74;74;J'ai les yeux claires;Yeux de couleur claire
+F75;75;J'ai les yeux qui pleurent;Larmoiement
+F76;76;J'ai mal à bascule du bassin;Bascule du bassin
+F77;77;J'ai mal à bascule, d'une fesse puis de l'autre;Bascule consécutive des deux fesses
+F78;78;J'ai mal à la cuisse;Mal à la cuisse
+F79;79;J'ai mal à la gorge;Mal de gorge
+F80;80;J'ai mal à la hanche;Mal à la hanche
+F81;81;J'ai mal à la partie supérieure droite de l’abdomen;Douleurs abdominales basses
+F82;82;J'ai mal à la tête;Céphalées
+F83;83;J'ai mal au colon;Mal au colon
+F84;84;J'ai mal au dos;Douleurs tout au long du dos
+F85;85;J'ai mal au nez;Mal au nez
+F86;86;J'ai mal au pubis;Douleurs pelviennes
+F87;87;J'ai mal aux muscles;Douleurs musculaires
+F88;88;J'ai mal aux oreilles;Otalgie
+F89;89;J'ai mal aux yeux;Douleurs oculaires
+F90;90;J'ai mal ou je saigne d'une manière importante;Ménorragies
+F91;91;J'ai mangé récemment au restaurant;Restaurant récent
+F92;92;J'ai mangé récemment des chocolats à la menthe ;Chocolats à la menthe récents
+F93;93;J'ai mes règles;Règles en cours
+F94;94;J'ai moins de muscles;Diminution de la masse musculaire
+F95;95;J'ai participé à un concert avec la musique forte;Participation à un concert
+F96;96;J'ai récemment arrêté des substances excitantes (alcool, tabac, etc.);Arrêt récente de substances excitantes
+F97;97;J'ai souffre d'une maladie cardiovasculaire;Maladie cardiovasculaire
+F98;98;J'ai souvent des pensées négatives;Pensées négatives envahissantes
+F99;99;J'ai souvent une mauvaise posture (exemple : la tête baissée);Mauvaise posture fréquente
+F100;100;J'ai un abcès dentaire;Abcès dentaire
+F101;101;J'ai un blocage à la mâchoire, surtout pour manger;Odynophagie ou Douleur à la mâchoire
+F102;102;J'ai un blocage à la mâchoire, surtout sous les oreilles;Odynophagie ou Douleur à la mâchoire
+F103;103;J'ai un bouton à l'intérieur des fesses;Abcès à l'anus
+F104;104;J'ai un gonflement;Lésion à l'intérieur des fesses
+F105;105;J'ai un maladie cardiaque ou endocrinienne;Abcès à l'anus
+F106;106;J'ai un manque de fer;Abcès à l'anus
+F107;107;J'ai un manque de plaquettes dans mon sang;Maladie cardiaque ou endocrinienne
+F108;108;J'ai un polype ou fibrome génitale;Manque de fer
+F109;109;J'ai un rhume ou une grippe (ou récemment);Manque de plaquettes diagnostiquée
+F110;110;J'ai un rythme cardiaque inférieur à 50 pulsations par minute;Polype ou fibrome génital
+F111;111;J'ai une alimentation pauvre en fibres (pas de céréaliers ni de légumineuses);Rhume ou Grippe récente
+F112;112;J'ai une alimentation pauvre en vitamine D (pas assez de légumes, fruits, poissons etc.);Rythme cardiaque bas
+F113;113;J'ai une alimentation qui n'est pas saine et équilibrée (trop de gras, de sucres ou de viande, pas assez de légumes et de fruits) ;Alimentation pauvre en fibres
+F114;114;J'ai une alimentation riche en iode (fruits de mer, poissons, produits laitiers, ...);Alimentation pauvre en vitamine D
+F115;115;J'ai une alimentation saine et équilibrée (pas trop gras, de sucres ou de viande, plus de légumes et de fruits) ;Alimentation malsaine et non-équilibrée
+F116;116;J'ai une allergie dermatologique sur tout le corps;Alimentation riche en iode
+F117;117;J'ai une angine (rouge ou blanche);Alimentation saine et équilibrée
+F118;118;J'ai une blessure aux lèvres;Allergie dermatologique généralisé
+F119;119;J'ai une bonne hygiène;Angine
+F120;120;J'ai une brûlure douloureuse, rouge et avec des cloques;Blessure aux lèvres
+F121;121;J'ai une crise de sciatique importante;Bonne hygiène corporelle
+F122;122;J'ai une difficulté à ouvrir la bouche;Infection sur la peau
+F123;123;J'ai une difficulté à rester debout;Crise sciatique importante
+F124;124;J'ai une difficulté à tenir les objets;Difficulté à ouvrir la bouche
+F126;126;J'ai une douleur brutale;Difficulté à rester debout
+F127;127;J'ai une douleur importante aux articulations;Rhizarthrose
+F128;128;J'ai une douleur insupportable à l'oreille;Douleur brutale
+F129;129;J'ai une euphorie alternée avec de l'agitation;Douleurs articulaires
+F130;130;J'ai une infection de la bouche (ou dentaire);Otalgie
+F131;131;J'ai une inflammation aux jambes;Humeur dépressive alternée avec de l'Euphorie
+F132;132;J'ai une kyste entre l'abdomen et les os du bassin;Infection buccal ou dentaire récente
+F133;133;J'ai une lésion à l'intérieur des fesses;Inflammation aux jambes
+F134;134;J'ai une lésion aux articulations;Kyste au bas de l'abdomen
+F135;135;J'ai une lésion suite à un bouton, à l'intérieur des fesses;Lésion aux articulations
+F136;136;J'ai une maladie chronique respiratoire;Maladie chronique respiratoire
+F137;137;J'ai une maladie endocrinienne (ou hormonale);Maladie endocrinienne ou hormonale
+F138;138;J'ai une maladie liée au fois;Maladie liée au fois diagnostiquée
+F139;139;J'ai une mycose qui est diagnostiquée;Mycose diagnostiqué
+F140;140;J'ai une perte d’appétit soudaine;Perte d'appétit
+F141;141;J'ai une phlébite;Phlébite
+F142;142;J'ai une phlébite ou mes jambes sont douloureuses;Jambes douloureuses
+F143;143;J'ai une toux grasse ou une toux sèche;Toux sèche ou Toux grasse
+F144;144;J'ai une veine bouchée à l'intérieur de l'anus;Veine bouchée à l'anus
+F145;145;J'ai une vie sexuelle active avec plusieurs partenaires;Vie sexuelle hyperactif
+F146;146;J'ai une vie sexuelle hyperactive;Vie sexuelle hyperactive
+F147;147;J'ai utilisé la voiture ou le train;Voiture ou train utilisé
+F148;148;J'ai voyagé récemment où j'ai dormi à l'hôtel;Voyage récent/hôtel
+F149;149;J'entend des bruits sans présence de source extérieure;Acouphènes
+F150;150;J'un antécédent d'ulcère;Antécédents d'ulcère
+F151;151;J'utilise beaucoup mes mains à mon travail;Utilisation quotidienne des mains au travail
+F152;152;J'utilise beaucoup mes mains au travail (ordinateur, soulever des poids ...);Utilisation fréquente des mains au travail
+F153;153;J'utilise des cosmétiques (frisants, défrisants, colorants, etc.);Utilisation de cosmétiques
+F154;154;J'utilise des drogues (ou stupéfiants);Drogues/stupéfiants
+F155;155;J'utilise des lentilles de contact;Utilisation de lentilles de contact
+F156;156;J'utilise des substances excitantes (alcool, tabac, caféine ...);Utilisation de substances excitantes
+F157;157;J'utilise souvent un ordinateur;Utilisation d'ordinateur
+F158;158;J'utilise un implant contraceptif génital;Contraceptif génital
+F159;159;Je bois beaucoup de café;Utilisation importante de caféine
+F160;160;Je bois de l'alcool;Consommation d'alcool
+F161;161;Je bois de l'alcool ou je fume;Alcool ou tabagisme
+F162;162;Je bois des boissons gazeuses;Utilisation de boissons gazeuses
+F161;161;Je boite;Boitement
+F162;162;Je dors tres peu (moins de 3heures);Manque de sommeil
+F163;163;Je fais de l'asthme;Asthme
+F164;164;Je fais des siestes pendant la journée;Siestes pendant la journée
+F165;165;Je fais du sport de course ou des sauts;Pratique de sport de course ou de sauts
+F167;167;Je fais souvent de la natation;Pratique de natation
+F168;168;Je fume;Tabagisme
+F169;169;Je grince les dents;Grincement des dents
+F170;170;Je mange des aliments acides;Consommation d'aliments acides
+F171;171;Je mange des aliments acides ou gras;Consommation d'aliments acides ou gra
+F172;172;Je mange des aliments salés;Consommation d'aliments salés
+F173;173;Je mange des aliments trop salés ou sucrés;Consommation des aliments trop salés ou sucrés
+F174;174;Je mange des asperges, des fruits rouges, des betteraves ...;Consommation d'asperges, fruits rouges, betteraves
+F175;175;Je mange des fruits;Alimentation riche en fruits
+F176;176;Je mange des légumes crucifères (haricots,  brocolis, etc.);Utilisation de légumes crucifères
+F177;177;Je mange des noix, des cacahuètes, des fraises, des tomates ...;Consommations de noix, cacahuètes, fraises, tomates ...
+F178;178;Je mange en alternance beaucoup ou pas du tout;Hyperphagie ou Perte d'appétit
+F179;179;Je mange rapidement;Alimentation rapide
+F180;180;Je me gratte beaucoup;Picotements de la région génitale
+F181;181;Je me mets souvent en genoux fléchis;Genoux fléchis
+F182;182;Je me sens complètement bloqué(e) (tremblements,  déprimé(e) ...);Humeur dépressive et bloquante
+F183;183;Je me sens déprimé(e);#Humeur dépressive
+F184;184;Je n'arrete pas à parler ou rester sur place assis;Incapacité de se calmer
+F185;185;Je ne bois pas suffisamment d'eau;Utilisation insuffisante d'eau
+F186;186;Je ne bois pas suffisamment de liquides;Consommation limité de liquides
+F187;187;Je ne fais pas d’échauffement avant le sport;Pas d'échauffement avant le sport
+F188;188;Je ne fais pas suffisamment de sport;Manque de sport
+F189;189;Je ne peux pas du tout écarter la hanche;Incapacité d'écarter la hanche
+F190;190;Je ne peux pas marcher du tout;Apraxie ou Bradykinésie
+F191;191;Je ne prends pas assez de vitamines;Carence alimentaire en vitamines
+F192;192;Je perds du poids;Amaigrissement ou Peur de prise de poids
+F193;193;Je porte des chaussures synthétiques;Utilisation de chaussures synthétiques
+F194;194;Je porte des talons;Utilisations de talons
+F195;195;Je pratique un sport violent;Pratique de sport violent
+F196;196;Je prend des douches chaudes et/ou j'utilise beaucoup de savon;Utilisation de savon et de douches chaudes
+F197;197;Je prends des antibiotiques;Prise de antibiotiques
+F198;198;Je prends des diurétiques;Consommation de diurétiques
+F199;199;Je prends des laxatifs;Prise de laxatifs
+F200;200;Je prends des médicaments;Prise de médicaments
+F201;201;Je prends des médicaments (corticoïdes, corticoïdes ou anticoagulants);Prise de médicaments (corticoïdes ou anticoagulants)
+F202;202;Je prends des médicaments anti-inflammatoires non stéroïdiens (sulfamides, pénicillines, œstrogènes ...);Prise de médicaments anti-inflammatoires non stéroïdiens
+F203;203;Je prends des médicaments contre la coagulation (héparine, warfarine ...);Prise de médicaments contre la coagulation
+F204;204;Je prends des médicaments liées au thyroïde ou des contraceptifs;Médicaments contraceptifs ou liées au thyroïde
+F205;205;Je prends des médicaments liés à l'humeur;Médicaments liés à l'humeur
+F206;206;Je prends des médicaments liés à l'humeur ou l'acidité de l'estomac;Médicaments liés à l'humeur ou liés à l'estomac
+F207;207;Je prends des suppositoires;Utilisation de suppositoires
+F208;208;Je prends des traitements hormonaux;Traitements hormonaux
+F209;209;Je prends la pilule;Pilule
+F210;210;Je ressens une angoisse importante;Humeur dépressive, Anxiété ou Agitation
+F211;211;Je ressens une décharge électrique dans la jambe;Décharge électrique
+F212;212;Je ressens une douleur importante;Douleur importante
+F213;213;Je ressens une fatigue intense;Asthénie
+F214;214;Je saigne aux selles;Rectorragie ou Hémorragie digestive rouge
+F215;215;Je saigne d'une manière importante;Ménorragies
+F216;216;Je saigne depuis l'anus;Rectorragie
+F217;217;Je saigne depuis plusieurs jours;Ménorragies
+F218;218;Je souffre d'épilepsie;Épilepsie diagnostiquée
+F219;219;Je souffre d'hypertension artérielle;Hypertension artérielle
+F220;220;Je souffre d'une infection en cours;Infection en cours
+F221;221;Je souffre d'une maladie cardiaque;Maladie cardiaque
+F222;222;Je souffre d'une sinusite importante;Sinusite importante
+F223;223;Je souffre de la maladie d'Alzheimer;Alzheimer diagnostiqué
+F224;224;Je souffre de la maladie de Démence;Démence diagnostiquée
+F225;225;Je souffre de myopathies (maladies de muscles);Myopathies
+F226;226;Je sous diagnostiqué(e) schizophrène;Schizophrénie diagnostiquée
+F227;227;Je suis angoissé(e) ou stressé(e);Humeur dépressive, Anxiété ou Agitation
+F228;228;Je suis autiste;Autisme
+F229;229;Je suis bloqué au dos;Blocage qu dos
+F230;230;Je suis déshydraté(e);Déshydratation
+F231;231;Je suis en ménopause;Ménopause
+F232;232;Je suis exposé au travail à des substances toxiques;Exposition à des substances toxiques au travail
+F233;233;Je suis exposé(e) au soleil, au froid ou aux rayons X ;Exposé(e) au soleil, au froid ou aux rayons X
+F234;234;Je suis exposé(e) au vent ou l'humidité;Exposition au vent ou l'humidité
+F235;235;Je suis exposé(e) aux lumières artificielles (ordinateur, télévision, etc.);Exposition aux lumières artificielles
+F236;236;Je suis hypersensible;Hypersensibilité
+F237;237;Je suis immobilisé(e);Immobilisation
+F238;238;Je suis maigre ou je mange pas beaucoup;Maigreure ou perte d'appétit
+F239;239;Je suis probablement enceinte;Perte d'appétit
+F240;240;Je suis somnambule;Somnambulisme
+F241;241;Je travail dans une endroit froid ou humide;Endroit de travail froid ou humide
+F242;242;Je travail en position debout;Travail en position debout
+F243;243;Je travail la nuit;Travail nocturne
+F244;244;Je travail ou je vie dans une endroit chaud;Environnement de vie chaud
+F245;245;Je tremble pour atrapper un objet;Troubles de la motricité
+F246;246;Je vie dans un climat trop chaud ou trop froid;Climat de vie trop chaud/froid
+F247;247;Je vis des conditions sociales difficiles;Problèmes à la sociabilisation
+F248;248;Je vois des mouches volantes devant les yeux;Mouches devant les yeux
+F249;249;La partie atteint de mon corps est de couleur claire;Blanchissement de la peau
+F250;250;Le foyer familial est un environnement de stress et de disputes;Environnement familial stressant
+F251;251;Ma famille a des antécédents dermatologiques;Antécédents dermatologiques
+F252;252;Ma famille a un historique de cardiopathies;Antécédents familiaux de cardiopathies
+F253;253;Ma langue est irritée (rouge ou blanche);Lange irrité
+F254;254;Ma tension artérielle a baissée;Chute de la tension artérielle
+F255;255;Ma voix a changée;Dysphonie ou Aphonie
+F256;256;Ma vue a baissée;Vision floue,Baisse de vue ou Cécité
+F257;257;Mes articulations sont fléchis;Articulations fléchis
+F258;258;Mes articulations sont raides;Raideurs articulaires
+F259;259;Mes dents ne sont pas alignées correctement;Dents pas alignées
+F260;260;Mes jambes sont lourdes;Jambes lourdes
+F261;261;Mes jambes tremblent;Jambes tremblantes
+F262;262;Mes oreilles sont bouchées;Oreilles bouchées
+F263;263;Mes yeux collent;Yeux collants
+F264;264;Mes yeux me grattent;Démangeaison des yeux
+F265;265;Mes yeux saqués;Yeux saqués
+F266;266;Mes yeux sont rouges;Yeux rouges
+F267;267;Mon appétit est limité;Perte d'appétit
+F268;268;Mon audition a baissé récemment;Audition degradée récente
+F269;269;Mon domicile a des champignons ou de l'humidité;Domicile humide ou infecté par des champignons
+F270;270;Mon état physique est dégradé (fatigue, perte d'appétit, amaigrissement ...);Dégradation de l'état physique (fièvre, mal de tête)
+F271;271;Mon lieu du travail ou à mon domicile est atteint de pollution;Domicile ou travail atteint de pollution
+F272;272;Mon pharynx est rouge;Pharynx rouge
+F273;273;Un autre membre de ma famille a un soucis similaire;Antécédents familiaux similaires
+F274;274;Je suis agité(e);Agitation
+F275;275;J'ai de la fièvre et j'allaite;Fièvre et allaitement
+F276;276;Je ressens une faiblesse musculaire (hypotonie);Faiblesse musculaire
+F277;277;Je saigne d'une manière importante, même très récemment;Saignement important
+F278;278;J'ai du mal ou je ne peux pas manger du tout;Dysphagie ou Aphagie
+F279;279;J'ai énormément de salive, même sans manger;Hypersalivation
+F280;280;J'ai rien qui passe dans mon estomac, aliments ou gaz;Obstruction intestinale
+F281;281;J'ai de l'hypothermie (moins de 35,2° C);Hypothermie
+F282;282;J'ai de l'hypothermie sévère (moins de 32° C);Hypothermie extrême
+F283;283;J'ai de la fièvre importante, au moins 40° C;Fièvre importante
+F284;284;J'ai du mal à garder les yeux ouverts;Blépharospasme
+F285;285;J'ai une parole lente;Ralentissement de la parole
+F286;286;J'ai du mal à initier des mouvements;Limitation des mouvements
+F287;287;Je me suis évanouis récemment;Perte de connaissance
+F288;288;J'ai eu un choc(s) électrique(s) ressenti(s);Choc électrique
+F289;289;J'ai mal et/ou je saigne;Douleur et/ou saignement
+F290;290;J'ai des pertes vaginales blanchâtres;Leucorrhées
+F291;291;Mon audition a baissée brusquement;Surdité brusque
+F292;292;J'ai eu une douleur inhabituelle (premier épisode, brutale, intense… ou fièvre);Douleur inhabituelle
+F293;293;J'ai mal à la tête ou des migraines habituelles;Céphalées habituelles
+F294;294;J'ai mal à la tête d'une manière brutale;Céphalées brutales
+F295;295;Ma vue a diminuée ou ma douleur apparue brutalement;Douleur ou Baisse de vue soubite
+F296;296;J'ai reçu un coup par un objet avec une grande vitesse;Traumatisme par objet en grande vélocité
+F297;297;J'ai reçu un coup par un objet avec une vitesse faible;Traumatisme par objet en vélocité faible
+F298;298;L'objet a pénétré ma peau;Pénétration d'objet sous la peau
+F299;299;J'ai une difficulté importante à respirer;Dyspnée sévère
+F300;300;J'ai du mal à respirer;Dyspnée
+F301;301;J'ai mal à l'estomac ou en général à l'abdomen;Douleurs abdominales
+F302;302;J'ai du mal à sentir ou à bouger le membre affecté;Blocage ou paralysie du membre affecté
+F303;303;J'ai ce symptôme depuis moins de 24h;Symptôme depuis 24h
+F304;304;J'ai ce symptôme depuis plus de 24h;Symptôme moins de 24h
+F305;305;J'ai un douleur qui ressemble au maux d'estomac, qui peut commencer de la mâchoire en allant jusqu'à l'ombilic;Douleurs gastriques
+F306;306;J'ai ces symptômes depuis moins de 3h;Symptôme moins de 3h
+F307;307;J'ai ces symptômes depuis plus de 3h;Symptôme depuis 3h
+F308;308;J'ai ces symptômes depuis moins de 4 h 30;Symptôme depuis 4 h 30
+F309;309;J'ai ces symptômes depuis plus de 4 h 30;Symptôme moins de 4 h 30
+F310;310;J'ai des brûlures à l'estomac;Brûlures à l'estomac
+F311;311;J'ai de la diarrhée;Diarrhée
+F312;312;J'ai de la constipation;Constipation 
+F313;313;Je constate du sang dans mes selles ou mes urines;Hémorragie digestive rouge ou Hématurie
+F314;314;J'ai une toux sanglante;Toux sanglante
+F315;315;J'ai un goût métallique (mauvais goût) dans la bouche;Dysgueusie
+F316;316;J'ai mal;Douleur
+F317;317;J'ai la sensation d'avoir toujours faim;Polyphagie ou Hyperphagie 
+F318;318;Ma peau a une couleur bleuâtre;Ecchymoses sur la peau
+F319;319;Je suis sujet contact VIH il y a moins de 48h;Contacte VIH moins de 48h
+F320;320;Je me sens confus(e);Confusion mentale
+F321;321;J'ai des pettits boutons rouges sur la peau;Boutons rouges sur la peau
+F322;322;J'ai des hallucinations divers (du goût, de l'odorat ou visuelles);Hallucinations divers
+F323;323;J'ai des tremblements;Frissons/Tremblements
+F324;324;J'ai des convulsions;Troubles de la motricité/Convulsions
+F325;325;Je délire;Délire
+F326;326;Je suis violent;Violence
+F327;327;Je suis en manque;En manque de stupéfiants/médicaments
+F328;328;Les éruptions se propagent et changent;Propagation et évolutions des éruptions sur la peau
+F329;329;J'ai été mordu par un serpent ou un scorpion;Morsure de serpent ou scorpion
+F330;330;Les épisodes durent au moins 10 minutes;Épisodes de durées d'au moins 10 min
+F331;331;J'ai de la dyspnée, surtout à la parole;Dyspnée à la parole
+F332;332;Ma peau est attirée à l'intérieur au cours d'une inspiration difficile;Tirage inspiratoire
+F333;333;J'ai une gêne respiratoire en position allongée;Orthopnée
+F334;334;Je crache du sang, des fois en grande quantités ou en répétition;Hémoptysie (importante et en répétition)
+F335;335;J'ai une brûlure douloureuse sur la peau;Brûlure (douloureuse) sur la peau
+F336;336;Je suis frappé par la foudre;Frappé(e) par la foudre
+F337;337;J'ai une brûlure douloureuse qui est étendu sur la main, le visage ou sur toute la peau;Brûlure généralisée (et douloureuse) sur la peau
+F338;338;J'ai une plaie délabrante qui saigne activement;Plaie saignante activement
+F339;339;J'ai perdu plus que 10% de mon poids;Amaigrissement de plus de 10%
+F340;340;J'ai une respiration sifflante, sans avoir de la dyspnée;Expiration sifflante
+F341;341;J'ai des épisodes récurrents ou qui sont produit récemment;Épisodes récents ou récurrents
+F342;342;J'ai un épisode, mais qui n'est plus reproduit jusqu'à maintenant;Episode isolé
+F343;343;Mes selles sont décolorées;Selles sont décolorées
+F344;344;J'ai ces symptômes depuis moins de 24 mois;Symptôme moins de 24h
+F345;345;J'ai une brûlure douloureuse sur la peau, qui est peu étendue;Brûlure limitée sur la peau
+F346;346;J'ai du sang visible dans mon vomis;Hémorragie digestive rouge
+F347;347;Le corps étrangé est tranchant et pointu;Corps étrangé, tranchant et pointu
+F348;348;Je vomissements en grandes quantités;Vomissements abondants
+F349;349;J'ai de la diarrhée en grandes quantités;Diarrhées abondantes
+F350;350;J'ai un hoquet incessant qui dure plus que 12h;Hoquets incessants depuis 24h
+F351;351;J'ai une cardiopathie diagnostiquée à la naissance;Cardiopathie à la naissance
+F352;352;J'ai souffre d'une maladie cardiovasculaire;Maladie cardiovasculaire
+F353;353;J'ai eu une crise cardiaque récemment;Crise cardiaque récente
+F354;354;Je constate une inflammation importante (rougeurs, boutons, etc.), sur la région touchée;Inflammation importante sur la région touchée
+F355;355;Je constate une inflammation limitée, sur la région touchée;Inflammation limité sur la région touchée
+F356;356;Je constate une mastite ou un abcès à ma poitrine;Mastite ou abcès à la poitrine
+F357;357;Je suis exposé(e) à un risque vital de contagion (méningite, Ebola...);Exposition en risque vitale (méningite, Ebola)
+F358;358;J'ai des tremblements;Frissons/Tremblements
+F359;359;J'ai des sueurs;Sueurs
+F360;360;Mes pouls ont accélérés;Pouls élevées
+F361;361;J'ai ce symptôme depuis moins de 12h;Symptôme moins de 12h
+F362;362;J'ai des épisodes souvent, mais qui s'arrêtent rapidement;Épisodes récurrents et rapides
+F363;363;J'ai une inflammation importante du nez;Inflammation importante du nez
+F364;364;Ma douleur résiste aux antalgiques;Douleur résistante aux antalgiques
+F365;365;Je constate à la région touchée, une abcès volumineux;Abcès volumineux au toucher
+F366;366;J'ai plusieurs corps étrangers (ou complexes) sous la peau;Corps étrangers ou complexes sous la peau
+F367;367;Je n'ai pas de difficultés à respirer;Dyspnée
+F368;368;J'ai des courbatures;Douleurs musculaires/courbatures
+F369;369;Je constate une perte partielle des fonctions du membre affecté;Perte partielle des fonctions du membre
+F370;370;Je constate une perte totale des fonctions du membre affecté;Perte totale des fonctions du membre
+F371;371;Je constate une petite déformation du membre affecté;Petite déformation du membre
+F372;372;Je constate une déformation importante du membre affecté;Déformation importante du membre
+F373;373;J'ai été électrocuté par une haute tension;Électrocuté par haute tension
+F374;374;Le contacte pendant l'électrocution a duré beaucoup de temps;Électrocution non-rapide
+F375;375;J'ai perdu connaissance juste avant ou juste après le traumatisme;Perte de connaissance (avant ou après traumatisme)
+F376;376;J'ai une plaie(s) qui est large ou complexe ;Plaie importante ou complexe
+F377;377;J'ai une plaie(s) ou hématome (bleu) apparent;Plaie ou ecchymoses
+F378;378;J'ai un plaie(s) superficielle(s), hormis la main;Plaie superficielle (hormis la main)
+F379;379;Ma nuque est raide;Raideur de la nuque
+F380;380;J'ai des spasmes musculaires;Contraction des muscles/Spasmes
+F381;381;J'ai des sifflements dans les oreilles;Acouphènes
+F382;382;Je ressens une fatigue chronique;Asthénie chronique
+F383;383;J'ai des œdèmes chroniques aux membres inférieurs ;Oedèmes chroniques aux membres inférieurs 
+F384;384;J'ai été électrocuté à ma maison;Électrocution à la maison
+F385;385;J'ai un peu de douleur ou pas du tout;Douleur limité ou manquante
+F386;386;J'ai suis exposé(e) depuis plus de 48h;Exposition depuis 48h
+F387;387;J'ai aucune perte des fonctions ni de déformations, au membre affecté;Aucune perte des fonctions ni de déformations
+F388;388;J'ai une plaie(s) qui est superficielle;Plaie superficielle
+QC2;Êtes-vous dans l’impossibilité de vous alimenter ou de boire DEPUIS 24 HEURES OU PLUS ?;Alimentation limitée pour 24 ou plus
+QC3;Dans les dernières 24 heures, avez-vous noté un manque de souffle INHABITUEL lorsque vous parlez ou faites un petit effort ?;Essouflement à l'éffort
+QC4bis;Pensez-vous avoir eu de la fièvre ces derniers jours (frissons, sueurs) ?;Fièvre + frissons/sueurs
+QC4;Quelle a été votre température la plus élevée ces dernières 48h ?;Temperature élévée
+QC5bis;Avez-vous une toux ou votre toux habituelle s’est-elle modifiée ces derniers jours ?;Toux inhabituelle
+QC5;Avez-vous une toux ou votre toux habituelle s’est-elle modifiée ces derniers jours ?;Toux inhabituelle
+QC6;Avez-vous une fatigue inhabituelle ces derniers jours ?;Fatigue inhabituelle
+QC7;Cette fatigue vous oblige-t-elle à vous reposer plus de la moitié de la journée ?;Besoin de repos suite fatigue
+QC8;Avez-vous noté une perte ou une forte diminution de votre goût ou de votre odorat ces derniers jours ?;Perte du goût/odorat
+QC9;"Avez-vous un mal de gorge ou des douleurs musculaires ou des courbatures inhabituelles ou des maux de tête inhabituels ces derniers jours ?";Symptômes grippaux diveres (douleurs musculaires, courbatures)
+QC10;Avez des maux de tête qui ne disparaissent pas après la prise de médicaments anti-douleurs (dont paracétamol) ?;Resistance de la douleu aux médicaments
+QC11;Est ce que vous décriviiez ces douleurs comme intolérables ?;Douleurs intolérables
+QC12;Avez-vous de la diarrhée ces dernières 24 heures (au moins 3 selles molles) ?;Diarrhéé ou selles molles
+QC13;Cochez les éléments de cette liste qui correspondent à votre situation :;Présence de pathologie chronique à risque
+QC14;Êtes-vous enceinte au 3ème trimestre de votre grossesse ?;Grossesse en cours (>= 3eme trimeste)
+QC15;Avez-vous des antécédents de maladie cardiovasculaire : hypertension artérielle compliquée (avec complications cardiaques, rénales), accident vasculaire cérébral, maladie coronaire (infarctus), chirurgie cardiaque, insuffisance cardiaque avec essoufflement au moindre effort ?;Présence d'antécédents à risque
+QC16;Avez-vous une immunodépression, par exemple : médicamenteuse (chimiothérapie anti cancéreuse, traitement immunosuppresseur, biothérapie et/ou corticothérapie à dose immunosuppressive depuis plus de 15 jours) --- infection à VIH non contrôlée ou avec des CD4 <200/mm3 --- consécutive à une greffe d'organe solide ou de cellules souches hématopoïétiques --- liée à une hémopathie maligne en cours de traitement ?;Immunodépression
+QC17;Code postal de votre résidence actuelle;Code postale
+QC18;Indiquez votre poids et votre taille;Poids + taille
