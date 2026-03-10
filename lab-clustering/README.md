@@ -1,123 +1,40 @@
 # 🧪 Laboratory Data Clustering
 
-## 1. Project Overview
-
-This project implements a complete **unsupervised clustering pipeline** for laboratory reports.
-
-The objective is to:
-
-- Parse heterogeneous laboratory `.txt` reports
-- Extract structured analyte-level data
-- Normalize units and reference intervals
-- Build ML-ready datasets (wide / long format)
-- Run unsupervised clustering
-- Track experiments with MLflow
-- Export structured artifacts and diagnostics
-
-The pipeline transforms raw laboratory reports into structured datasets and cluster-based analytical insights.
+The pipeline transforms heterogeneous laboratory `.txt` reports into **structured datasets and cluster-based analytical insights**.
 
 ---
 
-## 2. Problem Statement
+## 🎯 Project Overview
 
-Laboratory reports are:
 
-- Semi-structured `.txt` files
-- Heterogeneous in format
-- Containing variable units and reference ranges
-- Containing implicit clinical normalization rules
+Main capabilities:
 
-Challenges:
-
-- Complex regex extraction
-- Unit normalization
-- Reference interval interpretation
-- Missing values
-- High-dimensional data
-
-This project addresses these constraints through:
-
-- Regex-based analyte extraction
-- Unit harmonization
-- Reference interval comparison (low / normal / high)
-- Dataset standardization (wide / long)
-- Unsupervised clustering algorithms
-- MLflow experiment tracking
+* Parse heterogeneous laboratory `.txt` reports
+* Extract structured analyte-level data
+* Normalize measurement units and reference intervals
+* Build ML-ready datasets (wide / long format)
+* Run unsupervised clustering algorithms
+* Track experiments with **MLflow**
+* Export structured artifacts and diagnostics
 
 ---
 
-## 3. Clustering Strategy
+## ⚙️ Tech Stack
 
-### Objective
+Core technologies used in the project:
 
-Group laboratory profiles into homogeneous clusters based on:
-
-- Numeric analyte values
-- Normalized units
-- Optional derived features
-
-### Supported Algorithms
-
-- KMeans
-- Agglomerative Clustering
-- DBSCAN
-- Birch
-- KModes
-
-### Preprocessing
-
-- Missing value imputation
-- Standard scaling
-- Optional PCA dimensionality reduction
+* Python
+* FastAPI
+* Docker & Docker Compose
+* Scikit-learn
+* MLflow
+* Pandas / NumPy
+* Regex-based parsing
+* PCA for dimensionality reduction
 
 ---
 
-## 4. Pipeline Architecture
-
-```
-Raw TXT (.txt)
-    ↓
-Metadata Extraction (demographics, dates, analysis group)
-    ↓
-Regex Extraction
-    ↓
-Structured CSV (one per file)
-    ↓
-Dataset Builder (wide / long)
-    ↓
-Preprocessing (impute + scale + PCA)
-    ↓
-Clustering
-    ↓
-Evaluation Metrics
-    ↓
-MLflow Tracking
-    ↓
-Exports (assignments, profiles, EDA, metadata)
-```
-
----
-
-## 5. Exploratory Data Analysis (EDA)
-
-The EDA module provides:
-
-- Analyte distribution analysis
-- Missing values diagnostics
-- Dataset dimensionality summary
-- Cluster size analysis
-- Statistical summaries
-
-Outputs are exported in:
-
-```
-artifacts/exports/eda/
-artifacts/exports/clustering/
-```
-
----
-
-## 6. Project Structure
+## 📂 Project Structure
 
 ```
 lab-clustering/
@@ -207,28 +124,138 @@ lab-clustering/
         ├── mlflow_tracking.py           ## MLflow logging helpers
         └── export.py                    ## Export assignments, profiles, plots
 ```
+---
+
+## ❓ Problem Statement
+
+Laboratory reports are typically **semi-structured `.txt` files** containing heterogeneous formats and implicit normalization rules.
+
+Key challenges:
+
+* Complex **regex extraction** of analytes
+* Unit normalization across laboratories
+* Interpretation of reference intervals
+* Missing values and high-dimensional feature space
+* Conversion to ML-ready structured datasets
+
+This project addresses these constraints through:
+
+* Regex-based analyte extraction
+* Unit harmonization
+* Reference interval interpretation (low / normal / high)
+* Dataset standardization (wide / long)
+* Unsupervised clustering analysis
+* Experiment tracking with MLflow
 
 ---
 
-## 7. Prerequisites
+## 🧠 Approach / Methodology / Strategy
 
-- Python 3.10+
-- Docker & Docker Compose (optional)
-- No GPU required
+The pipeline converts raw laboratory reports into clustering-ready datasets through structured preprocessing and unsupervised learning.
 
-### Ubuntu Example
+Core principles:
 
-```bash
-sudo apt update
-sudo apt install python python3-pip
-python --version
+* **Regex-based extraction** of analytes from semi-structured reports
+* **Unit harmonization** and reference interval interpretation
+* **Dataset standardization** in wide and long formats
+* **Feature preprocessing** (imputation, scaling, dimensionality reduction)
+* **Experiment tracking** using MLflow
+
+### Clustering Ecosystem
+
+| Component             | Role                                            |
+| --------------------- | ----------------------------------------------- |
+| TXT Parser            | Extract analytes, values, units, and metadata   |
+| Unit Normalization    | Harmonize measurement units                     |
+| Dataset Builder       | Generate wide and long ML-ready datasets        |
+| Preprocessing         | Missing value imputation, scaling, optional PCA |
+| Clustering Algorithms | KMeans, Agglomerative, DBSCAN, Birch, KModes    |
+| Evaluation            | Unsupervised clustering metrics                 |
+| MLflow Tracking       | Experiment logging and artifact storage         |
+
+---
+
+## 🏗 Pipeline Architecture
+
+```
+Raw TXT (.txt)
+    ↓
+Metadata Extraction (demographics, dates, analysis group)
+    ↓
+Regex Extraction
+    ↓
+Structured CSV (one per file)
+    ↓
+Dataset Builder (wide / long)
+    ↓
+Preprocessing (impute + scale + PCA)
+    ↓
+Clustering
+    ↓
+Evaluation Metrics
+    ↓
+MLflow Tracking
+    ↓
+Exports (assignments, profiles, EDA, metadata)
 ```
 
 ---
 
-## 8. Setup
+## 📊 Exploratory Data Analysis
 
-### Python
+The EDA module provides:
+
+* analyte distribution analysis
+* missing value diagnostics
+* dataset dimensionality analysis
+* cluster size distribution
+* statistical summaries
+
+Outputs are exported to:
+
+```
+artifacts/exports/eda/
+artifacts/exports/clustering/
+```
+
+---
+
+## 🔧 Setup & Installation
+In this section we explain the minimum OS verification, python usage and docker setup.
+
+### 1. Requirements
+
+* Python 3.10+
+* Docker & Docker Compose (optional)
+* No GPU required
+
+### 2. OS prerequists
+
+Verify that you have the necessairy packages installed.
+
+#### Windows / WSL2 (recommended)
+
+```bash
+# PowerShell
+wsl --status
+wsl --install
+wsl --list --online
+wsl --install -d Ubuntu
+wsl -d Ubuntu
+
+docker --version
+docker compose version
+```
+
+#### Ubuntu
+
+```bash
+sudo apt update
+sudo apt install -y python3 python3-venv python3-pip build-essential curl git
+python3 --version
+```
+
+### 3. Python environment
 
 ```bash
 python -m venv .lab_env
@@ -239,16 +266,16 @@ pip install -r requirements.txt
 python -m pip check
 ```
 
-### Docker
+### 4. Docker setup
 
 ```bash
-docker compose build
-docker compose up
+docker compose -f docker/docker-compose.yml build
+docker compose -f docker/docker-compose.yml up
 ```
 
 ---
 
-## ✅ Full System Verification (End-to-End)
+## ▶️ Usage & End-to-End Testing
 
 ```bash
 ## Check raw TXT inputs
@@ -288,10 +315,23 @@ pytest -q
 
 ---
 
-## Authors
+## 📛 Common Errors & Troubleshooting
 
-**Olivia Tortosa**  
-Email: olivia.tortosa@gmail.com
+| Error                    | Cause                      | Solution                   |
+| ------------------------ | -------------------------- | -------------------------- |
+| Regex extraction failure | Unexpected TXT format      | Update regex rules         |
+| Missing analyte values   | Incomplete report data     | Verify parsing logic       |
+| MLflow tracking error    | Wrong tracking URI         | Check `.env` configuration |
+| Dataset build failure    | Inconsistent analyte units | Review normalization rules |
 
-**Georges Nassopoulos**  
-Email: georges.nassopoulos@gmail.com
+---
+
+## 👤 Author
+
+**Olivia Tortosa**
+[olivia.tortosa@gmail.com](mailto:olivia.tortosa@gmail.com)
+
+**Georges Nassopoulos**
+[georges.nassopoulos@gmail.com](mailto:georges.nassopoulos@gmail.com)
+
+**Status:** Research / Data Science project
