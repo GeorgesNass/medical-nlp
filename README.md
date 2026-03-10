@@ -1,161 +1,211 @@
-# 🏥 Medical Document Classification & Similarity-Based Labeling
+# 📄 Medical Document Classification & Similarity-Based Labeling
 
-## 1. Project Overview
-
-This project implements a **medical document classification pipeline** based on **semantic similarity** and **segment-level analysis**.
-
-The goal is to automatically assign **multiple binary labels (multi-label classification)** to medical documents such as:
-
-- Hospital discharge summaries (CRH)
-- Operative reports (CRO)
-- Anesthesia reports (CRA)
-- Prescriptions
-- Laboratory results
-- Administrative admission forms
-
-A single document may belong to **multiple categories simultaneously**, which motivates a **similarity-based approach** rather than a single end-to-end classifier.
+The project implements a **medical document classification pipeline based on semantic similarity and segment-level analysis**, enabling **multi-label classification of heterogeneous clinical documents**.
 
 ---
 
-## 2. Problem Statement
+## 🎯 Project Overview
 
-Medical documents often:
+Main capabilities:
 
-- Combine several document types in a single file
-- Share overlapping vocabulary and structure
-- Contain heterogeneous clinical and administrative sections
+* Multi-label classification for medical documents
+* Segment-level semantic similarity analysis
+* Similarity-based labeling using reference documents
+* Explainable label decisions based on nearest segments
+* CLI-driven pipeline execution
+* Export of predictions and diagnostics reports
+
+The system assigns **multiple document-type labels simultaneously** to clinical documents by comparing their segments to **semantically similar labeled segments**.
+
+---
+
+## ⚙️ Tech Stack
+
+Core technologies used in the project:
+
+* Python
+* Sentence-transformer embeddings
+* Vector similarity search
+* Docker & Docker Compose
+* Sliding-window text segmentation
+* CPU / GPU embedding inference
+
+---
+
+## 📂 Project Structure
+
+```text
+doc-classification/
+├── main.py                           ## CLI entry point (full pipeline, EDA, index, predict)
+├── pipeline.py                       ## High-level orchestration logic
+├── README.md                         ## Project documentation
+├── requirements.txt                  ## Python dependencies
+├── .env                              ## Environment configuration
+├── menu_pipeline.sh                  ## Interactive CLI menu
+│
+├── docker/
+│   ├── Dockerfile                    ## Docker image definition
+│   └── docker-compose.yml            ## Docker Compose configuration
+│
+├── data/
+│   ├── labeled/                      ## Labeled medical documents (.txt)
+│   ├── unlabeled/                    ## Unlabeled medical documents (.txt)
+│   └── processed/                    ## Preprocessed / intermediate files
+│
+├── artifacts/
+│   ├── indexes/                      ## Similarity indexes
+│   ├── models/                       ## Optional trained models
+│   ├── reports/                      ## EDA and diagnostics outputs
+│   └── exports/                      ## CSV prediction outputs
+│
+├── tests/
+│   └── test_unit.py                  ## Unit tests
+│
+└── src/
+    ├── core/
+    │   ├── config.py                 ## Global configuration and environment loading
+    │   ├── errors.py                 ## Centralized custom exceptions
+    │   └── eda.py                    ## Exploratory Data Analysis logic
+	│
+    ├── domain/
+    │   └── schema.py                 ## Core domain dataclasses (Document, Segment, Prediction)
+	│	
+    ├── nlp/
+    │   ├── segmenter.py              ## Text segmentation (sliding windows)
+    │   ├── embeddings.py             ## Embedding backend (CPU/GPU)
+    │   └── similarity_index.py       ## Vector similarity search
+	│	
+    ├── labeling/
+    │   ├── label_definitions.py      ## Label configuration and thresholds
+    │   ├── similarity_labeler.py     ## Similarity-based classifier
+    │   └── hybrid_labeler.py         ## Extension point for hybrid strategies
+	│
+    └── utils/
+        ├── io_utils.py               ## Text loading and normalization
+        ├── data_utils.py             ## CSV/JSON export and helpers
+        └── logging_utils.py          ## Centralized logging
+```
+
+---
+
+## ❓ Problem Statement
+
+Medical documents frequently present challenges such as:
+
+* multiple document types within a single file
+* overlapping clinical and administrative sections
+* heterogeneous formatting
+* shared vocabulary across document categories
 
 This project addresses these constraints by:
 
-- Working at **segment level**
-- Reusing **labeled documents as semantic anchors**
-- Applying **binary decisions per label** with explainable evidence
+* performing **segment-level analysis**
+* reusing **labeled documents as semantic anchors**
+* applying **independent binary decisions per label**
+* providing **explainable similarity evidence**
 
 ---
 
-## 3. Classification Strategy
+## 🧠 Approach / Methodology / Strategy
 
-### Multi-label, Binary Decisions
+A document may belong to multiple categories.
 
-Each label is treated independently as a binary decision:
+### Multi-label Binary Decisions
+
+Each label is evaluated independently as a binary decision:
+
+* discharge summary (CRH)
+* operative report (CRO)
+* anesthesia report (CRA)
+* prescription
+* laboratory results
+* admission forms
 
 - Is there evidence of a hospital discharge summary (CRH)?
 - Is there operative or anesthesia content (CRO / CRA)?
 - Are prescriptions, lab results, or admission forms present?
 
-This allows overlapping labels, fine-grained threshold tuning, and explainability.
+This allows:
 
-### Similarity-Based Labeling
-
-The pipeline:
-
-1. Segments labeled documents into overlapping text blocks
-2. Encodes segments into dense embeddings
-3. Builds a similarity index
-4. Segments and encodes unlabeled documents
-5. Retrieves nearest labeled segments
-6. Aggregates similarity scores per label
-7. Applies per-label thresholds
+* overlapping labels
+* independent threshold tuning
+* interpretable classification logic
 
 ---
 
-## 4. Pipeline Architecture
+### Similarity-Based Labeling
+
+The pipeline performs the following steps:
+
+1. Segment labeled documents into overlapping windows
+2. Encode segments into dense embeddings
+3. Build a similarity index
+4. Segment unlabeled documents
+5. Encode segments
+6. Retrieve nearest labeled segments
+7. Aggregate similarity scores per label
+8. Apply label-specific thresholds
+
+---
+
+## 🏗 Pipeline Architecture
 
 ```text
 Document (.txt)
-   ↓
-Normalization
-   ↓
+        ↓
+Text Normalization
+        ↓
 Segmentation (sliding window)
-   ↓
-Embeddings (CPU / GPU auto)
-   ↓
+        ↓
+Embeddings (CPU/GPU)
+        ↓
 Similarity Index
-   ↓
+        ↓
 Label Aggregation
-   ↓
+        ↓
 Multi-label Predictions
-   ↓
-CSV / Reports
+        ↓
+CSV Export + Reports
 ```
 
 ---
 
-## 5. Exploratory Data Analysis (EDA)
+## 📊 Exploratory Data Analysis
 
-An EDA module is included to analyze labeled and unlabeled corpora:
+The project includes an EDA module for corpus diagnostics:
 
-- Number of documents
-- Average document length
-- Number of segments
-- Label distribution
-- Multi-label frequency
-- Weak keyword diagnostics
+* document statistics
+* segment statistics
+* label distribution
+* multi-label frequency
+* keyword diagnostics
 
-Outputs are exported as JSON reports in:
+Outputs are stored in:
 
-```text
+```
 artifacts/reports/
 ```
 
 ---
 
-## 6. Project Structure
 
-```text
-doc-classification/
-├── main.py                     # CLI entry point (full pipeline, EDA, index, predict)
-├── pipeline.py                 # High-level orchestration logic
-├── README.md                   # Project documentation
-├── requirements.txt            # Python dependencies
-├── .env                        # Environment configuration
-├── menu_pipeline.sh            # Interactive CLI menu
-├── docker/
-│   ├── Dockerfile              # Docker image definition
-│   └── docker-compose.yml      # Docker Compose configuration
-├── data/
-│   ├── labeled/                # Labeled medical documents (.txt)
-│   ├── unlabeled/              # Unlabeled medical documents (.txt)
-│   └── processed/              # Preprocessed / intermediate files
-├── artifacts/
-│   ├── indexes/                # Similarity indexes
-│   ├── models/                 # Optional trained models
-│   ├── reports/                # EDA and diagnostics outputs
-│   └── exports/                # CSV prediction outputs
-├── tests/
-│   └── test_unit.py            # Unit tests
-└── src/
-    ├── core/
-    │   ├── config.py            # Global configuration and environment loading
-    │   ├── errors.py            # Centralized custom exceptions
-    │   └── eda.py               # Exploratory Data Analysis logic
-    ├── domain/
-    │   └── schema.py            # Core domain dataclasses (Document, Segment, Prediction)
-    ├── nlp/
-    │   ├── segmenter.py         # Text segmentation (sliding windows)
-    │   ├── embeddings.py        # Embedding backend (CPU/GPU)
-    │   └── similarity_index.py  # Vector similarity search
-    ├── labeling/
-    │   ├── label_definitions.py # Label configuration and thresholds
-    │   ├── similarity_labeler.py# Similarity-based classifier
-    │   └── hybrid_labeler.py    # Extension point for hybrid strategies
-    └── utils/
-        ├── io_utils.py          # Text loading and normalization
-        ├── data_utils.py        # CSV/JSON export and helpers
-        └── logging_utils.py     # Centralized logging
-```
+## 🔧 Setup & Installation
 
----
+In this section we explain the minimum OS verification, python usage and docker setup.
 
-## 7. Prerequisites
-
-### General
+### 1. Requirements
 
 - Python **3.10+**
 - Docker and Docker Compose
 - Optional GPU with CUDA support
 
-### Windows & WSL2 Prerequisites
+---
+
+### 2. OS prerequisites
+
+Verify that required packages are installed.
+
+#### Windows / WSL2 (recommended)
 
 ```bash
 # PowerShell
@@ -169,120 +219,89 @@ docker --version
 docker compose version
 ```
 
-### Ubuntu
+#### Ubuntu
 
 ```bash
 sudo apt update
-sudo apt install -y git
-git --version
-```
-
-### Python
-
-```bash
-python3 --version
-sudo apt install -y python3-pip python3-venv
+sudo apt install -y python3 python3-venv python3-pip build-essential curl git
+python --version
 ```
 
 ---
 
-## 8. Setup
-
-### Manual installation
+### 3. Python environment
 
 ```bash
 python -m venv .dc_env
-source .dc_env/bin/activate ## .dc_env\Scripts\activate.bat for windows
-pip install --upgrade pip
+source .dc_env/bin/activate		     ## for windows .dc_env\Scripts\activate.bat
+pip install --upgrade pip            ## for windows : .dc_env\Scripts\python.exe -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-### Docker Usage
+---
 
-Build and start the pipeline:
+### 4. Docker setup
 
 ```bash
-docker compose build
-docker compose up
+docker compose -f docker/docker-compose.yml build
+docker compose -f docker/docker-compose.yml up
 ```
 
 ---
 
-## 9. CLI Usage
+
+## ▶️ Usage & End-to-End Testing
 
 ```bash
-# Run EDA only
-python main.py eda
-
-# Build similarity index
-python main.py index
-
-# Predict labels for unlabeled documents
-python main.py predict
-
-# Run full pipeline
-python main.py full
-```
-
----
-
-## 10. Tests
-
-```bash
-pytest
-```
-
----
-
-## ✅ Full System Verification (End-to-End)
-
-Run the following commands in order:
-
-```bash
-# Check labeled and unlabeled data
+## Check labeled and unlabeled data
 ls data/labeled
 ls data/unlabeled
 
-# Inspect a sample document
+## Inspect a sample document
 head -n 40 data/labeled/sample.txt
 
-# Check embedding backend
+## Check embedding backend
 python -c "from src.nlp.embeddings import EmbeddingBackend; b=EmbeddingBackend(); print(b.use_gpu)"
 
-# Test embeddings
-python -c "from src.nlp.embeddings import EmbeddingBackend; b=EmbeddingBackend(); print(b.encode(['test medical text']).shape)"
+## Test embeddings
+python -c "from src.nlp.embeddings import EmbeddingBackend; b=EmbeddingBackend(); print("Embedding shape:", b.encode(['test medical text']).shape)"
 
-# Build index
+## Run EDA only
+python main.py eda
+
+## Build index
 python main.py index
 
-# Run full pipeline
+## Predict labels for unlabeled documents
+python main.py predict
+
+## Run full pipeline
 python main.py full
 
-# Inspect outputs
+## Inspect outputs
 ls artifacts/exports
 head -n 5 artifacts/exports/predictions.csv
 
-# Run tests
+## Run tests
 pytest -q
 ```
 
 ---
 
-## Author
+## 📛 Common Errors & Troubleshooting
 
-**Georges Nassopoulos**  
-Email: georges.nassopoulos@gmail.com
-
-**Status:** Research / Professional NLP project
+| Error                     | Cause                     | Solution                             |
+| ------------------------- | ------------------------- | ------------------------------------ |
+| Embedding backend failure | Missing embedding model   | Install required embedding libraries |
+| Index creation failure    | Missing labeled data      | Verify `data/labeled/` contents      |
+| Prediction failure        | Missing similarity index  | Run `python main.py index` first     |
+| Docker container failure  | Misconfigured environment | Rebuild containers                   |
 
 ---
 
-### Next possible versions
+## 👤 Author
 
-If you want next:
+**Georges Nassopoulos**
+[georges.nassopoulos@gmail.com](mailto:georges.nassopoulos@gmail.com)
 
-- ultra-compact version
-- scientific paper / methodology report
-- jury / defense version
-
-Tell me which one you want.
+**Status:** Medical NLP / Document Classification Project
