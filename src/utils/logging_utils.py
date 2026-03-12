@@ -4,133 +4,292 @@ __copyright__ = None
 __version__ = "1.0.0"
 __email__ = "georges.nassopoulos@gmail.com"
 __status__ = "Dev"
-__desc__ = "Centralized logging utilities (console + optional file), designed to avoid circular imports and duplicate handlers."
+__desc__ = "Generic logging utilities with sync/async execution-time decorator."
 '''
 
 from __future__ import annotations
 
+import asyncio
+import functools
 import logging
 import os
+import sys
+import time
+import traceback
 from pathlib import Path
-from typing import Optional
-
+from typing import Any, Callable
 
 ## ============================================================
-## INTERNAL HELPERS
+## LOG DIRECTORY MANAGEMENT
 ## ============================================================
-def _get_env(name: str, default: str) -> str:
+def _ensure_log_dir(
+    log_dir: str | Path | None = None,
+
+    ## Dummy parameter for backward compatibility
+    logs_dir: str | Path | None = None,
+) -> Path:
     """
-        Read an environment variable safely
+        Ensure the log directory exists
 
         Args:
-            name: Environment variable name
-            default: Default value if missing
+            log_dir: Optional custom log directory
 
         Returns:
-            Environment value as stripped string
+            Path to the log directory
     """
-    return os.getenv(name, default).strip()
 
+    ## Resolve compatibility alias for legacy parameter
+    if logs_dir and not log_dir:
+        log_dir = logs_dir
 
-def _resolve_log_level() -> int:
-    """
-        Resolve log level from environment variables
+    ## Resolve log directory from argument or environment
+    resolved_dir = Path(log_dir or os.getenv("LOG_DIR", "logs"))
 
-        Supported:
-            LOG_LEVEL: DEBUG | INFO | WARNING | ERROR | CRITICAL
+    ## Create directory if it does not exist
+    resolved_dir.mkdir(parents=True, exist_ok=True)
 
-        Returns:
-            Logging level integer
-    """
-    level_name = _get_env("LOG_LEVEL", "INFO").upper()
-    return getattr(logging, level_name, logging.INFO)
-
-
-def _resolve_logs_dir() -> Path:
-    """
-        Resolve logs directory from environment variables
-
-        Supported:
-            LOGS_DIR: folder path (default: logs)
-
-        Returns:
-            Absolute path to logs directory
-    """
-    return Path(_get_env("LOGS_DIR", "logs")).expanduser().resolve()
-
-
-def _build_formatter() -> logging.Formatter:
-    """
-        Build default log formatter
-
-        Returns:
-            Logging formatter
-    """
-    return logging.Formatter(
-        fmt="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S",
-    )
-
-
-def _has_handler(logger: logging.Logger, handler_type: type) -> bool:
-    """
-        Check if logger already has a handler of the given type
-
-        Args:
-            logger: Target logger
-            handler_type: Handler class type
-
-        Returns:
-            True if found, else False
-    """
-    return any(isinstance(h, handler_type) for h in logger.handlers)
-
+    return resolved_dir
 
 ## ============================================================
-## PUBLIC API
+## LOGGER FACTORY
 ## ============================================================
-def get_logger(name: str, log_file: Optional[str] = None) -> logging.Logger:
-    """
-        Create or return a configured logger
+def get_logger(
+    name: str = "app",
+    log_file: str | None = None,
+    log_dir: str | Path | None = None,
 
-        Design:
-            - No project imports to avoid circular dependencies
-            - Prevents duplicate handlers when called multiple times
-            - Console handler always enabled
-            - File handler enabled only if log_file is provided
+    ## Dummy parameters for backward compatibility (absorbing legacy kwargs)
+    level: str | None = None,
+    logs_dir: str | Path | None = None,
+    log_filename: str | None = None,
+    filename: str | None = None,
+    enable_file: bool | None = None,
+    enable_console: bool | None = None,
+    propagate: bool | None = None,
+) -> logging.Logger:
+    """
+        Build and configure a logger
+
+        Behavior:
+            - console logging
+            - file logging
+            - environment driven configuration
 
         Args:
             name: Logger name
-            log_file: Optional log filename (stored in LOGS_DIR)
+            log_file: Optional log filename
+            log_dir: Optional log directory
 
         Returns:
-            Configured logger instance
+            Configured logger
     """
+
+    ## Resolve compatibility aliases for legacy parameters
+    if logs_dir and not log_dir:
+        log_dir = logs_dir
+
+    if log_filename and not log_file:
+        log_file = log_filename
+
+    if filename and not log_file:
+        log_file = filename
+
+    ## Resolve logging level from environment
+    level_name = os.getenv("LOG_LEVEL", "INFO").upper()
+    level = getattr(logging, level_name, logging.INFO)
+
+    ## Create or retrieve logger instance
     logger = logging.getLogger(name)
+    logger.setLevel(level)
 
-    ## Do not propagate to root to avoid duplicated logs in some environments
+    ## Prevent logs from propagating to root logger
     logger.propagate = False
-    logger.setLevel(_resolve_log_level())
 
-    formatter = _build_formatter()
-    level = _resolve_log_level()
+    ## Avoid duplicate handlers if logger already configured
+    if logger.handlers:
+        return logger
 
-    ## Console handler
-    if not _has_handler(logger, logging.StreamHandler):
-        console_handler = logging.StreamHandler()
-        console_handler.setLevel(level)
-        console_handler.setFormatter(formatter)
-        logger.addHandler(console_handler)
+    ## Define standard log format including function name
+    formatter = logging.Formatter(
+        "%(asctime)s | %(levelname)s | %(name)s | %(funcName)s | %(message)s"
+    )
 
-    ## Optional file handler
-    if log_file and not _has_handler(logger, logging.FileHandler):
-        logs_dir = _resolve_logs_dir()
-        logs_dir.mkdir(parents=True, exist_ok=True)
+    ## Create console handler
+    console_handler = logging.StreamHandler(sys.stdout)
 
-        file_path = logs_dir / log_file
-        file_handler = logging.FileHandler(file_path, encoding="utf-8")
+    ## Apply log level to console
+    console_handler.setLevel(level)
+
+    ## Apply formatter
+    console_handler.setFormatter(formatter)
+
+    ## Attach console handler
+    logger.addHandler(console_handler)
+
+    ## Enable file logging depending on environment variable
+    if os.getenv("LOG_TO_FILE", "true").lower() == "true":
+
+        ## Resolve log directory
+        log_dir_path = _ensure_log_dir(log_dir)
+
+        ## Determine log filename
+        if log_file:
+            filename = log_file
+        else:
+            safe_name = name.replace(".", "_")
+            filename = f"{safe_name}.log"
+
+        ## Create file handler
+        file_handler = logging.FileHandler(
+            log_dir_path / filename,
+            encoding="utf-8",
+        )
+
+        ## Apply log level
         file_handler.setLevel(level)
+
+        ## Apply formatter
         file_handler.setFormatter(formatter)
+
+        ## Attach file handler
         logger.addHandler(file_handler)
 
     return logger
+    
+## ============================================================
+## UTILITY FUNCTION
+## ===========================================================
+def get_absolute_path(path_like: str | Path | None = None) -> str:
+    """
+        Return absolute path
+
+        Args:
+            path_like: Optional path
+
+        Returns:
+            Absolute path string
+    """
+
+    ## Resolve target path
+    target = Path(path_like) if path_like else Path.cwd()
+
+    ## Convert to absolute path
+    return str(target.resolve())
+
+## ============================================================
+## EXECUTION TIME DECORATOR
+## ============================================================
+def log_execution_time_and_path(
+    func: Callable[..., Any],
+) -> Callable[..., Any]:
+    """
+        Log execution time of sync or async functions
+
+        Args:
+            func: Function to decorate
+
+        Returns:
+            Wrapped function
+    """
+
+    ## Create logger based on module name
+    logger = get_logger(func.__module__)
+
+    ## Detect async functions
+    if asyncio.iscoroutinefunction(func):
+
+        @functools.wraps(func)
+        async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
+
+            ## Record start time
+            start_time = time.perf_counter()
+
+            try:
+
+                ## Execute async function
+                result = await func(*args, **kwargs)
+
+                ## Compute execution time
+                elapsed = time.perf_counter() - start_time
+
+                ## Log execution information
+                logger.info(
+                    "Function '%s' executed in %.4fs | path=%s",
+                    func.__name__,
+                    elapsed,
+                    get_absolute_path(),
+                )
+
+                return result
+
+            except Exception as error:
+
+                ## Log error
+                logger.error(
+                    "Function '%s' failed: %s",
+                    func.__name__,
+                    error,
+                )
+
+                ## Print traceback if debug enabled
+                if os.getenv("DEBUG", "false").lower() == "true":
+                    logger.debug(traceback.format_exc())
+
+                raise
+
+        return async_wrapper
+
+    ## Sync function wrapper
+    @functools.wraps(func)
+    def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
+
+        ## Record start time
+        start_time = time.perf_counter()
+
+        try:
+
+            ## Execute function
+            result = func(*args, **kwargs)
+
+            ## Compute execution time
+            elapsed = time.perf_counter() - start_time
+
+            ## Log execution information
+            logger.info(
+                "Function '%s' executed in %.4fs | path=%s",
+                func.__name__,
+                elapsed,
+                get_absolute_path(),
+            )
+
+            return result
+
+        except Exception as error:
+
+            ## Log error
+            logger.error(
+                "Function '%s' failed: %s",
+                func.__name__,
+                error,
+            )
+
+            ## Print traceback if debug enabled
+            if os.getenv("DEBUG", "false").lower() == "true":
+                logger.debug(traceback.format_exc())
+
+            raise
+
+    return sync_wrapper
+
+## ============================================================
+## BACKWARD COMPATIBILITY
+## ============================================================
+def log_execution_time(
+    func: Callable[..., Any],
+) -> Callable[..., Any]:
+    """
+        Alias for execution time decorator
+    """
+
+    ## Reuse main decorator
+    return log_execution_time_and_path(func)
