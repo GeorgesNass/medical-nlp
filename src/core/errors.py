@@ -23,25 +23,78 @@ from src.utils.logging_utils import get_logger
 logger = get_logger(__name__)
 
 ## ============================================================
+## ERROR CODES
+## ============================================================
+ERROR_CODE_PARSING = "parsing_error"
+ERROR_CODE_REGEX_LOADING = "regex_loading_error"
+ERROR_CODE_NORMS_LOADING = "norms_loading_error"
+ERROR_CODE_UNIT_CONVERSION = "unit_conversion_error"
+ERROR_CODE_VALUE_INTERPRETATION = "value_interpretation_error"
+ERROR_CODE_DATASET_BUILD = "dataset_build_error"
+ERROR_CODE_FEATURE_ENGINEERING = "feature_engineering_error"
+ERROR_CODE_DATA_VALIDATION = "data_validation_error"
+ERROR_CODE_CLUSTERING = "clustering_error"
+ERROR_CODE_MODEL_PERSISTENCE = "model_persistence_error"
+ERROR_CODE_MLFLOW_TRACKING = "mlflow_tracking_error"
+ERROR_CODE_CONFIGURATION = "configuration_error"
+ERROR_CODE_RESOURCE_NOT_FOUND = "resource_not_found"
+ERROR_CODE_INTERNAL = "internal_error"
+
+## ============================================================
 ## BASE EXCEPTION
 ## ============================================================
 class LabClusteringError(Exception):
     """
         Base exception for lab_clustering application
 
+        High-level workflow:
+            1) Normalize domain-specific failures
+            2) Preserve structured context for debugging
+            3) Support standardized API responses
+
         Args:
             message: Human-readable error message
             details: Optional additional contextual information
+            error_code: Normalized application error code
+            cause: Original exception if available
+            is_retryable: Whether retry may succeed
     """
 
     def __init__(
         self,
         message: str,
         details: Optional[Dict[str, Any]] = None,
+        error_code: str = ERROR_CODE_INTERNAL,
+        cause: Optional[Exception] = None,
+        is_retryable: bool = False,
     ) -> None:
+        ## Store normalized error metadata
         self.message = message
         self.details = details or {}
+        self.error_code = error_code
+        self.cause = cause
+        self.is_retryable = is_retryable
+
         super().__init__(message)
+
+    def to_dict(self) -> Dict[str, Any]:
+        """
+            Convert the exception into a structured dictionary
+
+            Returns:
+                A normalized error payload
+        """
+
+        return {
+            "error": self.__class__.__name__,
+            "message": self.message,
+            "error_code": self.error_code,
+            "details": self.details,
+            "cause_type": self.cause.__class__.__name__
+            if self.cause
+            else None,
+            "is_retryable": self.is_retryable,
+        }
 
 ## ============================================================
 ## PARSER ERRORS
@@ -91,8 +144,13 @@ class MlflowTrackingError(LabClusteringError):
 class ConfigurationError(LabClusteringError):
     """Raised when configuration or environment setup fails"""
 
+
 class ResourceNotFoundError(LabClusteringError):
     """Raised when required resource file is missing"""
+
+
+class UnknownLabClusteringError(LabClusteringError):
+    """Raised when an unexpected exception must be normalized"""
 
 ## ============================================================
 ## EXCEPTION HANDLERS
@@ -116,22 +174,21 @@ async def lab_clustering_exception_handler(
             JSONResponse with structured error payload
     """
 
-    ## Structured error log
+    ## Log the structured application error
     logger.error(
-        "Application error | path=%s | type=%s | message=%s | details=%s",
+        "Application error | path=%s | type=%s | code=%s | message=%s | "
+        "details=%s",
         request.url.path,
         exc.__class__.__name__,
+        exc.error_code,
         exc.message,
         exc.details,
     )
 
+    ## Return standardized API response
     return JSONResponse(
         status_code=400,
-        content={
-            "error": exc.__class__.__name__,
-            "message": exc.message,
-            "details": exc.details,
-        },
+        content=exc.to_dict(),
     )
 
 async def generic_exception_handler(
@@ -153,26 +210,28 @@ async def generic_exception_handler(
             JSONResponse with generic error payload
     """
 
-    ## Log error in a structured way
+    ## Log the unexpected exception in a structured way
     logger.error(
         "Unhandled exception | path=%s | error=%s",
         request.url.path,
         str(exc),
     )
 
-    ## Full traceback only in DEBUG file logs
+    ## Emit full traceback only in debug logs
     logger.debug("Traceback:", exc_info=True)
 
+    ## Return generic internal error response
     return JSONResponse(
         status_code=500,
         content={
             "error": "InternalServerError",
             "message": "An unexpected error occurred",
+            "error_code": ERROR_CODE_INTERNAL,
         },
     )
 
 ## ============================================================
-## ERROR HELPERS (LOG + RAISE)
+## GENERIC HELPERS
 ## ============================================================
 def log_and_raise(
     exc_type: Type[LabClusteringError],
@@ -194,10 +253,14 @@ def log_and_raise(
     ## Normalize details payload
     payload = details or {}
 
+    ## Resolve error code from exception type
+    error_code = get_error_code_for_exception(exc_type)
+
     ## Log structured error before raising
     logger.error(
-        "Raising error | type=%s | message=%s | details=%s",
+        "Raising error | type=%s | code=%s | message=%s | details=%s",
         exc_type.__name__,
+        error_code,
         message,
         payload,
     )
@@ -206,8 +269,85 @@ def log_and_raise(
     raise exc_type(
         message=message,
         details=payload,
+        error_code=error_code,
     )
 
+def wrap_exception_as(
+    exc: Exception,
+    exc_type: Type[LabClusteringError],
+    message: str,
+    details: Optional[Dict[str, Any]] = None,
+) -> LabClusteringError:
+    """
+        Wrap any exception into a domain-specific error
+
+        Args:
+            exc: Original exception
+            exc_type: Target LabClusteringError type
+            message: Domain message
+            details: Additional context
+
+        Returns:
+            Instantiated LabClusteringError
+    """
+
+    ## Initialize payload from optional details
+    payload = details.copy() if details else {}
+
+    ## Attach original exception metadata
+    payload["original_error"] = str(exc)
+    payload["original_error_type"] = exc.__class__.__name__
+
+    ## Return wrapped domain exception without raising it
+    return exc_type(
+        message=message,
+        details=payload,
+        error_code=get_error_code_for_exception(exc_type),
+        cause=exc,
+    )
+
+def log_unhandled_exception(
+    exc: Exception,
+    context: Optional[Dict[str, Any]] = None,
+) -> UnknownLabClusteringError:
+    """
+        Normalize an unexpected exception into a domain-specific error
+
+        Args:
+            exc: Original unexpected exception
+            context: Optional execution context
+
+        Returns:
+            Instantiated UnknownLabClusteringError
+    """
+
+    ## Initialize payload from optional context
+    payload = context.copy() if context else {}
+
+    ## Attach original exception metadata
+    payload["original_error"] = str(exc)
+    payload["original_error_type"] = exc.__class__.__name__
+
+    ## Log structured unexpected error
+    logger.error(
+        "Unhandled domain exception | type=%s | details=%s",
+        exc.__class__.__name__,
+        payload,
+    )
+    logger.debug("Unhandled traceback", exc_info=True)
+
+    ## Return normalized unknown domain exception
+    return UnknownLabClusteringError(
+        message="An unexpected lab-clustering error occurred",
+        details=payload,
+        error_code=ERROR_CODE_INTERNAL,
+        cause=exc,
+        is_retryable=False,
+    )
+
+## ============================================================
+## SPECIALIZED HELPERS
+## ============================================================
 def log_and_raise_missing_file(
     path: str | Path,
     reason: str,
@@ -270,33 +410,39 @@ def log_and_raise_data_error(
         details=payload,
     )
 
-def wrap_exception_as(
-    exc: Exception,
+## ============================================================
+## ERROR CODE MAPPING
+## ============================================================
+def get_error_code_for_exception(
     exc_type: Type[LabClusteringError],
-    message: str,
-    details: Optional[Dict[str, Any]] = None,
-) -> LabClusteringError:
+) -> str:
     """
-        Wrap any exception into a domain-specific error
+        Map a domain exception type to a normalized error code
 
         Args:
-            exc: Original exception
-            exc_type: Target LabClusteringError type
-            message: Domain message
-            details: Additional context
+            exc_type: Domain exception class
 
         Returns:
-            Instantiated LabClusteringError
+            Normalized application error code
     """
 
-    ## Initialize payload from optional details
-    payload = details.copy() if details else {}
+    ## Build static exception-to-code mapping
+    mapping: Dict[Type[LabClusteringError], str] = {
+        ParsingError: ERROR_CODE_PARSING,
+        RegexLoadingError: ERROR_CODE_REGEX_LOADING,
+        NormsLoadingError: ERROR_CODE_NORMS_LOADING,
+        UnitConversionError: ERROR_CODE_UNIT_CONVERSION,
+        ValueInterpretationError: ERROR_CODE_VALUE_INTERPRETATION,
+        DatasetBuildError: ERROR_CODE_DATASET_BUILD,
+        FeatureEngineeringError: ERROR_CODE_FEATURE_ENGINEERING,
+        DataValidationError: ERROR_CODE_DATA_VALIDATION,
+        ClusteringError: ERROR_CODE_CLUSTERING,
+        ModelPersistenceError: ERROR_CODE_MODEL_PERSISTENCE,
+        MlflowTrackingError: ERROR_CODE_MLFLOW_TRACKING,
+        ConfigurationError: ERROR_CODE_CONFIGURATION,
+        ResourceNotFoundError: ERROR_CODE_RESOURCE_NOT_FOUND,
+        UnknownLabClusteringError: ERROR_CODE_INTERNAL,
+    }
 
-    ## Attach original exception message
-    payload["original_error"] = str(exc)
-
-    ## Return wrapped domain exception (not raised here)
-    return exc_type(
-        message=message,
-        details=payload,
-    )
+    ## Return mapped code or fallback internal code
+    return mapping.get(exc_type, ERROR_CODE_INTERNAL)
