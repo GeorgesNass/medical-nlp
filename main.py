@@ -4,14 +4,19 @@ __copyright__ = None
 __version__ = "1.0.0"
 __email__ = "georges.nassopoulos@gmail.com"
 __status__ = "Dev"
-__desc__ = "Main CLI entry point for the doc-classification project (build index, predict labels, export CSV, run EDA)."
+__desc__ = "Main CLI entry point for doc-classification: index building, prediction, export and EDA."
 '''
 
 from __future__ import annotations
 
+## Standard library
 import argparse
+import sys
+import time
 from pathlib import Path
+from typing import Optional
 
+## Project imports
 from src.core.config import CONFIG
 from src.core.eda import run_eda_on_folder
 from src.pipeline import (
@@ -21,236 +26,241 @@ from src.pipeline import (
 )
 from src.utils.logging_utils import get_logger
 
+## ============================================================
+## CONSTANTS
+## ============================================================
+APP_VERSION = "1.0.0"
+EXIT_SUCCESS = 0
+EXIT_FAILURE = 1
+
+logger = get_logger("doc_classification.main")
 
 ## ============================================================
-## LOGGER
-## ============================================================
-logger = get_logger("main")
-
-
-## ============================================================
-## CLI ARGUMENTS
+## ARG PARSER
 ## ============================================================
 def _build_parser() -> argparse.ArgumentParser:
     """
-        Build argument parser for CLI usage
+        Build CLI parser
 
         Returns:
-            Configured ArgumentParser
+            ArgumentParser instance
     """
 
     parser = argparse.ArgumentParser(
-        description="Medical document classification and topic labeling (doc-classification).",
+        description="Document classification pipeline",
+        add_help=True,
     )
 
-    ## Main action flags
-    parser.add_argument(
-        "--build-index",
-        action="store_true",
-        help="Build similarity index from labeled documents + manifest JSON.",
-    )
-    parser.add_argument(
-        "--predict",
-        action="store_true",
-        help="Predict labels for unlabeled documents using the similarity index.",
-    )
-    parser.add_argument(
-        "--export",
-        action="store_true",
-        help="Export last predictions to CSV (requires --predict).",
-    )
-    parser.add_argument(
-        "--eda",
-        action="store_true",
-        help="Run EDA on a folder (labeled or unlabeled).",
-    )
-    parser.add_argument(
-        "--run-all",
-        action="store_true",
-        help="Run build-index + predict + export in sequence.",
-    )
+    parser.add_argument("--version", action="version", version=f"%(prog)s {APP_VERSION}")
+    parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--validate-config", action="store_true")
 
-    ## Paths (defaults from CONFIG)
-    parser.add_argument(
-        "--labeled-dir",
-        type=str,
-        default=str(CONFIG.paths.labeled_dir),
-        help="Folder containing labeled documents.",
-    )
-    parser.add_argument(
-        "--unlabeled-dir",
-        type=str,
-        default=str(CONFIG.paths.unlabeled_dir),
-        help="Folder containing unlabeled documents.",
-    )
+    ## Actions
+    parser.add_argument("--build-index", action="store_true")
+    parser.add_argument("--predict", action="store_true")
+    parser.add_argument("--export", action="store_true")
+    parser.add_argument("--eda", action="store_true")
+    parser.add_argument("--run-all", action="store_true")
+
+    ## Paths
+    parser.add_argument("--labeled-dir", type=str, default=str(CONFIG.paths.labeled_dir))
+    parser.add_argument("--unlabeled-dir", type=str, default=str(CONFIG.paths.unlabeled_dir))
     parser.add_argument(
         "--manifest",
         type=str,
         default=str(CONFIG.paths.data_dir / "labeled_manifest.json"),
-        help="JSON manifest mapping labeled filenames to their labels.",
     )
 
     ## Outputs
-    parser.add_argument(
-        "--output-csv",
-        type=str,
-        default="predictions.csv",
-        help="Output CSV filename (written to artifacts/exports/).",
-    )
-    parser.add_argument(
-        "--include-scores",
-        action="store_true",
-        help="Include per-label similarity score columns in CSV export.",
-    )
-    parser.add_argument(
-        "--include-evidence",
-        action="store_true",
-        help="Include per-label evidence columns in CSV export.",
-    )
+    parser.add_argument("--output-csv", type=str, default="predictions.csv")
+    parser.add_argument("--include-scores", action="store_true")
+    parser.add_argument("--include-evidence", action="store_true")
 
-    ## EDA options
-    parser.add_argument(
-        "--eda-folder",
-        type=str,
-        default="",
-        help="Folder path for EDA. If empty, uses --labeled-dir when available, else --unlabeled-dir.",
-    )
-    parser.add_argument(
-        "--eda-output",
-        type=str,
-        default="eda_summary.json",
-        help="EDA JSON output filename (written to artifacts/reports/).",
-    )
+    ## EDA
+    parser.add_argument("--eda-folder", type=str, default="")
+    parser.add_argument("--eda-output", type=str, default="eda_summary.json")
 
     return parser
 
+## ============================================================
+## VALIDATION
+## ============================================================
+def _validate_runtime() -> dict:
+    """
+        Validate runtime
+
+        Returns:
+            Summary dict
+    """
+
+    return {
+        "cwd": str(Path.cwd()),
+        "config_paths": str(CONFIG.paths),
+        "python": sys.executable,
+    }
+
+def _build_summary(action: str, success: bool, start: float, details: Optional[dict] = None) -> dict:
+    """
+        Build execution summary
+
+        Args:
+            action: Action name
+            success: Status
+            start: Start time
+            details: Optional details
+
+        Returns:
+            Summary dict
+    """
+
+    return {
+        "action": action,
+        "success": success,
+        "duration_seconds": round(time.monotonic() - start, 3),
+        "details": details or {},
+    }
 
 ## ============================================================
-## MAIN EXECUTION
+## MAIN
 ## ============================================================
-def main() -> None:
+def main() -> int:
     """
         Main CLI entry point
 
-        Workflow notes:
-            - build-index reads labeled docs and manifest to create an in-memory index
-            - predict runs similarity labeling on unlabeled docs
-            - export writes a CSV with TRUE/FALSE per label, plus optional details
-            - run-all executes build-index -> predict -> export
-            - eda computes basic corpus stats and exports a JSON summary
+        Returns:
+            Exit code
     """
+
+    start_time = time.monotonic()
 
     parser = _build_parser()
     args = parser.parse_args()
 
-    ## --------------------------------------------------------
-    ## Resolve folders and paths
-    ## --------------------------------------------------------
-    labeled_dir = Path(args.labeled_dir).expanduser().resolve()
-    unlabeled_dir = Path(args.unlabeled_dir).expanduser().resolve()
-    manifest_path = Path(args.manifest).expanduser().resolve()
+    try:
+        ## Validate runtime
+        runtime = _validate_runtime()
 
-    ## --------------------------------------------------------
-    ## Decide which workflow to run
-    ## --------------------------------------------------------
-    if not any([args.build_index, args.predict, args.export, args.eda, args.run_all]):
-        ## No flags provided -> show help and exit cleanly
-        parser.print_help()
-        return
+        if args.validate_config:
+            logger.info("Config OK | %s", runtime)
+            logger.info("Summary | %s", _build_summary("validate-config", True, start_time))
+            return EXIT_SUCCESS
 
-    ## --------------------------------------------------------
-    ## EDA can be run independently
-    ## --------------------------------------------------------
-    if args.eda:
-        ## Choose folder for EDA (explicit overrides default)
-        if args.eda_folder.strip():
-            eda_folder = Path(args.eda_folder).expanduser().resolve()
-        else:
-            ## Default: labeled dir if it exists, else unlabeled dir
-            eda_folder = labeled_dir if labeled_dir.exists() else unlabeled_dir
+        ## Resolve paths
+        labeled_dir = Path(args.labeled_dir).expanduser().resolve()
+        unlabeled_dir = Path(args.unlabeled_dir).expanduser().resolve()
+        manifest_path = Path(args.manifest).expanduser().resolve()
 
-        logger.info(f"Running EDA on folder: {eda_folder}")
-        run_eda_on_folder(
-            folder_path=eda_folder,
-            labeled_manifest=None,
-            output_name=args.eda_output,
-        )
-        logger.info("EDA finished")
+        if not any([args.build_index, args.predict, args.export, args.eda, args.run_all]):
+            parser.print_help()
+            return EXIT_SUCCESS
 
-        ## If user only asked for EDA, we can exit now
-        if not (args.build_index or args.predict or args.run_all):
-            return
+        if args.dry_run:
+            logger.info("Dry-run | no execution")
+            logger.info("Summary | %s", _build_summary("dry-run", True, start_time))
+            return EXIT_SUCCESS
 
-    ## --------------------------------------------------------
-    ## Build index / Predict / Export (in-memory for now)
-    ## --------------------------------------------------------
-    predictions = None
+        ## ====================================================
+        ## EDA
+        ## ====================================================
+        if args.eda:
+            eda_folder = (
+                Path(args.eda_folder).expanduser().resolve()
+                if args.eda_folder.strip()
+                else (labeled_dir if labeled_dir.exists() else unlabeled_dir)
+            )
 
-    if args.run_all:
-        ## Run full pipeline
-        logger.info("Running full pipeline: build-index -> predict -> export")
+            logger.info("Running EDA on %s", eda_folder)
 
-        index = build_similarity_index_from_labeled(
-            labeled_folder=labeled_dir,
-            manifest_path=manifest_path,
-        )
+            run_eda_on_folder(
+                folder_path=eda_folder,
+                labeled_manifest=None,
+                output_name=args.eda_output,
+            )
 
-        predictions = predict_labels_for_unlabeled(
-            unlabeled_folder=unlabeled_dir,
-            index=index,
-        )
+            logger.info("EDA finished")
 
-        export_path = export_predictions(
-            predictions=predictions,
-            output_csv_name=args.output_csv,
-            include_scores=bool(args.include_scores),
-            include_evidence=bool(args.include_evidence),
-        )
+            if not (args.build_index or args.predict or args.run_all):
+                logger.info("Summary | %s", _build_summary("eda", True, start_time))
+                return EXIT_SUCCESS
 
-        logger.info(f"Export completed: {export_path}")
-        return
+        ## ====================================================
+        ## PIPELINE
+        ## ====================================================
+        predictions = None
+        index = None
 
-    ## Build index if requested
-    index = None
-    if args.build_index:
-        logger.info("Building similarity index from labeled documents")
-        index = build_similarity_index_from_labeled(
-            labeled_folder=labeled_dir,
-            manifest_path=manifest_path,
-        )
-        logger.info("Index build finished")
+        if args.run_all:
+            logger.info("Running full pipeline")
 
-    ## Predict if requested
-    if args.predict:
-        ## If predict requested without build-index, we still need an index
-        if index is None:
-            logger.info("Index not built in this run, building index first (required for predict)")
             index = build_similarity_index_from_labeled(
                 labeled_folder=labeled_dir,
                 manifest_path=manifest_path,
             )
 
-        logger.info("Predicting labels for unlabeled documents")
-        predictions = predict_labels_for_unlabeled(
-            unlabeled_folder=unlabeled_dir,
-            index=index,
-        )
-        logger.info("Prediction finished")
+            predictions = predict_labels_for_unlabeled(
+                unlabeled_folder=unlabeled_dir,
+                index=index,
+            )
 
-    ## Export if requested
-    if args.export:
-        if predictions is None:
-            raise ValueError("--export requires predictions. Use --predict or --run-all first.")
+            export_path = export_predictions(
+                predictions=predictions,
+                output_csv_name=args.output_csv,
+                include_scores=args.include_scores,
+                include_evidence=args.include_evidence,
+            )
 
-        export_path = export_predictions(
-            predictions=predictions,
-            output_csv_name=args.output_csv,
-            include_scores=bool(args.include_scores),
-            include_evidence=bool(args.include_evidence),
-        )
+            logger.info("Export completed: %s", export_path)
+            logger.info("Summary | %s", _build_summary("run-all", True, start_time))
+            return EXIT_SUCCESS
 
-        logger.info(f"Export completed: {export_path}")
+        if args.build_index:
+            logger.info("Building index")
+            index = build_similarity_index_from_labeled(
+                labeled_folder=labeled_dir,
+                manifest_path=manifest_path,
+            )
 
+        if args.predict:
+            if index is None:
+                logger.info("Index missing -> building first")
+                index = build_similarity_index_from_labeled(
+                    labeled_folder=labeled_dir,
+                    manifest_path=manifest_path,
+                )
 
+            predictions = predict_labels_for_unlabeled(
+                unlabeled_folder=unlabeled_dir,
+                index=index,
+            )
+
+        if args.export:
+            if predictions is None:
+                raise ValueError("Export requires predictions")
+
+            export_path = export_predictions(
+                predictions=predictions,
+                output_csv_name=args.output_csv,
+                include_scores=args.include_scores,
+                include_evidence=args.include_evidence,
+            )
+
+            logger.info("Export completed: %s", export_path)
+
+        logger.info("Summary | %s", _build_summary("run", True, start_time))
+        return EXIT_SUCCESS
+
+    except KeyboardInterrupt:
+        logger.warning("Interrupted")
+        logger.warning("Summary | %s", _build_summary("interrupt", False, start_time))
+        return EXIT_FAILURE
+
+    except Exception as exc:
+        logger.exception("Error: %s", exc)
+        logger.error("Summary | %s", _build_summary("error", False, start_time))
+        return EXIT_FAILURE
+
+## ============================================================
+## ENTRYPOINT
+## ============================================================
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

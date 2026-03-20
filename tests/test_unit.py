@@ -21,7 +21,6 @@ from src.nlp.segmenter import SegmenterConfig, normalize_text, segment_text, tok
 from src.nlp.similarity_index import SimilarityIndex
 from src.utils.io_utils import load_text_from_bytes, load_text_from_path
 
-
 ## ============================================================
 ## TESTS: LOADERS
 ## ============================================================
@@ -40,7 +39,33 @@ def test_load_text_from_bytes_txt_success() -> None:
     assert isinstance(text, str)
     assert "Bonjour" in text
 
+def test_load_text_from_bytes_empty() -> None:
+    """
+        Test loader handles empty bytes input
+    """
 
+    text = load_text_from_bytes(content=b"", file_extension=".txt")
+
+    assert text == ""
+
+def test_tokenize_words_empty() -> None:
+    """
+        Test tokenization handles empty input
+    """
+
+    tokens = tokenize_words("")
+
+    assert tokens == []
+   
+def test_tokenize_words_empty() -> None:
+    """
+        Test tokenization handles empty input
+    """
+
+    tokens = tokenize_words("")
+
+    assert tokens == []
+    
 def test_load_text_from_bytes_txt_invalid_ext_raises_data_error() -> None:
     """
         Test byte loader refuses non-txt extensions.
@@ -53,10 +78,20 @@ def test_load_text_from_bytes_txt_invalid_ext_raises_data_error() -> None:
     with pytest.raises(DataError):
         _ = load_text_from_bytes(content=content, file_extension=".pdf")
 
-
 def test_load_text_from_path_missing_file_raises_data_error(tmp_path: Path) -> None:
     """
-        Test missing file path raises DataError.
+        Test missing file path raises DataError
+
+        High-level workflow:
+            1) Build a non-existing file path
+            2) Attempt to load file
+            3) Expect DataError to be raised
+
+        Args:
+            tmp_path: Pytest temporary directory
+
+        Returns:
+            None
     """
 
     ## Arrange
@@ -66,10 +101,20 @@ def test_load_text_from_path_missing_file_raises_data_error(tmp_path: Path) -> N
     with pytest.raises(DataError):
         _ = load_text_from_path(missing_path)
 
-
 def test_load_text_from_path_directory_raises_data_error(tmp_path: Path) -> None:
     """
-        Test passing a directory to loader raises DataError.
+        Test passing a directory to loader raises DataError
+
+        High-level workflow:
+            1) Create a directory instead of a file
+            2) Attempt to load directory as file
+            3) Expect DataError to be raised
+
+        Args:
+            tmp_path: Pytest temporary directory
+
+        Returns:
+            None
     """
 
     ## Arrange
@@ -80,10 +125,20 @@ def test_load_text_from_path_directory_raises_data_error(tmp_path: Path) -> None
     with pytest.raises(DataError):
         _ = load_text_from_path(folder)
 
-
 def test_load_text_from_path_txt_success(tmp_path: Path) -> None:
     """
-        Test TXT file loading returns content.
+        Test TXT file loading returns content
+
+        High-level workflow:
+            1) Create a temporary TXT file
+            2) Load file content
+            3) Validate expected content is present
+
+        Args:
+            tmp_path: Pytest temporary directory
+
+        Returns:
+            None
     """
 
     ## Arrange
@@ -96,7 +151,6 @@ def test_load_text_from_path_txt_success(tmp_path: Path) -> None:
     ## Assert
     assert "Jean" in text
     assert "Age" in text
-
 
 ## ============================================================
 ## TESTS: SEGMENTER
@@ -115,7 +169,6 @@ def test_normalize_text_collapses_whitespace() -> None:
     ## Assert
     assert norm == "A B C D"
 
-
 def test_tokenize_words_basic() -> None:
     """
         Test tokenization extracts word-like tokens.
@@ -131,7 +184,6 @@ def test_tokenize_words_basic() -> None:
     assert "CRH" in tokens or "crh" in [t.lower() for t in tokens]
     assert "Jean" in tokens
     assert "Dupont" in tokens
-
 
 def test_segment_text_returns_overlapping_segments() -> None:
     """
@@ -160,7 +212,6 @@ def test_segment_text_returns_overlapping_segments() -> None:
     assert segments[0].start_char >= 0
     assert segments[0].end_char > segments[0].start_char
 
-
 def test_segment_text_empty_returns_empty() -> None:
     """
         Test segmentation on empty text returns empty list.
@@ -172,7 +223,36 @@ def test_segment_text_empty_returns_empty() -> None:
     ## Assert
     assert segments == []
 
+def test_segment_text_small_text_single_segment() -> None:
+    """
+        Test segmentation with very small text
+    """
 
+    text = "short text"
+
+    segments = segment_text(text)
+
+    assert isinstance(segments, list)
+    assert len(segments) <= 1
+    
+def test_similarity_index_top_k_greater_than_size() -> None:
+    """
+        Test search handles top_k greater than index size
+    """
+
+    index = SimilarityIndex(normalize_vectors=True)
+
+    vectors = [[1.0, 0.0]]
+    segments = _make_segments(1)
+    labels = ["crh"]
+    sources = ["f1.txt"]
+
+    index.add(vectors=vectors, segments=segments, labels=labels, source_files=sources)
+
+    results = index.search(query_vectors=[[1.0, 0.0]], top_k=10)
+
+    assert len(results[0]) == 1
+    
 ## ============================================================
 ## TESTS: SIMILARITY INDEX
 ## ============================================================
@@ -200,7 +280,6 @@ def _make_segments(n: int) -> List[DocumentSegment]:
         )
     return segments
 
-
 def test_similarity_index_add_misaligned_lengths_raises_pipeline_error() -> None:
     """
         Test add() rejects misaligned metadata lengths.
@@ -216,7 +295,6 @@ def test_similarity_index_add_misaligned_lengths_raises_pipeline_error() -> None
     ## Act / Assert
     with pytest.raises(PipelineError):
         index.add(vectors=vectors, segments=segments, labels=labels, source_files=sources)
-
 
 def test_similarity_index_add_and_search_returns_results() -> None:
     """
@@ -250,7 +328,6 @@ def test_similarity_index_add_and_search_returns_results() -> None:
     assert results[0][0].label in {"crh"}
     assert results[0][0].score == pytest.approx(1.0, abs=1e-6)
 
-
 def test_similarity_index_empty_search_returns_empty_lists() -> None:
     """
         Test searching an empty index returns empty result lists.
@@ -264,7 +341,6 @@ def test_similarity_index_empty_search_returns_empty_lists() -> None:
 
     ## Assert
     assert results == [[], []]
-
 
 def test_similarity_index_size() -> None:
     """
@@ -284,3 +360,14 @@ def test_similarity_index_size() -> None:
 
     ## Assert
     assert index.size() == 1
+
+def test_similarity_index_add_empty_vectors() -> None:
+    """
+        Test adding empty vectors does not crash
+    """
+
+    index = SimilarityIndex(normalize_vectors=True)
+
+    index.add(vectors=[], segments=[], labels=[], source_files=[])
+
+    assert index.size() == 0
