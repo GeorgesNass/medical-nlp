@@ -28,7 +28,6 @@ from src.nlp.rules import apply_negation_rules, apply_temporality_rules
 ## Pipeline imports
 from src.pipeline import run_pipeline
 
-
 def test_normalize_text_basic() -> None:
     """
         Test basic text normalization pipeline
@@ -43,7 +42,6 @@ def test_normalize_text_basic() -> None:
     """
     out = normalize_text("  Héllo   World  ", to_case="lower", remove_accents=True)
     assert out == "hello world"
-
 
 def test_entity_validation_ok() -> None:
     """
@@ -71,7 +69,6 @@ def test_entity_validation_ok() -> None:
     )
     ent.validate()
 
-
 def test_entity_validation_invalid_id() -> None:
     """
         Test validation failure on invalid entity identifier
@@ -93,7 +90,6 @@ def test_entity_validation_invalid_id() -> None:
 
     with pytest.raises(DataError):
         ent.validate()
-
 
 def test_entity_validation_future_for_disease_raises() -> None:
     """
@@ -117,7 +113,6 @@ def test_entity_validation_future_for_disease_raises() -> None:
 
     with pytest.raises(DataError):
         ent.validate()
-
 
 def test_record_validation_duplicate_entity_ids() -> None:
     """
@@ -159,7 +154,6 @@ def test_record_validation_duplicate_entity_ids() -> None:
     with pytest.raises(DataError):
         rec.validate(validate_spans=True)
 
-
 def test_record_validation_span_out_of_bounds_raises() -> None:
     """
         Test record validation failure on span out of bounds
@@ -190,7 +184,6 @@ def test_record_validation_span_out_of_bounds_raises() -> None:
 
     with pytest.raises(DataError):
         rec.validate(validate_spans=True)
-
 
 def test_negation_rules_basic() -> None:
     """
@@ -225,7 +218,6 @@ def test_negation_rules_basic() -> None:
         NegationStatus.NEGATED,
         NegationStatus.NOT_NEGATED,
     )
-
 
 def test_temporality_rules_basic() -> None:
     """
@@ -264,7 +256,6 @@ def test_temporality_rules_basic() -> None:
         "chronic",
     )
 
-
 def test_pipeline_no_input_raises() -> None:
     """
         Test pipeline behavior with missing inputs
@@ -279,7 +270,6 @@ def test_pipeline_no_input_raises() -> None:
 
     with pytest.raises(ConfigurationError):
         run_pipeline(cfg=cfg)
-
 
 def test_pipeline_unlabeled_smoke(tmp_path: Path) -> None:
     """
@@ -304,6 +294,118 @@ def test_pipeline_unlabeled_smoke(tmp_path: Path) -> None:
     out = run_pipeline(
         cfg=cfg,
         unlabeled_texts_dir=raw_dir,
+        output_csv_path=tmp_path / "out.csv",
+    )
+
+    assert out.exists()
+    assert out.suffix == ".csv"
+
+def test_record_validation_ok() -> None:
+    """
+        Test validation of a correct Record object
+
+        Ensures:
+            - Valid record passes validation without error
+
+        Returns:
+            None
+    """
+
+    ent = Entity(
+        id="ent_000001",
+        text="aspirin",
+        start=0,
+        end=7,
+        label=EntityLabel.MEDICATION,
+        meta={},
+    )
+
+    rec = Record(
+        record_id="rec_000001",
+        patient_id="pat_000001",
+        name_document="doc.txt",
+        type_document="note",
+        text="aspirin",
+        entities=[ent],
+        date_document="2025-01-01",
+    )
+
+    rec.validate(validate_spans=True)
+    
+def test_negation_rules_empty_entities() -> None:
+    """
+        Test negation rules on a record without entities
+
+        Ensures:
+            - Rule application does not crash on empty entity list
+
+        Returns:
+            None
+    """
+
+    rec = Record(
+        record_id="rec_000001",
+        patient_id="pat_000001",
+        name_document="doc.txt",
+        type_document="note",
+        text="No relevant finding",
+        entities=[],
+    )
+
+    apply_negation_rules(rec, window=5)
+
+    assert rec.entities == []
+    
+def test_temporality_rules_empty_entities() -> None:
+    """
+        Test temporality rules on a record without entities
+
+        Ensures:
+            - Rule application does not crash on empty entity list
+
+        Returns:
+            None
+    """
+
+    rec = Record(
+        record_id="rec_000001",
+        patient_id="pat_000001",
+        name_document="doc.txt",
+        type_document="note",
+        text="No relevant finding",
+        entities=[],
+    )
+
+    apply_temporality_rules(rec)
+
+    assert rec.entities == []
+    
+def test_pipeline_labeled_csv_smoke(tmp_path: Path) -> None:
+    """
+        Smoke test for labeled CSV pipeline execution
+
+        Ensures:
+            - Pipeline runs on labeled CSV input
+            - Output CSV file is generated
+
+        Args:
+            tmp_path: Temporary pytest directory
+
+        Returns:
+            None
+    """
+
+    labeled_csv = tmp_path / "labeled.csv"
+    labeled_csv.write_text(
+        "text,label\nPatient has asthma,DISEASE\n",
+        encoding="utf-8",
+    )
+
+    cfg = ProjectConfig.from_env(project_root=tmp_path)
+
+    out = run_pipeline(
+        cfg=cfg,
+        labeled_csv_path=labeled_csv,
         output_csv_path=tmp_path / "out.csv",
     )
 
