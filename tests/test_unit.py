@@ -21,6 +21,55 @@ from src.parser.check_norms import compute_status_from_norms
 from src.parser.format_output import format_structured_output
 
 ## ============================================================
+## TEST HELPERS
+## ============================================================
+class DummyClusteringParams:
+    """
+        Minimal test helper mimicking clustering parameters object
+
+        Designed for clustering smoke tests without requiring a real Pydantic model
+
+        Args:
+            algorithm: Clustering algorithm name
+            params: Dictionary of clustering parameters
+
+        Returns:
+            DummyClusteringParams instance
+    """
+
+    def __init__(self, algorithm: str, params: Dict[str, Any]) -> None:
+        ## Store algorithm name
+        self.algorithm = algorithm
+
+        ## Store parameters dictionary
+        self._params = params or {}
+
+    def model_dump(self) -> Dict[str, Any]:
+        """
+            Return parameters as dictionary
+
+            Returns:
+                Parameters dictionary
+        """
+
+        return dict(self._params)
+
+    def __repr__(self) -> str:
+        """
+            Return debug representation
+
+            Returns:
+                Readable string representation
+        """
+
+        return (
+            f"DummyClusteringParams("
+            f"algorithm={self.algorithm}, "
+            f"params={self._params}"
+            f")"
+        )
+
+## ============================================================
 ## FIXTURES
 ## ============================================================
 @pytest.fixture()
@@ -48,6 +97,51 @@ def app_config(monkeypatch: pytest.MonkeyPatch) -> AppConfig:
     monkeypatch.setenv("MLFLOW_EXPERIMENT_NAME", "lab_clustering_test")
 
     return build_config()
+
+@pytest.fixture
+def dummy_clustering_params() -> DummyClusteringParams:
+    """
+        Provide default clustering parameters for smoke tests
+
+        Returns:
+            DummyClusteringParams instance
+    """
+
+    return DummyClusteringParams(
+        algorithm="kmeans",
+        params={"n_clusters": 2},
+    )
+
+@pytest.fixture
+def dummy_clustering_params_factory():
+    """
+        Provide a factory to build custom clustering parameters
+
+        Returns:
+            Factory function creating DummyClusteringParams
+    """
+
+    def _factory(
+        algorithm: str = "kmeans",
+        params: Dict[str, Any] | None = None,
+    ) -> DummyClusteringParams:
+        """
+            Build custom dummy clustering params
+
+            Args:
+                algorithm: Clustering algorithm name
+                params: Optional clustering parameters
+
+            Returns:
+                DummyClusteringParams instance
+        """
+
+        return DummyClusteringParams(
+            algorithm=algorithm,
+            params=params or {"n_clusters": 2},
+        )
+
+    return _factory
 
 ## ============================================================
 ## TESTS: NORMS STATUS
@@ -184,32 +278,6 @@ def test_format_structured_output_schema(app_config: AppConfig) -> None:
 ## ============================================================
 ## TESTS: PREPROCESS + CLUSTERING SMOKE
 ## ============================================================
-class DummyClusteringParams:
-    """
-        Minimal object mimicking pydantic clustering params
-
-        Args:
-            algorithm: Algorithm identifier
-            params: Parameter dictionary
-
-        Returns:
-            DummyClusteringParams instance
-    """
-
-    def __init__(self, algorithm: str, params: Dict[str, Any]) -> None:
-        self.algorithm = algorithm
-        self._params = params
-
-    def model_dump(self) -> Dict[str, Any]:
-        """
-            Return params as dict like Pydantic model_dump
-
-            Returns:
-                Parameters dictionary
-        """
-
-        return self._params
-
 def test_preprocess_and_cluster_smoke() -> None:
     """
         Basic smoke test for preprocessing and kmeans clustering
