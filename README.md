@@ -69,9 +69,8 @@ mesh_semantic_expansion/
 │       ├── mesh_extended.json
 │       └── report_diff.md
 │
-├── tests/
-│   ├── test_mesh.py               				## End-to-end MeSH tests
-│   └── test_unit.py               				## Unit tests
+├── tests/            							## End-to-end unit tests
+│   └── test_unit.py               			    
 │
 └── src/
 	├── pipelines.py              				## Pipeline orchestration
