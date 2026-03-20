@@ -11,7 +11,6 @@ from __future__ import annotations
 
 import numpy as np
 import pytest
-from pathlib import Path
 
 from src.nlp.preprocess import preprocess_text
 from src.nlp.postprocess import select_top_k
@@ -58,6 +57,29 @@ def test_select_top_k_full_length() -> None:
 
     assert returned_labels == set(labels)
 
+def test_select_top_k_greater_than_classes() -> None:
+    """
+        top_k greater than number of classes should not crash
+    """
+
+    probabilities = np.array([[0.2, 0.8]])
+    labels = ["A", "B"]
+
+    results = select_top_k(probabilities, labels, top_k=10)
+
+    assert len(results[0]) == 2
+  
+def test_select_top_k_mismatch_labels() -> None:
+    """
+        Mismatch between labels and probabilities should fail
+    """
+
+    probabilities = np.array([[0.2, 0.8]])
+    labels = ["A"]  # mismatch
+
+    with pytest.raises(Exception):
+        select_top_k(probabilities, labels, top_k=1)
+        
 ## ============================================================
 ## TEST: BASIC METRICS
 ## ============================================================
@@ -89,6 +111,17 @@ def test_compute_basic_metrics_partial() -> None:
     assert 0.0 <= metrics["f1_micro"] <= 1.0
     assert 0.0 <= metrics["f1_macro"] <= 1.0
 
+def test_compute_basic_metrics_empty() -> None:
+    """
+        Empty inputs should raise error
+    """
+
+    y_true = np.array([])
+    y_pred = np.array([])
+
+    with pytest.raises(Exception):
+        compute_basic_metrics(y_true, y_pred)
+        
 ## ============================================================
 ## TEST: EDGE CASES
 ## ============================================================
@@ -141,12 +174,14 @@ def test_e2e_tiny_train_predict_metrics() -> None:
     ## Train baseline model
     config = TrainingConfig(model_type="logreg", random_state=42, n_jobs=1)
     model = train_model(X, labels, config)
-
+    
     ## Predict and compute metrics
     y_pred, probs = predict_with_probabilities(model, X)
     metrics = compute_basic_metrics(labels, y_pred)
 
     ## Assertions (smoke-level)
+    assert model is not None 
+    
     assert probs.shape[0] == len(texts)
     assert probs.shape[1] == len(set(labels))
 
