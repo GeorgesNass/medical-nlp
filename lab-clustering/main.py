@@ -4,33 +4,36 @@ __copyright__ = None
 __version__ = "1.0.0"
 __email__ = "georges.nassopoulos@gmail.com"
 __status__ = "Dev"
-__desc__ = "Main CLI entry point for lab_clustering (parse TXT, build dataset, cluster, export, run EDA, run API)."
+__desc__ = "Main CLI entry point for lab-clustering: UI, API, chat, loop, ingest and evaluation."
 '''
 
 from __future__ import annotations
 
 import argparse
+import subprocess
 import sys
+import time
 from pathlib import Path
+from typing import Any, Dict, Optional
 
-import pandas as pd
 import uvicorn
 
-from src.core.config import AppConfig, build_config
-from src.core.eda import run_dataset_eda, run_structured_eda
-from src.core.errors import (
-    ClusteringError,
-    ConfigurationError,
-    DatasetBuildError,
-    LabClusteringError,
-    ParsingError,
-)
-from src.pipelines import (
-    build_dataset_pipeline,
-    parse_txt_pipeline,
-    run_clustering_pipeline,
-)
+from src.core.config import config
+from src.core.errors import AutonomousAIPlatformError, DependencyError, log_structured_error
+from src.core.streamlit_app import run_streamlit_app
+from src.pipeline import run_chat, run_evaluation, run_loop
+from src.utils.env_utils import _get_env_int
 from src.utils.logging_utils import get_logger
+from src.utils.safe_utils import _safe_json, _safe_str
+from src.utils.validation_utils import _must_be_non_empty
+
+## ============================================================
+## CONSTANTS
+## ============================================================
+APP_VERSION = "1.0.0"
+EXIT_SUCCESS = 0
+EXIT_FAILURE = 1
+EXIT_PLATFORM_ERROR = 2
 
 ## ============================================================
 ## LOGGER
@@ -38,353 +41,251 @@ from src.utils.logging_utils import get_logger
 logger = get_logger("main")
 
 ## ============================================================
-## CLI ARGUMENTS
+## ARG PARSER
 ## ============================================================
 def _build_parser() -> argparse.ArgumentParser:
     """
-        Build argument parser for CLI usage
-
-        High-level workflow:
-            1) Define action flags (parse, dataset, cluster, eda, api)
-            2) Define optional path overrides
-            3) Define API options
+        Build CLI argument parser
 
         Returns:
             Configured ArgumentParser
     """
 
     parser = argparse.ArgumentParser(
-        description="Unsupervised clustering and analysis of laboratory data (lab_clustering)."
+        description="Lab clustering CLI launcher",
+        add_help=True,
     )
 
-    ## Main actions
-    parser.add_argument(
-        "--parse-txt",
-        action="store_true",
-        help="Parse raw TXT files from data/raw and export structured CSV to data/interim/lab_structured_csv.",
-    )
-    parser.add_argument(
-        "--build-dataset",
-        action="store_true",
-        help="Build dataset from structured CSV files and export to data/interim/datasets.",
-    )
-    parser.add_argument(
-        "--cluster",
-        action="store_true",
-        help="Run clustering on a dataset (preprocess + fit + metrics + MLflow + exports).",
-    )
-    parser.add_argument(
-        "--eda",
-        action="store_true",
-        help="Run basic EDA on structured CSVs and/or datasets.",
-    )
-    parser.add_argument(
-        "--run-api",
-        action="store_true",
-        help="Run FastAPI service (uvicorn).",
-    )
-    parser.add_argument(
-        "--run-all",
-        action="store_true",
-        help="Run parse-txt -> build-dataset -> cluster -> eda in sequence.",
-    )
+    parser.add_argument("--version", action="version", version=f"%(prog)s {APP_VERSION}")
+    parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--validate-config", action="store_true")
 
-    ## Parse options
-    parser.add_argument(
-        "--txt-files",
-        type=str,
-        default="",
-        help="Comma-separated filenames under data/raw (default: all .txt in data/raw).",
-    )
-    parser.add_argument(
-        "--overwrite",
-        action="store_true",
-        help="Overwrite existing outputs if present.",
-    )
+    ## Execution
+    parser.add_argument("--run-ui", action="store_true")
+    parser.add_argument("--run-api", action="store_true")
+    parser.add_argument("--chat", action="store_true")
+    parser.add_argument("--loop", action="store_true")
+    parser.add_argument("--evaluate", action="store_true")
+    parser.add_argument("--ingest", action="store_true")
 
-    ## Dataset options
-    parser.add_argument(
-        "--dataset-format",
-        type=str,
-        default="wide",
-        choices=["wide", "long"],
-        help="Dataset format to build (wide or long).",
-    )
+    ## Runtime
+    parser.add_argument("--prefer-local", action="store_true")
+    parser.add_argument("--use-gpu", action="store_true")
+    parser.add_argument("--export", action="store_true")
 
-    ## Clustering options
-    parser.add_argument(
-        "--dataset-path",
-        type=str,
-        default="",
-        help="Path to dataset (default: data/interim/datasets/dataset_wide.parquet).",
-    )
-    parser.add_argument(
-        "--algorithm",
-        type=str,
-        default="kmeans",
-        choices=["kmeans", "agglomerative", "dbscan", "birch"],
-        help="Clustering algorithm.",
-    )
-    parser.add_argument(
-        "--n-clusters",
-        type=int,
-        default=3,
-        help="Number of clusters (for kmeans/agglomerative/birch).",
-    )
-    parser.add_argument(
-        "--apply-pca",
-        action="store_true",
-        help="Apply PCA for dimensionality reduction.",
-    )
-    parser.add_argument(
-        "--pca-n-components",
-        type=int,
-        default=2,
-        help="Number of PCA components if --apply-pca is enabled.",
-    )
+    ## Inputs
+    parser.add_argument("--prompt", type=str, default="")
+    parser.add_argument("--query", type=str, default="")
+    parser.add_argument("--answer", type=str, default="")
+    parser.add_argument("--input-dir", type=str, default="")
 
-    ## API options
-    parser.add_argument(
-        "--host",
-        type=str,
-        default="0.0.0.0",
-        help="API host (default: 0.0.0.0).",
-    )
-    parser.add_argument(
-        "--port",
-        type=int,
-        default=8000,
-        help="API port (default: 8000).",
-    )
-    parser.add_argument(
-        "--reload",
-        action="store_true",
-        help="Enable auto-reload (dev mode).",
-    )
+    ## API
+    parser.add_argument("--host", type=str, default="0.0.0.0")
+    parser.add_argument("--port", type=int, default=8000)
+    parser.add_argument("--reload", action="store_true")
+
+    parser.add_argument("--internal-ui", action="store_true", help=argparse.SUPPRESS)
 
     return parser
 
 ## ============================================================
-## PATH RESOLUTION HELPERS
+## HELPERS
 ## ============================================================
-def _parse_txt_files_arg(arg: str) -> list[str]:
+def _build_summary(
+    action: str,
+    success: bool,
+    start: float,
+    details: Optional[dict] = None,
+) -> dict:
     """
-        Parse --txt-files argument into list
-
-        High-level workflow:
-            1) Split on commas
-            2) Strip whitespace
-            3) Remove empty tokens
+        Build standardized execution summary
 
         Args:
-            arg: Raw CLI argument string
+            action: Executed action name
+            success: Execution status
+            start: Monotonic start timestamp
+            details: Optional structured details
 
         Returns:
-            List of filenames
+            Standardized summary dictionary
     """
 
-    if not arg.strip():
-        return []
+    return {
+        "action": action,
+        "success": success,
+        "duration_seconds": round(time.monotonic() - start, 3),
+        "details": details or {},
+    }
 
-    return [x.strip() for x in arg.split(",") if x.strip()]
-
-def _default_dataset_path(config: AppConfig, dataset_format: str) -> Path:
+def _print_json(payload: Dict[str, Any]) -> None:
     """
-        Resolve default dataset path based on format
+        Print structured JSON payload
 
         Args:
-            config: AppConfig instance
-            dataset_format: Dataset format
+            payload: Dictionary payload
 
         Returns:
-            Path to default dataset
+            None
     """
 
-    return config.paths.interim_datasets_dir / f"dataset_{dataset_format}.parquet"
+    logger.info("CLI_OUTPUT | %s", _safe_json(payload))
+
+def _run_streamlit_subprocess() -> None:
+    """
+        Launch Streamlit UI subprocess
+
+        Raises:
+            DependencyError if Streamlit missing
+    """
+
+    main_path = Path(__file__).resolve()
+    cmd = ["streamlit", "run", str(main_path), "--", "--internal-ui"]
+
+    try:
+        subprocess.run(cmd, check=True)
+    except FileNotFoundError as exc:
+        raise DependencyError(
+            message="streamlit is not installed",
+            error_code="dependency_error",
+            details={"cmd": cmd},
+            origin="main",
+            cause=exc,
+            http_status=500,
+            is_retryable=False,
+        ) from exc
+
+def _run_api(host: str, port: int, reload: bool) -> None:
+    """
+        Start FastAPI server
+
+        Args:
+            host: API host
+            port: API port
+            reload: Dev reload flag
+    """
+
+    uvicorn.run("src.core.mcp_server:app", host=host, port=int(port), reload=bool(reload))
 
 ## ============================================================
-## MAIN EXECUTION
+## MAIN
 ## ============================================================
-def main() -> None:
+def main() -> int:
     """
         Main CLI entry point
 
-        Workflow notes:
-            - parse-txt parses raw TXT reports into structured analyte-level CSV files
-            - build-dataset builds wide/long datasets from structured CSV files
-            - cluster runs preprocessing and unsupervised clustering and exports artifacts with MLflow tracking
-            - eda exports basic diagnostics for structured data and datasets
-            - run-api starts FastAPI server via uvicorn
+        Returns:
+            Exit code
     """
 
+    start_time = time.monotonic()
+    parser = _build_parser()
+    args = parser.parse_args()
+
     try:
-        config = build_config()
+        ## Validate config
+        if args.validate_config:
+            logger.info("Config OK")
+            logger.info("Summary | %s", _build_summary("validate-config", True, start_time))
+            return EXIT_SUCCESS
 
-        parser = _build_parser()
-        args = parser.parse_args()
+        ## Internal UI
+        if args.internal_ui:
+            run_streamlit_app()
+            return EXIT_SUCCESS
 
-        ## Decide which workflow to run
-        if not any(
-            [
-                args.parse_txt,
-                args.build_dataset,
-                args.cluster,
-                args.eda,
-                args.run_api,
-                args.run_all,
-            ]
-        ):
+        if not any([args.run_ui, args.run_api, args.chat, args.loop, args.evaluate, args.ingest]):
             parser.print_help()
-            return
+            return EXIT_SUCCESS
 
-        ## Parse file list
-        txt_files = _parse_txt_files_arg(args.txt_files)
+        if args.dry_run:
+            logger.info("Dry-run | no execution")
+            logger.info("Summary | %s", _build_summary("dry-run", True, start_time))
+            return EXIT_SUCCESS
 
-        ## Resolve dataset path
-        dataset_path = (
-            Path(args.dataset_path).expanduser().resolve()
-            if args.dataset_path.strip()
-            else _default_dataset_path(config, args.dataset_format)
+        prefer_local = bool(args.prefer_local)
+        use_gpu = bool(args.use_gpu)
+
+        ## UI
+        if args.run_ui:
+            _run_streamlit_subprocess()
+            return EXIT_SUCCESS
+
+        ## API
+        if args.run_api:
+            _run_api(args.host, args.port, args.reload)
+            return EXIT_SUCCESS
+
+        ## Chat
+        if args.chat:
+            text = _must_be_non_empty(args.prompt, "prompt")
+            result = run_chat(text, prefer_local=prefer_local, use_gpu=use_gpu)
+            _print_json(result)
+
+        ## Loop
+        if args.loop:
+            text = _must_be_non_empty(args.prompt, "prompt")
+            result = run_loop(text, prefer_local=prefer_local, use_gpu=use_gpu, export=bool(args.export))
+            _print_json(result)
+
+        ## Evaluate
+        if args.evaluate:
+            q = _must_be_non_empty(args.query, "query")
+            a = _must_be_non_empty(args.answer, "answer")
+            report = run_evaluation(
+                q,
+                a,
+                use_llm_judge=True,
+                prefer_local=prefer_local,
+                use_gpu=use_gpu,
+                export=bool(args.export),
+            )
+            _print_json(report)
+
+        ## Ingest
+        if args.ingest:
+            from src.orchestrator.retrieval import ingest_folder
+
+            root = Path(args.input_dir).expanduser().resolve() if args.input_dir else config.paths.data_raw_dir
+
+            result = ingest_folder(
+                folder=str(root),
+                prefer_local=prefer_local,
+                use_gpu=use_gpu,
+            )
+            _print_json(result)
+
+        logger.info("Summary | %s", _build_summary("run", True, start_time))
+        return EXIT_SUCCESS
+
+    except KeyboardInterrupt:
+        logger.warning("Interrupted")
+        logger.warning("Summary | %s", _build_summary("interrupt", False, start_time))
+        return EXIT_FAILURE
+
+    except AutonomousAIPlatformError as exc:
+        log_structured_error(exc, request=None, include_traceback=False)
+
+        payload = exc.to_payload()
+
+        logger.error(
+            "CLI_ERROR | code=%s | message=%s | details=%s",
+            payload.error_code,
+            payload.message,
+            _safe_json(payload.details),
         )
 
-        ## RUN ALL
-        if args.run_all:
-            logger.info("Running full pipeline: parse-txt -> build-dataset -> cluster -> eda")
+        return EXIT_PLATFORM_ERROR
 
-            ## Parse TXT
-            if not txt_files:
-                txt_files = [p.name for p in config.paths.raw_dir.glob("*.txt")]
+    except Exception as exc:
+        logger.error(
+            "CLI_UNHANDLED_EXCEPTION | type=%s | message=%s",
+            exc.__class__.__name__,
+            _safe_str(exc),
+        )
+        return EXIT_FAILURE
 
-            parse_result = parse_txt_pipeline(
-                filenames=txt_files,
-                overwrite=bool(args.overwrite),
-                config=config,
-            )
-
-            ## Build dataset
-            dataset_result = build_dataset_pipeline(
-                structured_csv_files=None,
-                dataset_format=args.dataset_format,
-                overwrite=bool(args.overwrite),
-                config=config,
-            )
-
-            ## Run clustering
-            clustering_params = {
-                "algorithm": args.algorithm,
-                "params": {"n_clusters": int(args.n_clusters)},
-            }
-            preprocess_params = {
-                "impute_strategy": "median",
-                "apply_pca": bool(args.apply_pca),
-                "pca_n_components": int(args.pca_n_components),
-            }
-
-            run_clustering_pipeline(
-                dataset_path=dataset_result["dataset_path"],
-                clustering_params=type(
-                    "TmpParams",
-                    (),
-                    {
-                        "algorithm": clustering_params["algorithm"],
-                        "model_dump": lambda self: clustering_params["params"],
-                    },
-                )(),
-                preprocess_params=preprocess_params,
-                overwrite=bool(args.overwrite),
-                config=config,
-            )
-
-            ## EDA (structured + dataset)
-            structured_paths = list(config.paths.interim_structured_dir.glob("*.csv"))
-            run_structured_eda([str(p) for p in structured_paths], config=config)
-
-            run_dataset_eda(str(dataset_path), config=config)
-
-            logger.info("Full pipeline completed")
-            logger.info("Parsed files: %s", parse_result.get("parsed_files", []))
-            return
-
-        ## PARSE TXT
-        if args.parse_txt:
-            if not txt_files:
-                txt_files = [p.name for p in config.paths.raw_dir.glob("*.txt")]
-
-            parse_txt_pipeline(
-                filenames=txt_files,
-                overwrite=bool(args.overwrite),
-                config=config,
-            )
-            logger.info("TXT parsing completed")
-
-        ## BUILD DATASET
-        if args.build_dataset:
-            build_dataset_pipeline(
-                structured_csv_files=None,
-                dataset_format=args.dataset_format,
-                overwrite=bool(args.overwrite),
-                config=config,
-            )
-            logger.info("Dataset build completed")
-
-        ## CLUSTER
-        if args.cluster:
-            clustering_params = {
-                "algorithm": args.algorithm,
-                "params": {"n_clusters": int(args.n_clusters)},
-            }
-            preprocess_params = {
-                "impute_strategy": "median",
-                "apply_pca": bool(args.apply_pca),
-                "pca_n_components": int(args.pca_n_components),
-            }
-
-            run_clustering_pipeline(
-                dataset_path=str(dataset_path),
-                clustering_params=type(
-                    "TmpParams",
-                    (),
-                    {
-                        "algorithm": clustering_params["algorithm"],
-                        "model_dump": lambda self: clustering_params["params"],
-                    },
-                )(),
-                preprocess_params=preprocess_params,
-                overwrite=bool(args.overwrite),
-                config=config,
-            )
-            logger.info("Clustering completed")
-
-        ## EDA
-        if args.eda:
-            structured_paths = list(config.paths.interim_structured_dir.glob("*.csv"))
-            if structured_paths:
-                run_structured_eda([str(p) for p in structured_paths], config=config)
-
-            if dataset_path.exists():
-                run_dataset_eda(str(dataset_path), config=config)
-
-            logger.info("EDA completed")
-
-        ## RUN API
-        if args.run_api:
-            logger.info(
-                "Starting API server | host=%s port=%d reload=%s",
-                args.host,
-                args.port,
-                bool(args.reload),
-            )
-            uvicorn.run(
-                "src.core.service:app",
-                host=args.host,
-                port=args.port,
-                reload=bool(args.reload),
-            )
-
-    except (ConfigurationError, ParsingError, DatasetBuildError, ClusteringError, LabClusteringError) as exc:
-        print(f"\nERROR: {exc}\n")
-        sys.exit(2)
-
-
+## ============================================================
+## ENTRYPOINT
+## ============================================================
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
