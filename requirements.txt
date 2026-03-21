@@ -1,0 +1,16 @@
+fastapi==0.129.0
+uvicorn==0.40.0
+pydantic==2.12.5
+python-dotenv==1.2.1
+numpy
+pandas
+scipy
+scikit-learn
+lightgbm
+joblib
+matplotlib
+sentence-transformers
+torch
+fasttext-wheel==0.9.2; platform_system=="Windows"
+fasttext==0.9.3; platform_system!="Windows"
+pytest==9.0.2
