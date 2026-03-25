@@ -79,6 +79,8 @@ clinical-ner/
     │   └── utils.py              ## Shared helpers
     │
     ├── core/
+    │   ├── auth.py               ## JWT auth: tokens, login, refresh, dependencies
+    │   ├── security.py           ## RBAC, middleware, permissions, request security		
     │   ├── entities.py           ## Entity representation
     │   ├── schema.py             ## Data schema validation
     │   ├── config.py             ## Environment configuration
