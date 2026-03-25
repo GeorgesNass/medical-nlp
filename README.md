@@ -62,7 +62,11 @@ doc-classification/
 │   └── test_unit.py                  ## Unit tests
 │
 └── src/
+    ├── pipelines.py                  ## End-to-end orchestration logic
+    │
     ├── core/
+    │   ├── auth.py                   ## JWT auth: tokens, login, refresh, dependencies
+    │   ├── security.py               ## RBAC, middleware, permissions, request security	
     │   ├── config.py                 ## Global configuration and environment loading
     │   ├── errors.py                 ## Centralized custom exceptions
     │   └── eda.py                    ## Exploratory Data Analysis logic
