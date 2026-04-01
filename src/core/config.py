@@ -74,6 +74,25 @@ DEFAULT_REPORT_DIFF_MD = "data/outputs/report_diff.md"
 SUPPORTED_INPUT_EXTENSIONS = (".txt", ".csv", ".json", ".jsonl", ".md")
 SUPPORTED_EXPORT_EXTENSIONS = (".csv", ".json", ".jsonl", ".md", ".parquet")
 
+def _read_json_secret(secret_file: Path) -> dict[str, Any]:
+    """
+        Read a JSON secret file safely
+
+        Args:
+            secret_file: Path to JSON file
+
+        Returns:
+            Parsed dict
+    """
+
+    if not secret_file.exists():
+        return {}
+
+    try:
+        return json.loads(secret_file.read_text(encoding=DEFAULT_ENCODING))
+    except Exception:
+        return {}
+        
 ## ============================================================
 ## CONFIG MODELS
 ## ============================================================
@@ -856,10 +875,14 @@ def get_config(env_path: Optional[Path] = None) -> AppConfig:
         report_diff_md=_get_env_path("REPORT_DIFF_MD", DEFAULT_REPORT_DIFF_MD, project_root),
     )
 
-    ## Resolve optional secrets
+    ## Resolve optional JSON secrets
+    secrets_path = _get_env_path("APP_SECRETS_FILE", "", project_root)
+
+    app_json = _read_json_secret(secrets_path) if secrets_path else {}
+
     secrets = SecretsConfig(
-        api_key=_read_secret_value("API_KEY", "API_KEY_FILE", project_root=project_root),
-        huggingface_token=_read_secret_value("HUGGINGFACE_TOKEN", "HUGGINGFACE_TOKEN_FILE", project_root=project_root),
+        api_key=app_json.get("api_key", ""),
+        huggingface_token=app_json.get("huggingface_token", ""),
     )
 
     ## Build final config
