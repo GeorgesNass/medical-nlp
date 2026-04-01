@@ -969,7 +969,7 @@ def get_config(project_root: str | Path | None = None) -> AppConfig:
     ## Build model section
     model = ModelConfig(
         hf_ner_model_name=_get_profiled_env("CLINICAL_NER_HF_NER_MODEL", "distilbert-base-multilingual-cased", profile),
-        spacy_model_name=ensure_str_or_none(_get_profiled_env("CLINICAL_NER_SPACY_MODEL_NAME", "", profile)) or None,
+        spacy_model_name=ensure_str_or_none(_get_profiled_env("CLINICAL_NER_SPACY_MODEL", "fr_core_news_md", profile)) or None,      
         negation_strategy=_validate_strategy(_get_profiled_env("CLINICAL_NER_NEGATION_STRATEGY", "rules", profile), SUPPORTED_NEGATION_STRATEGIES, "CLINICAL_NER_NEGATION_STRATEGY"),
         temporality_strategy=_validate_strategy(_get_profiled_env("CLINICAL_NER_TEMPORALITY_STRATEGY", "rules", profile), SUPPORTED_TEMPORALITY_STRATEGIES, "CLINICAL_NER_TEMPORALITY_STRATEGY"),
         max_length=_get_profiled_env_int("CLINICAL_NER_MAX_LENGTH", 512, profile),
