@@ -71,6 +71,25 @@ DEFAULT_CONFIG_DIR = "artifacts/config"
 
 SUPPORTED_INPUT_EXTENSIONS = (".txt", ".csv", ".json", ".xlsx", ".xls")
 
+def _read_json_secret(secret_file: Path) -> dict[str, Any]:
+    """
+        Read a JSON secret file safely
+
+        Args:
+            secret_file (Path): Path to the JSON secret file
+
+        Returns:
+            dict[str, Any]: Parsed JSON content or empty dict if invalid
+    """
+
+    if not secret_file.exists():
+        return {}
+
+    try:
+        return json.loads(secret_file.read_text(encoding=DEFAULT_ENCODING))
+    except Exception:
+        return {}
+        
 ## ============================================================
 ## CONFIG MODELS
 ## ============================================================
@@ -917,10 +936,22 @@ def get_config() -> AppConfig:
         min_positive_labels=_get_profiled_env_int("MIN_POSITIVE_LABELS", 1, profile),
     )
 
-    ## Resolve optional secrets from direct env or files
+    ## Resolve optional secrets from direct Load JSON secrets
+    secrets_path = _get_env_path("APP_SECRETS_FILE", "", project_root)
+
+    app_json = _read_json_secret(secrets_path) if secrets_path else {}
+
     secrets = SecretsConfig(
-        huggingface_token=_read_secret_value("HUGGINGFACE_TOKEN", "HUGGINGFACE_TOKEN_FILE", project_root=project_root),
-        api_key=_read_secret_value("API_KEY", "API_KEY_FILE", project_root=project_root),
+        mlflow_tracking_username=_read_secret_value(
+            "MLFLOW_TRACKING_USERNAME",
+            "MLFLOW_TRACKING_USERNAME_FILE",
+            project_root=project_root,
+        ),
+        mlflow_tracking_password=_read_secret_value(
+            "MLFLOW_TRACKING_PASSWORD",
+            "MLFLOW_TRACKING_PASSWORD_FILE",
+            project_root=project_root,
+        ),
     )
 
     ## Build final application config
