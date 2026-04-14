@@ -19,6 +19,7 @@ import pandas as pd
 import uvicorn
 
 from src.utils.logging_utils import get_logger
+from src.core.data_consistency import run_data_consistency
 from src.core.errors import (
     ConfigurationError,
     DataError,
@@ -397,6 +398,30 @@ def main() -> int:
             args.eda_plot_output,
             default_paths["default_eda_plot_output"],
         )
+
+        ## ============================================================
+        ## DATA CONSISTENCY CHECK
+        ## ============================================================
+        if config.data_consistency.enabled:
+            consistency_result = run_data_consistency(
+                data={
+                    "text": "icd10_run",
+                    "labels": ["A00"],
+                },
+                strict=config.data_consistency.strict_mode,
+            )
+
+            logger.info(f"Consistency OK: {consistency_result['is_consistent']}")
+
+            if not consistency_result["is_consistent"] and config.data_consistency.strict_mode:
+                raise DataError(
+                    message="Data consistency failed before pipeline",
+                    error_code="data_consistency_error",
+                    details={"issues": consistency_result["issues"]},
+                    origin="main",
+                    http_status=400,
+                    is_retryable=False,
+                )
 
         if args.dry_run:
             logger.info(
