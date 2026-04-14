@@ -249,6 +249,26 @@ class SimilarityConfig:
     min_positive_labels: int
 
 @dataclass(frozen=True)
+class DataConsistencyConfig:
+    """
+        Data consistency configuration
+
+        Args:
+            enabled: Enable consistency checks
+            strict_mode: Raise error if inconsistency
+            min_text_length: Minimum text length
+            max_records: Maximum dataset size
+
+        Returns:
+            None
+    """
+
+    enabled: bool
+    strict_mode: bool
+    min_text_length: int
+    max_records: int
+    
+@dataclass(frozen=True)
 class SecretsConfig:
     """
         Secret values resolved from env or files
@@ -275,6 +295,7 @@ class AppConfig:
             segmentation: Segmentation configuration
             embeddings: Embeddings configuration
             similarity: Similarity configuration
+            data_consistency: Data consistency configuration
             secrets: Secrets configuration
     """
 
@@ -286,6 +307,7 @@ class AppConfig:
     segmentation: SegmentationConfig
     embeddings: EmbeddingsConfig
     similarity: SimilarityConfig
+    data_consistency: DataConsistencyConfig
     secrets: SecretsConfig
 
 ## ============================================================
@@ -787,6 +809,18 @@ def _validate_config(config: AppConfig) -> None:
     _validate_probability(config.similarity.default_threshold, "DEFAULT_THRESHOLD")
     _validate_thresholds(config.similarity.thresholds)
 
+    ## Validate data consistency config
+    if config.data_consistency.enabled:
+
+        _validate_positive_int(
+            config.data_consistency.min_text_length,
+            "DATA_CONSISTENCY_MIN_TEXT_LENGTH",
+        )
+
+        _validate_positive_int(
+            config.data_consistency.max_records,
+            "DATA_CONSISTENCY_MAX_RECORDS",
+        )
     ## Validate cross-field consistency
     if config.segmentation.window_overlap_tokens >= config.segmentation.window_size_tokens:
         raise ConfigurationError("WINDOW_OVERLAP_TOKENS must be smaller than WINDOW_SIZE_TOKENS.")
@@ -963,6 +997,14 @@ def get_config() -> AppConfig:
         min_positive_labels=_get_profiled_env_int("MIN_POSITIVE_LABELS", 1, profile),
     )
 
+    ## Build data consistency config
+    data_consistency = DataConsistencyConfig(
+        enabled=_get_env_bool("DATA_CONSISTENCY_ENABLED", True),
+        strict_mode=_get_env_bool("DATA_CONSISTENCY_STRICT", False),
+        min_text_length=_get_env_int("DATA_CONSISTENCY_MIN_TEXT_LENGTH", 3),
+        max_records=_get_env_int("DATA_CONSISTENCY_MAX_RECORDS", 100000),
+    )
+    
     ## Resolve secrets
     secrets = SecretsConfig(
         huggingface_token=_read_secret_value("HUGGINGFACE_TOKEN", "HUGGINGFACE_TOKEN_FILE", project_root=project_root),
@@ -980,6 +1022,7 @@ def get_config() -> AppConfig:
         embeddings=embeddings,
         similarity=similarity,
         secrets=secrets,
+        data_consistency=data_consistency,
     )
 
     ## Validate final config
