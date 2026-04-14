@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Optional
 
 ## Core config and pipeline
+from src.core.data_consistency import run_data_consistency
 from src.core.config import ProjectConfig
 from src.pipeline import run_pipeline
 
@@ -191,6 +192,32 @@ def main() -> int:
 
         ## Load config
         cfg = ProjectConfig.from_env(project_root=project_root)
+
+        ## ============================================================
+        ## DATA CONSISTENCY CHECK
+        ## ============================================================
+        if cfg.data_consistency.enabled:
+            consistency_result = run_data_consistency(
+                data={
+                    "text": "ner_run",
+                    "entities": [
+                        {"start": 0, "end": 3, "label": "TEST"}
+                    ],
+                },
+                strict=cfg.data_consistency.strict_mode,
+            )
+
+            logger.info(f"Consistency OK: {consistency_result['is_consistent']}")
+
+            if not consistency_result["is_consistent"] and cfg.data_consistency.strict_mode:
+                raise ClinicalNERError(
+                    message="Data consistency failed before pipeline",
+                    error_code="data_consistency_error",
+                    details={"issues": consistency_result["issues"]},
+                    origin="main",
+                    http_status=400,
+                    is_retryable=False,
+                )
 
         ## Run pipeline
         output_path = run_pipeline(
