@@ -12,6 +12,7 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
+from src.core.data_consistency import run_data_consistency
 from src.nlp.preprocess import preprocess_text
 from src.nlp.postprocess import select_top_k
 from src.nlp.vectorizers import build_tfidf_vectorizer, fit_transform_tfidf
@@ -192,3 +193,73 @@ def test_e2e_tiny_train_predict_metrics() -> None:
     assert 0.0 <= metrics["accuracy"] <= 1.0
     assert 0.0 <= metrics["f1_micro"] <= 1.0
     assert 0.0 <= metrics["f1_macro"] <= 1.0
+    
+## ============================================================
+## DATA CONSISTENCY TESTS (ICD10)
+## ============================================================
+def test_data_consistency_valid_icd10() -> None:
+    """
+        Validate correct ICD10 payload
+
+        Returns:
+            None
+    """
+
+    data = {
+        "text": "patient infection intestinale",
+        "labels": ["A00"],
+    }
+
+    result = run_data_consistency(data=data)
+
+    assert result["is_consistent"] is True
+
+def test_data_consistency_invalid_label_format() -> None:
+    """
+        Detect invalid ICD10 label format
+
+        Returns:
+            None
+    """
+
+    data = {
+        "text": "test",
+        "labels": ["INVALID"],
+    }
+
+    result = run_data_consistency(data=data)
+
+    assert result["is_consistent"] is False
+
+def test_data_consistency_empty_text() -> None:
+    """
+        Detect empty text
+
+        Returns:
+            None
+    """
+
+    data = {
+        "text": "",
+        "labels": ["A00"],
+    }
+
+    result = run_data_consistency(data=data)
+
+    assert result["is_consistent"] is False
+
+def test_data_consistency_missing_labels() -> None:
+    """
+        Detect missing labels
+
+        Returns:
+            None
+    """
+
+    data = {
+        "text": "test",
+    }
+
+    result = run_data_consistency(data=data)
+
+    assert result["is_consistent"] is False

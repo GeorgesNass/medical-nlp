@@ -206,6 +206,26 @@ class ModelConfig:
     threshold: float
 
 @dataclass(frozen=True)
+class DataConsistencyConfig:
+    """
+        Data consistency configuration
+
+        Args:
+            enabled: Enable consistency checks
+            strict_mode: Raise error if inconsistency
+            min_text_length: Minimum text length
+            allowed_label_pattern: Regex for ICD10 labels
+
+        Returns:
+            None
+    """
+
+    enabled: bool
+    strict_mode: bool
+    min_text_length: int
+    allowed_label_pattern: str
+    
+@dataclass(frozen=True)
 class SecretsConfig:
     """
         Secret values resolved from env or files
@@ -240,7 +260,8 @@ class AppConfig:
     runtime: RuntimeConfig
     model: ModelConfig
     secrets: SecretsConfig
-
+    data_consistency: DataConsistencyConfig
+    
 ## ============================================================
 ## DOTENV / ENV HELPERS
 ## ============================================================
@@ -711,6 +732,17 @@ def _validate_config(config: AppConfig) -> None:
     _validate_probability(config.model.validation_split, "VALIDATION_SPLIT")
     _validate_probability(config.model.threshold, "THRESHOLD")
 
+    ## Validate data consistency config
+    if config.data_consistency.enabled:
+
+        _validate_positive_int(
+            config.data_consistency.min_text_length,
+            "DATA_CONSISTENCY_MIN_TEXT_LENGTH",
+        )
+
+        if not config.data_consistency.allowed_label_pattern:
+            raise ConfigurationError("DATA_CONSISTENCY_LABEL_PATTERN cannot be empty")
+    
     ## Validate split coherence
     if config.model.train_split + config.model.validation_split >= 1.0:
         raise ConfigurationError("TRAIN_SPLIT + VALIDATION_SPLIT must be < 1.0")
@@ -860,6 +892,17 @@ def get_config() -> AppConfig:
         threshold=_get_profiled_env_float("THRESHOLD", 0.5, profile),
     )
 
+    ## Build data consistency config
+    data_consistency = DataConsistencyConfig(
+        enabled=_get_env_bool("DATA_CONSISTENCY_ENABLED", True),
+        strict_mode=_get_env_bool("DATA_CONSISTENCY_STRICT", False),
+        min_text_length=_get_env_int("DATA_CONSISTENCY_MIN_TEXT_LENGTH", 3),
+        allowed_label_pattern=_get_env(
+            "DATA_CONSISTENCY_LABEL_PATTERN",
+            r"^[A-Z][0-9]{2}(\.[0-9])?$",
+        ),
+    )
+    
     ## Resolve secrets from direct Load JSON secrets
     secrets_path = _get_env_path("APP_SECRETS_FILE", "", project_root)
 
@@ -879,6 +922,7 @@ def get_config() -> AppConfig:
         runtime=runtime,
         model=model,
         secrets=secrets,
+        data_consistency=data_consistency,        
     )
 
     ## Validate final configuration
