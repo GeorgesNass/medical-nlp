@@ -16,6 +16,7 @@ from pathlib import Path
 import pytest
 
 ## Core imports
+from src.core.data_consistency import run_data_consistency
 from src.core.config import ProjectConfig
 from src.core.entities import EntityLabel, EntityProvenance, NegationStatus
 from src.core.errors import ConfigurationError, DataError
@@ -411,3 +412,83 @@ def test_pipeline_labeled_csv_smoke(tmp_path: Path) -> None:
 
     assert out.exists()
     assert out.suffix == ".csv"
+    
+## ============================================================
+## DATA CONSISTENCY TESTS (NER)
+## ============================================================
+def test_data_consistency_valid_ner() -> None:
+    """
+        Validate correct NER payload
+
+        Returns:
+            None
+    """
+
+    data = {
+        "text": "patient asthma",
+        "entities": [
+            {"start": 8, "end": 14, "label": "DISEASE"}
+        ],
+    }
+
+    result = run_data_consistency(data=data)
+
+    assert result["is_consistent"] is True
+
+def test_data_consistency_invalid_span() -> None:
+    """
+        Detect invalid entity span
+
+        Returns:
+            None
+    """
+
+    data = {
+        "text": "test",
+        "entities": [
+            {"start": 0, "end": 999, "label": "TEST"}
+        ],
+    }
+
+    result = run_data_consistency(data=data)
+
+    assert result["is_consistent"] is False
+
+def test_data_consistency_overlap() -> None:
+    """
+        Detect overlapping entities
+
+        Returns:
+            None
+    """
+
+    data = {
+        "text": "abcdef",
+        "entities": [
+            {"start": 0, "end": 3, "label": "A"},
+            {"start": 2, "end": 5, "label": "B"},
+        ],
+    }
+
+    result = run_data_consistency(data=data)
+
+    assert result["is_consistent"] is True  ## overlap = warning
+
+def test_data_consistency_empty_text() -> None:
+    """
+        Detect empty text
+
+        Returns:
+            None
+    """
+
+    data = {
+        "text": "",
+        "entities": [
+            {"start": 0, "end": 1, "label": "A"}
+        ],
+    }
+
+    result = run_data_consistency(data=data)
+
+    assert result["is_consistent"] is False

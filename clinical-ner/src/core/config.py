@@ -215,6 +215,26 @@ class ModelConfig:
     num_epochs: int
 
 @dataclass(frozen=True)
+class DataConsistencyConfig:
+    """
+        Data consistency configuration
+
+        Args:
+            enabled: Enable consistency checks
+            strict_mode: Raise error if inconsistency
+            min_text_length: Minimum text length
+            max_entity_span: Maximum allowed span size
+
+        Returns:
+            None
+    """
+
+    enabled: bool
+    strict_mode: bool
+    min_text_length: int
+    max_entity_span: int
+    
+@dataclass(frozen=True)
 class DictionaryConfig:
     """
         Configuration for dictionary-based auto-labeling
@@ -274,7 +294,8 @@ class AppConfig:
     dictionaries: DictionaryConfig
     secrets: SecretsConfig
     extra: dict[str, Any] = field(default_factory=dict)
-
+    data_consistency: DataConsistencyConfig
+    
 ## ============================================================
 ## DOTENV / ENV HELPERS
 ## ============================================================
@@ -820,6 +841,19 @@ def _validate_config(config: AppConfig) -> None:
         logger.error(msg)
         raise ConfigurationError(msg)
 
+    ## Validate data consistency config
+    if config.data_consistency.enabled:
+
+        _validate_positive_int(
+            config.data_consistency.min_text_length,
+            "DATA_CONSISTENCY_MIN_TEXT_LENGTH",
+        )
+
+        _validate_positive_int(
+            config.data_consistency.max_entity_span,
+            "DATA_CONSISTENCY_MAX_ENTITY_SPAN",
+        )
+        
     ## Validate confidence thresholds
     _validate_confidence(config.runtime.dictionary_min_confidence, "CLINICAL_NER_DICTIONARY_MIN_CONFIDENCE")
     _validate_confidence(config.runtime.model_min_confidence, "CLINICAL_NER_MODEL_MIN_CONFIDENCE")
@@ -977,6 +1011,14 @@ def get_config(project_root: str | Path | None = None) -> AppConfig:
         num_epochs=_get_profiled_env_int("CLINICAL_NER_NUM_EPOCHS", 3, profile),
     )
 
+    ## Build data consistency config
+    data_consistency = DataConsistencyConfig(
+        enabled=_get_env_bool("DATA_CONSISTENCY_ENABLED", True),
+        strict_mode=_get_env_bool("DATA_CONSISTENCY_STRICT", False),
+        min_text_length=_get_env_int("DATA_CONSISTENCY_MIN_TEXT_LENGTH", 3),
+        max_entity_span=_get_env_int("DATA_CONSISTENCY_MAX_ENTITY_SPAN", 100),
+    )
+    
     ## Build dictionary section
     dictionaries = DictionaryConfig(
         dictionaries_root=paths.artifacts_dictionaries_dir,
@@ -1014,6 +1056,7 @@ def get_config(project_root: str | Path | None = None) -> AppConfig:
             "is_linux": IS_LINUX,
             "is_macos": IS_MACOS,
         },
+        data_consistency=data_consistency,        
     )
 
     ## Validate final configuration

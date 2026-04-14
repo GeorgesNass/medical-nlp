@@ -10,6 +10,7 @@
 #   - unlabeled mode (folder of .txt + dictionaries)
 #   - run unit tests
 #   - run quick smoke checks
+#   - all modes include data consistency checks
 ###############################################################################
 
 set -euo pipefail
@@ -64,10 +65,10 @@ ensure_dir_exists() {
 while true; do
   echo ""
   echo "Select an action:"
-  echo " 1) Run pipeline (LABELED CSV -> export CSV)"
-  echo " 2) Run pipeline (UNLABELED TXT -> export CSV)"
+  echo " 1) Run pipeline (LABELED CSV -> export CSV) (with data consistency)"
+  echo " 2) Run pipeline (UNLABELED TXT -> export CSV) (with data consistency)"
   echo " 3) Run unit tests (pytest)"
-  echo " 4) Quick smoke: create sample TXT and run unlabeled pipeline"
+  echo " 4) Quick smoke: create sample TXT and run unlabeled pipeline (with data consistency)"
   echo " 0) Exit"
   echo ""
 
