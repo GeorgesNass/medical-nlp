@@ -15,6 +15,7 @@ from typing import List
 import numpy as np
 import pytest
 
+from src.core.data_consistency import run_data_consistency
 from src.core.errors import DataError, ManifestError, PipelineError
 from src.domain.schema import DocumentSegment
 from src.nlp.segmenter import SegmenterConfig, normalize_text, segment_text, tokenize_words
@@ -371,3 +372,79 @@ def test_similarity_index_add_empty_vectors() -> None:
     index.add(vectors=[], segments=[], labels=[], source_files=[])
 
     assert index.size() == 0
+    
+## ============================================================
+## DATA CONSISTENCY (DOC CLASSIFICATION)
+## ============================================================
+def test_data_consistency_valid() -> None:
+    """
+        Validate correct dataset
+
+        Returns:
+            None
+    """
+
+    data = {
+        "records": [
+            {"text": "hello", "label": "crh"},
+            {"text": "world", "label": "cro"},
+        ]
+    }
+
+    result = run_data_consistency(data=data)
+
+    assert result["is_consistent"] is True
+
+def test_data_consistency_missing_label() -> None:
+    """
+        Detect missing label
+
+        Returns:
+            None
+    """
+
+    data = {
+        "records": [
+            {"text": "hello", "label": ""},
+        ]
+    }
+
+    result = run_data_consistency(data=data)
+
+    assert result["is_consistent"] is False
+
+def test_data_consistency_empty_dataset() -> None:
+    """
+        Detect empty dataset
+
+        Returns:
+            None
+    """
+
+    data = {
+        "records": []
+    }
+
+    result = run_data_consistency(data=data)
+
+    assert result["is_consistent"] is False
+
+def test_data_consistency_single_class_warning() -> None:
+    """
+        Detect single class dataset
+
+        Returns:
+            None
+    """
+
+    data = {
+        "records": [
+            {"text": "hello", "label": "crh"},
+            {"text": "world", "label": "crh"},
+        ]
+    }
+
+    result = run_data_consistency(data=data)
+
+    assert result["is_consistent"] is True
+    assert result["warnings"] >= 1

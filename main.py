@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Optional
 
 ## Project imports
+from src.core.data_consistency import run_data_consistency
 from src.core.config import CONFIG
 from src.core.eda import run_eda_on_folder
 from src.pipeline import (
@@ -140,6 +141,19 @@ def main() -> int:
         ## Validate runtime
         runtime = _validate_runtime()
 
+        ## ====================================================
+        ## DATA CONSISTENCY CHECK (DOC CLASSIFICATION)
+        ## ====================================================
+
+        if CONFIG.data_consistency.enabled:
+
+            consistency_result = run_data_consistency(
+                data={"records": []},  ## TODO: plug real dataset here
+                strict=CONFIG.data_consistency.strict_mode,
+            )
+
+            logger.info("Consistency OK | %s", consistency_result["is_consistent"])
+            
         if args.validate_config:
             logger.info("Config OK | %s", runtime)
             logger.info("Summary | %s", _build_summary("validate-config", True, start_time))

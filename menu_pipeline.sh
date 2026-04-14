@@ -5,7 +5,7 @@
 # Author: Georges Nassopoulos
 # Version: 1.0.0
 # Description:
-#   CLI menu to run the main doc-classification pipelines:
+#   CLI menu to run the main doc-classification pipelines (with data consistency):
 #   - build similarity index from labeled docs + manifest
 #   - predict labels for unlabeled docs
 #   - export predictions to CSV
@@ -19,7 +19,7 @@ PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PYTHON_BIN="${PYTHON_BIN:-python3}"
 
 echo "=============================================="
-echo " Doc-Classification - Pipeline Menu"
+echo " Doc-Classification - Pipeline Menu (with data consistency)"
 echo "=============================================="
 echo "Project root: ${PROJECT_ROOT}"
 echo ""
@@ -45,11 +45,11 @@ run_python() {
 while true; do
   echo ""
   echo "Select an action:"
-  echo " 1) Build similarity index (labeled + manifest)"
-  echo " 2) Predict labels (unlabeled)"
-  echo " 3) Export predictions to CSV (requires predict in same run)"
-  echo " 4) Run EDA (choose folder)"
-  echo " 5) Run full pipeline (build-index + predict + export)"
+  echo " 1) Build similarity index (labeled + manifest) (with data consistency)"
+  echo " 2) Predict labels (unlabeled) (with data consistency)"
+  echo " 3) Export predictions to CSV (requires predict in same run) (with data consistency)"
+  echo " 4) Run EDA (choose folder) (with data consistency)"
+  echo " 5) Run full pipeline (build-index + predict + export) (with data consistency)"
   echo " 0) Exit"
   echo ""
 
@@ -75,7 +75,6 @@ while true; do
       MANIFEST="${MANIFEST:-./data/labeled_manifest.json}"
       UNLABELED_DIR="${UNLABELED_DIR:-./data/unlabeled}"
 
-      ## Predict needs an index; main.py will rebuild index if not provided in this run
       run_python main.py --predict --labeled-dir "$LABELED_DIR" --manifest "$MANIFEST" --unlabeled-dir "$UNLABELED_DIR"
       pause
       ;;
@@ -94,7 +93,6 @@ while true; do
       MANIFEST="${MANIFEST:-./data/labeled_manifest.json}"
       UNLABELED_DIR="${UNLABELED_DIR:-./data/unlabeled}"
 
-      ## Export requires predictions; we run predict + export in one command
       CMD_ARGS=(main.py --predict --export --output-csv "$OUTCSV" --labeled-dir "$LABELED_DIR" --manifest "$MANIFEST" --unlabeled-dir "$UNLABELED_DIR")
 
       if [[ "$INCSCORES" == "y" || "$INCSCORES" == "Y" ]]; then
