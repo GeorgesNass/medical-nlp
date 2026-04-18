@@ -5,7 +5,7 @@
 # Author: Georges Nassopoulos
 # Version: 1.0.0
 # Description:
-#   CLI menu to run the main doc-classification pipelines (with data consistency):
+#   CLI menu to run the main doc-classification pipelines (with data consistency + data quality):
 #   - build similarity index from labeled docs + manifest
 #   - predict labels for unlabeled docs
 #   - export predictions to CSV
@@ -19,7 +19,7 @@ PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PYTHON_BIN="${PYTHON_BIN:-python3}"
 
 echo "=============================================="
-echo " Doc-Classification - Pipeline Menu (with data consistency)"
+echo " Doc-Classification - Pipeline Menu (data consistency + data quality)"
 echo "=============================================="
 echo "Project root: ${PROJECT_ROOT}"
 echo ""
@@ -45,11 +45,12 @@ run_python() {
 while true; do
   echo ""
   echo "Select an action:"
-  echo " 1) Build similarity index (labeled + manifest) (with data consistency)"
-  echo " 2) Predict labels (unlabeled) (with data consistency)"
-  echo " 3) Export predictions to CSV (requires predict in same run) (with data consistency)"
-  echo " 4) Run EDA (choose folder) (with data consistency)"
-  echo " 5) Run full pipeline (build-index + predict + export) (with data consistency)"
+  echo " 1) Build similarity index (labeled + manifest) (data consistency + data quality)"
+  echo " 2) Predict labels (unlabeled) (data consistency + data quality)"
+  echo " 3) Export predictions to CSV (requires predict in same run) (data consistency + data quality)"
+  echo " 4) Run EDA (choose folder) (data consistency + data quality)"
+  echo " 5) Run full pipeline (build-index + predict + export) (data consistency + data quality)"
+  echo " 6) Run data quality check only 🔴"
   echo " 0) Exit"
   echo ""
 
@@ -140,6 +141,13 @@ while true; do
       fi
 
       run_python "${CMD_ARGS[@]}"
+      pause
+      ;;
+    6)
+      echo "Running data quality check..."
+
+      run_python main.py --validate-config
+
       pause
       ;;
     0)

@@ -16,6 +16,7 @@ import numpy as np
 import pytest
 
 from src.core.data_consistency import run_data_consistency
+from src.core.data_quality import run_data_quality
 from src.core.errors import DataError, ManifestError, PipelineError
 from src.domain.schema import DocumentSegment
 from src.nlp.segmenter import SegmenterConfig, normalize_text, segment_text, tokenize_words
@@ -448,3 +449,96 @@ def test_data_consistency_single_class_warning() -> None:
 
     assert result["is_consistent"] is True
     assert result["warnings"] >= 1
+    
+## ============================================================
+## DATA QUALITY TESTS
+## ============================================================
+def test_data_quality_valid_dataset() -> None:
+    """
+        Validate correct dataset
+
+        Returns:
+            None
+    """
+
+    texts = [
+        "patient fever infection",
+        "fracture tibia trauma",
+        "diabetes glucose high",
+    ]
+
+    labels = ["A00", "S82", "E11"]
+
+    result = run_data_quality(texts=texts, labels=labels)
+
+    assert result["score"] > 0.8
+    assert result["errors"] == 0
+
+def test_data_quality_empty_text_detection() -> None:
+    """
+        Detect empty text anomaly
+
+        Returns:
+            None
+    """
+
+    texts = ["", "valid text"]
+    labels = ["A00", "B00"]
+
+    result = run_data_quality(texts=texts, labels=labels)
+
+    assert result["errors"] > 0
+
+def test_data_quality_text_length_anomaly() -> None:
+    """
+        Detect abnormal text length
+
+        Returns:
+            None
+    """
+
+    texts = [
+        "short",
+        "a" * 10000,  ## extreme long text
+        "normal text",
+    ]
+
+    labels = ["A", "B", "C"]
+
+    result = run_data_quality(texts=texts, labels=labels)
+
+    assert result["warnings"] >= 1
+
+def test_data_quality_label_imbalance() -> None:
+    """
+        Detect label imbalance
+
+        Returns:
+            None
+    """
+
+    texts = ["t1", "t2", "t3", "t4", "t5"]
+
+    labels = ["A", "A", "A", "A", "B"]  ## imbalance
+
+    result = run_data_quality(texts=texts, labels=labels)
+
+    assert result["warnings"] >= 1
+
+def test_data_quality_strict_mode() -> None:
+    """
+        Strict mode should raise error
+
+        Returns:
+            None
+    """
+
+    texts = ["", "bad"]
+    labels = ["A", "B"]
+
+    with pytest.raises(Exception):
+        run_data_quality(
+            texts=texts,
+            labels=labels,
+            strict=True,
+        )
