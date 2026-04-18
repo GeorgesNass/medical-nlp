@@ -165,6 +165,11 @@ class RuntimeConfig:
             batch_sleep_seconds: Sleep delay between batches
             request_timeout_seconds: Request timeout if external calls are used
             allowed_origins: Allowed origins for future API usage
+            anomaly_detection_enabled: Enable anomaly detection on dataset before training
+            anomaly_method: Detection method (zscore or iqr)
+            z_threshold: Z-score threshold for anomaly detection
+            iqr_multiplier: IQR multiplier for anomaly detection
+            anomaly_strict_mode: Raise error if anomaly detected            
     """
 
     environment: str
@@ -179,7 +184,12 @@ class RuntimeConfig:
     batch_sleep_seconds: float
     request_timeout_seconds: int
     allowed_origins: list[str]
-
+    anomaly_detection_enabled: bool
+    anomaly_method: str
+    z_threshold: float
+    iqr_multiplier: float
+    anomaly_strict_mode: bool
+    
 @dataclass(frozen=True)
 class ModelConfig:
     """
@@ -747,6 +757,18 @@ def _validate_config(config: AppConfig) -> None:
     if config.model.train_split + config.model.validation_split >= 1.0:
         raise ConfigurationError("TRAIN_SPLIT + VALIDATION_SPLIT must be < 1.0")
 
+    ## Validate anomaly detection
+    if config.runtime.anomaly_detection_enabled:
+
+        if config.runtime.anomaly_method not in {"zscore", "iqr"}:
+            raise ConfigurationError("ANOMALY_METHOD must be 'zscore' or 'iqr'")
+
+        if config.runtime.z_threshold <= 0:
+            raise ConfigurationError("Z_THRESHOLD must be > 0")
+
+        if config.runtime.iqr_multiplier <= 0:
+            raise ConfigurationError("IQR_MULTIPLIER must be > 0")
+            
 ## ============================================================
 ## EXPORT HELPERS
 ## ============================================================
@@ -878,6 +900,11 @@ def get_config() -> AppConfig:
         batch_sleep_seconds=_get_profiled_env_float("BATCH_SLEEP_SECONDS", 0.0, profile),
         request_timeout_seconds=_get_profiled_env_int("REQUEST_TIMEOUT_SECONDS", 120, profile),
         allowed_origins=_get_env_list("ALLOWED_ORIGINS", ["*"]),
+        anomaly_detection_enabled=_get_env_bool("ANOMALY_DETECTION_ENABLED", True),
+        anomaly_method=_get_env("ANOMALY_METHOD", "zscore"),
+        z_threshold=_get_env_float("Z_THRESHOLD", 3.0),
+        iqr_multiplier=_get_env_float("IQR_MULTIPLIER", 1.5),
+        anomaly_strict_mode=_get_env_bool("ANOMALY_STRICT_MODE", False),        
     )
 
     ## Resolve model section

@@ -20,6 +20,7 @@ import uvicorn
 
 from src.utils.logging_utils import get_logger
 from src.core.data_consistency import run_data_consistency
+from src.core.data_quality import run_data_quality
 from src.core.errors import (
     ConfigurationError,
     DataError,
@@ -68,118 +69,33 @@ def _build_parser() -> argparse.ArgumentParser:
         add_help=True,
     )
 
-    parser.add_argument(
-        "--version",
-        action="version",
-        version=f"%(prog)s {APP_VERSION}",
-    )
-    parser.add_argument(
-        "--dry-run",
-        action="store_true",
-        help="Validate inputs and log intended actions without executing workflows.",
-    )
-    parser.add_argument(
-        "--validate-config",
-        action="store_true",
-        help="Validate configuration loading and resolved default paths, then exit.",
-    )
+    parser.add_argument("--version", action="version", version=f"%(prog)s {APP_VERSION}")
+    parser.add_argument("--dry-run", action="store_true", help="Validate inputs and log intended actions without executing workflows.")
+    parser.add_argument("--validate-config", action="store_true", help="Validate configuration loading and resolved default paths, then exit.")
 
     ## Main action flags
-    parser.add_argument(
-        "--parse-rss",
-        action="store_true",
-        help="Parse all raw RSS files and export a consolidated CSV.",
-    )
-    parser.add_argument(
-        "--build-clinical-csv",
-        action="store_true",
-        help="Build one CSV per admission_id by merging RSS data with clinical_records files.",
-    )
-    parser.add_argument(
-        "--train",
-        action="store_true",
-        help="Train baseline model (vectorize + train + export metrics).",
-    )
-    parser.add_argument(
-        "--eda",
-        action="store_true",
-        help="Run basic EDA on per-admission CSV files (label distribution + text length stats).",
-    )
-    parser.add_argument(
-        "--run-api",
-        action="store_true",
-        help="Run FastAPI service (uvicorn).",
-    )
-    parser.add_argument(
-        "--run-all",
-        action="store_true",
-        help="Run parse-rss -> build-clinical-csv -> train -> eda in sequence.",
-    )
+    parser.add_argument("--parse-rss", action="store_true", help="Parse all raw RSS files and export a consolidated CSV.")
+    parser.add_argument("--build-clinical-csv", action="store_true", help="Build one CSV per admission_id by merging RSS data with clinical_records files.")
+    parser.add_argument("--train", action="store_true", help="Train baseline model (vectorize + train + export metrics).")
+    parser.add_argument("--eda", action="store_true", help="Run basic EDA on per-admission CSV files (label distribution + text length stats).")
+    parser.add_argument("--run-api", action="store_true", help="Run FastAPI service (uvicorn).")
+    parser.add_argument("--run-all", action="store_true", help="Run parse-rss -> build-clinical-csv -> train -> eda in sequence.")
 
     ## Paths overrides (defaults from config)
-    parser.add_argument(
-        "--rss-dir",
-        type=str,
-        default="",
-        help="Path to data/raw/icd10/ (folder containing .rss files).",
-    )
-    parser.add_argument(
-        "--clinical-records-dir",
-        type=str,
-        default="",
-        help="Path to data/raw/clinical_records/ (folder containing admission subfolders).",
-    )
-    parser.add_argument(
-        "--clinical-csv-dir",
-        type=str,
-        default="",
-        help="Path to data/interim/clinical_records_csv/ (folder containing per-admission CSVs).",
-    )
+    parser.add_argument("--rss-dir", type=str, default="", help="Path to data/raw/icd10/ (folder containing .rss files).")
+    parser.add_argument("--clinical-records-dir", type=str, default="", help="Path to data/raw/clinical_records/ (folder containing admission subfolders).")
+    parser.add_argument("--clinical-csv-dir", type=str, default="", help="Path to data/interim/clinical_records_csv/ (folder containing per-admission CSVs).")
 
     ## Outputs
-    parser.add_argument(
-        "--rss-output-csv",
-        type=str,
-        default="",
-        help="Path to consolidated RSS CSV output (default: data/interim/icd10_csv/icd10_structured.csv).",
-    )
-    parser.add_argument(
-        "--model-output",
-        type=str,
-        default="",
-        help="Path to save trained model (default: artifacts/models/model.joblib).",
-    )
-    parser.add_argument(
-        "--metrics-output",
-        type=str,
-        default="",
-        help="Path to save metrics JSON (default: artifacts/reports/metrics.json).",
-    )
-    parser.add_argument(
-        "--eda-plot-output",
-        type=str,
-        default="",
-        help="Path to save EDA plot (default: artifacts/exports/eda/label_distribution.png).",
-    )
+    parser.add_argument("--rss-output-csv", type=str, default="", help="Path to consolidated RSS CSV output (default: data/interim/icd10_csv/icd10_structured.csv).")
+    parser.add_argument("--model-output", type=str, default="", help="Path to save trained model (default: artifacts/models/model.joblib).")
+    parser.add_argument("--metrics-output", type=str, default="", help="Path to save metrics JSON (default: artifacts/reports/metrics.json).")
+    parser.add_argument("--eda-plot-output", type=str, default="", help="Path to save EDA plot (default: artifacts/exports/eda/label_distribution.png).")
 
     ## API options
-    parser.add_argument(
-        "--host",
-        type=str,
-        default="0.0.0.0",
-        help="API host (default: 0.0.0.0).",
-    )
-    parser.add_argument(
-        "--port",
-        type=int,
-        default=8000,
-        help="API port (default: 8000).",
-    )
-    parser.add_argument(
-        "--reload",
-        action="store_true",
-        help="Enable auto-reload (dev mode).",
-    )
+    parser.add_argument("--host", type=str, default="0.0.0.0", help="API host (default: 0.0.0.0).")
+    parser.add_argument("--port", type=int, default=8000, help="API port (default: 8000).")
+    parser.add_argument("--reload", action="store_true", help="Enable auto-reload (dev mode).")
 
     return parser
 
@@ -205,10 +121,14 @@ def _build_summary(
             Standardized summary dictionary
     """
 
+    ## compute execution duration
+    duration = round(time.monotonic() - start, 3)
+
+    ## build summary object
     return {
         "action": action,
         "success": success,
-        "duration_seconds": round(time.monotonic() - start, 3),
+        "duration_seconds": duration,
         "details": details or {},
     }
 
@@ -223,6 +143,7 @@ def _resolve_default_paths(config) -> dict:
             Dictionary containing resolved default paths
     """
 
+    ## build default paths dictionary
     return {
         "default_rss_dir": config.paths.raw_dir / "icd10",
         "default_clinical_records_dir": config.paths.raw_dir / "clinical_records",
@@ -245,7 +166,12 @@ def _resolve_cli_path(path_value: str, fallback: Path) -> Path:
             Resolved Path instance
     """
 
-    return Path(path_value).expanduser().resolve() if path_value.strip() else fallback
+    ## use CLI override if provided
+    if path_value.strip():
+        return Path(path_value).expanduser().resolve()
+
+    ## fallback to default path
+    return fallback
 
 def _load_rss_dataframe_from_csv(rss_output_csv: Path) -> pd.DataFrame:
     """
@@ -262,6 +188,7 @@ def _load_rss_dataframe_from_csv(rss_output_csv: Path) -> pd.DataFrame:
     """
 
     try:
+        ## FILE EXISTENCE CHECK
         if not rss_output_csv.exists():
             from src.core.errors import log_and_raise_missing_file
 
@@ -273,6 +200,7 @@ def _load_rss_dataframe_from_csv(rss_output_csv: Path) -> pd.DataFrame:
                 ),
             )
 
+        ## FILE SIZE CHECK
         if rss_output_csv.stat().st_size == 0:
             from src.core.errors import log_and_raise_data_error
 
@@ -283,8 +211,10 @@ def _load_rss_dataframe_from_csv(rss_output_csv: Path) -> pd.DataFrame:
                 )
             )
 
+        ## LOAD CSV
         rss_df = pd.read_csv(rss_output_csv)
 
+        ## EMPTY DATAFRAME CHECK
         if rss_df.empty:
             from src.core.errors import log_and_raise_data_error
 
@@ -295,6 +225,7 @@ def _load_rss_dataframe_from_csv(rss_output_csv: Path) -> pd.DataFrame:
                 )
             )
 
+        ## RETURN VALID DATAFRAME
         return rss_df
 
     except pd.errors.EmptyDataError as exc:
@@ -303,7 +234,7 @@ def _load_rss_dataframe_from_csv(rss_output_csv: Path) -> pd.DataFrame:
         log_and_raise_data_error(
             reason=f"RSS consolidated CSV has no columns to parse: {rss_output_csv} | {str(exc)}"
         )
-
+        
 ## ============================================================
 ## MAIN EXECUTION
 ## ============================================================
@@ -399,9 +330,7 @@ def main() -> int:
             default_paths["default_eda_plot_output"],
         )
 
-        ## ============================================================
         ## DATA CONSISTENCY CHECK
-        ## ============================================================
         if config.data_consistency.enabled:
             consistency_result = run_data_consistency(
                 data={
@@ -423,6 +352,57 @@ def main() -> int:
                     is_retryable=False,
                 )
 
+        ## DATA CONSISTENCY CHECK
+        if config.data_consistency.enabled:
+            consistency_result = run_data_consistency(
+                data={
+                    "text": "icd10_run",
+                    "labels": ["A00"],
+                },
+                strict=config.data_consistency.strict_mode,
+            )
+
+            logger.info(f"Consistency OK: {consistency_result['is_consistent']}")
+
+            if not consistency_result["is_consistent"] and config.data_consistency.strict_mode:
+                raise DataError(
+                    message="Data consistency failed before pipeline",
+                    error_code="data_consistency_error",
+                    details={"issues": consistency_result["issues"]},
+                    origin="main",
+                    http_status=400,
+                    is_retryable=False,
+                )
+
+        ## DATA QUALITY CHECK
+        if config.runtime.anomaly_detection_enabled:
+            try:
+                ## minimal safe check (no dataset yet at this stage)
+                quality_result = run_data_quality(
+                    texts=["icd10_placeholder"],
+                    labels=["A00"],
+                    method=config.runtime.anomaly_method,
+                    z_threshold=config.runtime.z_threshold,
+                    iqr_multiplier=config.runtime.iqr_multiplier,
+                    strict=config.runtime.anomaly_strict_mode,
+                )
+
+                logger.info("Data quality score: %s", quality_result["score"])
+
+                if quality_result["errors"] > 0 and config.runtime.anomaly_strict_mode:
+                    raise DataError(
+                        message="Data quality failed before pipeline",
+                        error_code="data_quality_error",
+                        details={"issues": quality_result["issues"]},
+                        origin="main",
+                        http_status=400,
+                        is_retryable=False,
+                    )
+
+            except Exception as exc:
+                logger.exception("Data quality check failed: %s", exc)
+                raise
+                
         if args.dry_run:
             logger.info(
                 "Dry-run | parse_rss=%s | build_clinical_csv=%s | train=%s | eda=%s | run_api=%s | run_all=%s",

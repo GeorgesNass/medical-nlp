@@ -43,6 +43,7 @@ except Exception:
     BILSTM_AVAILABLE = False
 
 ## Internal
+from src.core.data_quality import run_data_quality
 from src.core.errors import ModelError
 from src.utils.io_utils import ensure_parent_dir
 from src.utils.logging_utils import get_logger
@@ -334,11 +335,30 @@ def train_model(
 
     logger.info("Starting training | type=%s", config.model_type)
 
+    ## DATA QUALITY CHECK 
+    try:
+        ## check dataset before training
+        texts_for_check = texts if texts is not None else ["dummy"]
+
+        quality_result = run_data_quality(
+            texts=texts_for_check,
+            labels=y.tolist() if hasattr(y, "tolist") else list(y),
+            method="zscore",
+            strict=False,
+        )
+
+        logger.info("Training data quality score: %s", quality_result["score"])
+
+        if quality_result["errors"] > 0:
+            logger.warning("Data quality issues detected before training")
+
+    except Exception as exc:
+        logger.exception("Data quality check failed: %s", exc)
+        raise
+        
     model_type = config.model_type
 
-    ## --------------------------------------------------------
     ## SKLEARN / LIGHTGBM
-    ## --------------------------------------------------------
     if model_type in ["logreg", "random_forest", "lightgbm"]:
         logger.info("Training sklearn/lightgbm | samples=%d", X.shape[0])
 
@@ -347,20 +367,19 @@ def train_model(
 
         logger.info("Training completed")
 
+        ## optional post-training sanity check
+        logger.info("Model trained successfully | samples=%d", X.shape[0])
+
         return model
 
-    ## --------------------------------------------------------
     ## FASTTEXT
-    ## --------------------------------------------------------
     if model_type == "fasttext":
         if texts is None:
             raise ModelError("FastText training requires raw texts (texts=...)")
 
         return _train_fasttext_supervised(texts=texts, y=y, config=config)
 
-    ## --------------------------------------------------------
     ## BILSTM
-    ## --------------------------------------------------------
     if model_type == "bilstm":
         return _train_bilstm_classifier(X=X, y=y, config=config)
 
