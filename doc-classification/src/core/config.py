@@ -183,6 +183,11 @@ class RuntimeConfig:
             max_workers: Maximum worker count
             batch_sleep_seconds: Sleep delay between batches
             allowed_origins: Allowed HTTP origins if needed later
+            anomaly_detection_enabled: Enable anomaly detection
+            anomaly_method: Detection method (zscore or iqr)
+            z_threshold: Z-score threshold
+            iqr_multiplier: IQR multiplier
+            anomaly_strict_mode: Raise error if anomalies are detected    
     """
 
     environment: str
@@ -194,7 +199,12 @@ class RuntimeConfig:
     max_workers: int
     batch_sleep_seconds: float
     allowed_origins: list[str]
-
+    anomaly_detection_enabled: bool
+    anomaly_method: str
+    z_threshold: float
+    iqr_multiplier: float
+    anomaly_strict_mode: bool
+    
 @dataclass(frozen=True)
 class SegmentationConfig:
     """
@@ -827,6 +837,18 @@ def _validate_config(config: AppConfig) -> None:
     if set(config.similarity.thresholds.keys()) != set(LABELS):
         raise ConfigurationError("Similarity thresholds must contain exactly all known labels.")
 
+    ## Validate anomaly detection config
+    if config.runtime.anomaly_detection_enabled:
+
+        if config.runtime.anomaly_method not in {"zscore", "iqr"}:
+            raise ConfigurationError("ANOMALY_METHOD must be 'zscore' or 'iqr'")
+
+        if config.runtime.z_threshold <= 0:
+            raise ConfigurationError("Z_THRESHOLD must be > 0")
+
+        if config.runtime.iqr_multiplier <= 0:
+            raise ConfigurationError("IQR_MULTIPLIER must be > 0")
+            
 ## ============================================================
 ## EXPORT HELPERS
 ## ============================================================
@@ -960,6 +982,11 @@ def get_config() -> AppConfig:
         max_workers=_get_profiled_env_int("MAX_WORKERS", 4, profile),
         batch_sleep_seconds=_get_profiled_env_float("BATCH_SLEEP_SECONDS", 0.0, profile),
         allowed_origins=_get_env_list("ALLOWED_ORIGINS", ["*"]),
+        anomaly_detection_enabled=_get_env_bool("ANOMALY_DETECTION_ENABLED", True),
+        anomaly_method=_get_env("ANOMALY_METHOD", "zscore"),
+        z_threshold=_get_env_float("Z_THRESHOLD", 3.0),
+        iqr_multiplier=_get_env_float("IQR_MULTIPLIER", 1.5),
+        anomaly_strict_mode=_get_env_bool("ANOMALY_STRICT_MODE", False),        
     )
 
     ## Build segmentation parameters

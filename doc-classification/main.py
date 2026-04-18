@@ -18,6 +18,7 @@ from typing import Optional
 
 ## Project imports
 from src.core.data_consistency import run_data_consistency
+from src.core.data_quality import run_data_quality
 from src.core.config import CONFIG
 from src.core.eda import run_eda_on_folder
 from src.pipeline import (
@@ -47,10 +48,7 @@ def _build_parser() -> argparse.ArgumentParser:
             ArgumentParser instance
     """
 
-    parser = argparse.ArgumentParser(
-        description="Document classification pipeline",
-        add_help=True,
-    )
+    parser = argparse.ArgumentParser(description="Document classification pipeline", add_help=True)
 
     parser.add_argument("--version", action="version", version=f"%(prog)s {APP_VERSION}")
     parser.add_argument("--dry-run", action="store_true")
@@ -66,11 +64,7 @@ def _build_parser() -> argparse.ArgumentParser:
     ## Paths
     parser.add_argument("--labeled-dir", type=str, default=str(CONFIG.paths.labeled_dir))
     parser.add_argument("--unlabeled-dir", type=str, default=str(CONFIG.paths.unlabeled_dir))
-    parser.add_argument(
-        "--manifest",
-        type=str,
-        default=str(CONFIG.paths.data_dir / "labeled_manifest.json"),
-    )
+    parser.add_argument("--manifest", type=str, default=str(CONFIG.paths.data_dir / "labeled_manifest.json"))
 
     ## Outputs
     parser.add_argument("--output-csv", type=str, default="predictions.csv")
@@ -141,19 +135,30 @@ def main() -> int:
         ## Validate runtime
         runtime = _validate_runtime()
 
-        ## ====================================================
-        ## DATA CONSISTENCY CHECK (DOC CLASSIFICATION)
-        ## ====================================================
-
+        ## DATA CONSISTENCY CHECK
         if CONFIG.data_consistency.enabled:
 
             consistency_result = run_data_consistency(
-                data={"records": []},  ## TODO: plug real dataset here
+                data={"records": []},
                 strict=CONFIG.data_consistency.strict_mode,
             )
 
             logger.info("Consistency OK | %s", consistency_result["is_consistent"])
-            
+
+        ## DATA QUALITY CHECK
+        if CONFIG.runtime.anomaly_detection_enabled:
+
+            quality_result = run_data_quality(
+                texts=["placeholder"],
+                labels=["label"],
+                method=CONFIG.runtime.anomaly_method,
+                z_threshold=CONFIG.runtime.z_threshold,
+                iqr_multiplier=CONFIG.runtime.iqr_multiplier,
+                strict=CONFIG.runtime.anomaly_strict_mode,
+            )
+
+            logger.info("Data quality score: %s", quality_result["score"])
+
         if args.validate_config:
             logger.info("Config OK | %s", runtime)
             logger.info("Summary | %s", _build_summary("validate-config", True, start_time))
@@ -173,23 +178,13 @@ def main() -> int:
             logger.info("Summary | %s", _build_summary("dry-run", True, start_time))
             return EXIT_SUCCESS
 
-        ## ====================================================
         ## EDA
-        ## ====================================================
         if args.eda:
-            eda_folder = (
-                Path(args.eda_folder).expanduser().resolve()
-                if args.eda_folder.strip()
-                else (labeled_dir if labeled_dir.exists() else unlabeled_dir)
-            )
+            eda_folder = Path(args.eda_folder).expanduser().resolve() if args.eda_folder.strip() else (labeled_dir if labeled_dir.exists() else unlabeled_dir)
 
             logger.info("Running EDA on %s", eda_folder)
 
-            run_eda_on_folder(
-                folder_path=eda_folder,
-                labeled_manifest=None,
-                output_name=args.eda_output,
-            )
+            run_eda_on_folder(folder_path=eda_folder, labeled_manifest=None, output_name=args.eda_output)
 
             logger.info("EDA finished")
 
@@ -197,24 +192,16 @@ def main() -> int:
                 logger.info("Summary | %s", _build_summary("eda", True, start_time))
                 return EXIT_SUCCESS
 
-        ## ====================================================
         ## PIPELINE
-        ## ====================================================
         predictions = None
         index = None
 
         if args.run_all:
             logger.info("Running full pipeline")
 
-            index = build_similarity_index_from_labeled(
-                labeled_folder=labeled_dir,
-                manifest_path=manifest_path,
-            )
+            index = build_similarity_index_from_labeled(labeled_folder=labeled_dir, manifest_path=manifest_path)
 
-            predictions = predict_labels_for_unlabeled(
-                unlabeled_folder=unlabeled_dir,
-                index=index,
-            )
+            predictions = predict_labels_for_unlabeled(unlabeled_folder=unlabeled_dir, index=index)
 
             export_path = export_predictions(
                 predictions=predictions,
@@ -229,23 +216,14 @@ def main() -> int:
 
         if args.build_index:
             logger.info("Building index")
-            index = build_similarity_index_from_labeled(
-                labeled_folder=labeled_dir,
-                manifest_path=manifest_path,
-            )
+            index = build_similarity_index_from_labeled(labeled_folder=labeled_dir, manifest_path=manifest_path)
 
         if args.predict:
             if index is None:
                 logger.info("Index missing -> building first")
-                index = build_similarity_index_from_labeled(
-                    labeled_folder=labeled_dir,
-                    manifest_path=manifest_path,
-                )
+                index = build_similarity_index_from_labeled(labeled_folder=labeled_dir, manifest_path=manifest_path)
 
-            predictions = predict_labels_for_unlabeled(
-                unlabeled_folder=unlabeled_dir,
-                index=index,
-            )
+            predictions = predict_labels_for_unlabeled(unlabeled_folder=unlabeled_dir, index=index)
 
         if args.export:
             if predictions is None:
