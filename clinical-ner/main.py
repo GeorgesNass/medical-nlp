@@ -18,6 +18,7 @@ from typing import Optional
 
 ## Core config and pipeline
 from src.core.data_consistency import run_data_consistency
+from src.core.data_quality import run_data_quality
 from src.core.config import ProjectConfig
 from src.pipeline import run_pipeline
 
@@ -51,21 +52,9 @@ def build_arg_parser() -> argparse.ArgumentParser:
         add_help=True,
     )
 
-    parser.add_argument(
-        "--version",
-        action="version",
-        version=f"%(prog)s {APP_VERSION}",
-    )
-    parser.add_argument(
-        "--dry-run",
-        action="store_true",
-        help="Validate inputs without executing pipeline",
-    )
-    parser.add_argument(
-        "--validate-config",
-        action="store_true",
-        help="Validate configuration and exit",
-    )
+    parser.add_argument("--version", action="version", version=f"%(prog)s {APP_VERSION}")
+    parser.add_argument("--dry-run", action="store_true", help="Validate inputs without executing pipeline")
+    parser.add_argument("--validate-config", action="store_true", help="Validate configuration and exit")
 
     ## Input
     parser.add_argument("--labeled-csv", type=str, default=None)
@@ -102,6 +91,7 @@ def _validate_inputs(
         raise ValueError(
             "At least one input must be provided: --labeled-csv or --unlabeled-texts"
         )
+
 
 def _validate_runtime_config(project_root: Optional[Path]) -> dict:
     """
@@ -148,7 +138,7 @@ def _build_summary(
         "duration_seconds": round(time.monotonic() - start, 3),
         "details": details or {},
     }
-
+    
 ## ============================================================
 ## MAIN LOGIC
 ## ============================================================
@@ -193,9 +183,7 @@ def main() -> int:
         ## Load config
         cfg = ProjectConfig.from_env(project_root=project_root)
 
-        ## ============================================================
         ## DATA CONSISTENCY CHECK
-        ## ============================================================
         if cfg.data_consistency.enabled:
             consistency_result = run_data_consistency(
                 data={
@@ -218,6 +206,24 @@ def main() -> int:
                     http_status=400,
                     is_retryable=False,
                 )
+
+        ## DATA QUALITY CHECK
+        if cfg.runtime.anomaly_detection_enabled:
+
+            ## minimal sample to validate pipeline input
+            sample_texts = ["clinical sample text"]
+            sample_labels = [["O"]]
+
+            quality_result = run_data_quality(
+                texts=sample_texts,
+                labels=sample_labels,
+                method=cfg.runtime.anomaly_method,
+                z_threshold=cfg.runtime.z_threshold,
+                iqr_multiplier=cfg.runtime.iqr_multiplier,
+                strict=cfg.runtime.anomaly_strict_mode,
+            )
+
+            logger.info(f"Data quality score: {quality_result['score']}")
 
         ## Run pipeline
         output_path = run_pipeline(

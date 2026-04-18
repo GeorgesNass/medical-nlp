@@ -158,6 +158,11 @@ class RuntimeConfig:
             ner_labels: NER labels supported by the application
             temporality_labels_medication: Temporality-compatible medication labels
             temporality_labels_pathology: Temporality-compatible pathology labels
+            anomaly_detection_enabled: Enable anomaly detection
+            anomaly_method: Detection method (zscore or iqr)
+            z_threshold: Z-score threshold
+            iqr_multiplier: IQR multiplier
+            anomaly_strict_mode: Raise error if anomaly detected
     """
 
     environment: str
@@ -190,7 +195,12 @@ class RuntimeConfig:
     ))
     temporality_labels_medication: tuple[EntityLabel, ...] = field(default_factory=lambda: TEMPORALITY_LABELS_MEDICATION)
     temporality_labels_pathology: tuple[EntityLabel, ...] = field(default_factory=lambda: TEMPORALITY_LABELS_PATHOLOGY)
-
+    anomaly_detection_enabled: bool
+    anomaly_method: str
+    z_threshold: float
+    iqr_multiplier: float
+    anomaly_strict_mode: bool
+    
 @dataclass(frozen=True)
 class ModelConfig:
     """
@@ -873,6 +883,24 @@ def _validate_config(config: AppConfig) -> None:
         msg = "CLINICAL_NER_DICTIONARIES_FUZZY_MAX_DISTANCE must be >= 0"
         logger.error(msg)
         raise ConfigurationError(msg)
+        
+    ## Validate anomaly detection config
+    if config.runtime.anomaly_detection_enabled:
+
+        if config.runtime.anomaly_method not in {"zscore", "iqr"}:
+            msg = "ANOMALY_METHOD must be 'zscore' or 'iqr'"
+            logger.error(msg)
+            raise ConfigurationError(msg)
+
+        if config.runtime.z_threshold <= 0:
+            msg = "Z_THRESHOLD must be > 0"
+            logger.error(msg)
+            raise ConfigurationError(msg)
+
+        if config.runtime.iqr_multiplier <= 0:
+            msg = "IQR_MULTIPLIER must be > 0"
+            logger.error(msg)
+            raise ConfigurationError(msg)
 
 ## ============================================================
 ## EXPORT HELPERS
@@ -998,6 +1026,11 @@ def get_config(project_root: str | Path | None = None) -> AppConfig:
         batch_sleep_seconds=_get_profiled_env_float("CLINICAL_NER_BATCH_SLEEP_SECONDS", 0.0, profile),
         request_timeout_seconds=_get_profiled_env_int("CLINICAL_NER_REQUEST_TIMEOUT_SECONDS", 120, profile),
         allowed_origins=_get_env_list("ALLOWED_ORIGINS", ["*"]),
+        anomaly_detection_enabled=_get_env_bool("ANOMALY_DETECTION_ENABLED", True),
+        anomaly_method=_get_env("ANOMALY_METHOD", "zscore"),
+        z_threshold=_get_env_float("Z_THRESHOLD", 3.0),
+        iqr_multiplier=_get_env_float("IQR_MULTIPLIER", 1.5),
+        anomaly_strict_mode=_get_env_bool("ANOMALY_STRICT_MODE", False),
     )
 
     ## Build model section
