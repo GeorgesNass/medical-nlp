@@ -17,6 +17,7 @@ import pytest
 
 ## Core imports
 from src.core.data_consistency import run_data_consistency
+from src.core.data_quality import run_data_quality
 from src.core.config import ProjectConfig
 from src.core.entities import EntityLabel, EntityProvenance, NegationStatus
 from src.core.errors import ConfigurationError, DataError
@@ -492,3 +493,84 @@ def test_data_consistency_empty_text() -> None:
     result = run_data_consistency(data=data)
 
     assert result["is_consistent"] is False
+    
+## ============================================================
+## DATA QUALITY TESTS
+## ============================================================
+def test_data_quality_valid() -> None:
+    """
+        Test valid dataset for data quality
+
+        Returns:
+            None
+    """
+
+    texts = ["patient has asthma"]
+    labels = [["O", "O", "B-DISEASE"]]
+
+    result = run_data_quality(texts=texts, labels=labels)
+
+    assert result["is_valid"] is True
+
+def test_data_quality_empty_text() -> None:
+    """
+        Detect empty text anomaly
+
+        Returns:
+            None
+    """
+
+    texts = [""]
+    labels = [["O"]]
+
+    result = run_data_quality(texts=texts, labels=labels)
+
+    assert result["is_valid"] is False
+
+def test_data_quality_length_anomaly() -> None:
+    """
+        Detect abnormal text length
+
+        Returns:
+            None
+    """
+
+    texts = ["short", "this is a very very very very very long clinical sentence"]
+    labels = [["O"], ["O"] * 12]
+
+    result = run_data_quality(texts=texts, labels=labels, method="zscore")
+
+    assert "sequence_length_anomaly" in [i["rule"] for i in result["issues"]]
+
+def test_data_quality_invalid_bio() -> None:
+    """
+        Detect invalid BIO tags
+
+        Returns:
+            None
+    """
+
+    texts = ["patient asthma"]
+    labels = [["X", "Y"]]
+
+    result = run_data_quality(texts=texts, labels=labels)
+
+    assert result["is_valid"] is False
+
+def test_data_quality_strict_mode() -> None:
+    """
+        Strict mode raises error
+
+        Returns:
+            None
+    """
+
+    texts = [""]
+    labels = [["O"]]
+
+    with pytest.raises(Exception):
+        run_data_quality(
+            texts=texts,
+            labels=labels,
+            strict=True,
+        )

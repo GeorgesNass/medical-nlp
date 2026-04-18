@@ -10,7 +10,7 @@
 #   - unlabeled mode (folder of .txt + dictionaries)
 #   - run unit tests
 #   - run quick smoke checks
-#   - all modes include data consistency checks
+#   - all modes include data consistency + data quality checks
 ###############################################################################
 
 set -euo pipefail
@@ -22,7 +22,7 @@ PYTHON_BIN="${PYTHON_BIN:-python3}"
 export PYTHONPATH="${PROJECT_ROOT}:${PYTHONPATH:-}"
 
 echo "=============================================="
-echo " Clinical NER - Pipeline Menu"
+echo " Clinical NER - Pipeline Menu (data consistency + data quality)"
 echo "=============================================="
 echo "Project root: ${PROJECT_ROOT}"
 echo "Python bin  : ${PYTHON_BIN}"
@@ -65,10 +65,11 @@ ensure_dir_exists() {
 while true; do
   echo ""
   echo "Select an action:"
-  echo " 1) Run pipeline (LABELED CSV -> export CSV) (with data consistency)"
-  echo " 2) Run pipeline (UNLABELED TXT -> export CSV) (with data consistency)"
+  echo " 1) Run pipeline (LABELED CSV -> export CSV) (data consistency + data quality)"
+  echo " 2) Run pipeline (UNLABELED TXT -> export CSV) (data consistency + data quality)"
   echo " 3) Run unit tests (pytest)"
-  echo " 4) Quick smoke: create sample TXT and run unlabeled pipeline (with data consistency)"
+  echo " 4) Quick smoke: create sample TXT and run unlabeled pipeline (data consistency + data quality)"
+  echo " 5) Run data quality check only 🔴"
   echo " 0) Exit"
   echo ""
 
@@ -128,6 +129,15 @@ while true; do
 
       echo ""
       echo "Smoke output: ${OUT_CSV}"
+      pause
+      ;;
+    5)
+      echo ""
+      echo "Running data quality check..."
+      echo ""
+
+      run_python "${PROJECT_ROOT}/main.py" --validate-config
+
       pause
       ;;
     0)
