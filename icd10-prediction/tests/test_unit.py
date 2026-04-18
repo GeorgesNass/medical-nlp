@@ -13,6 +13,7 @@ import numpy as np
 import pytest
 
 from src.core.data_consistency import run_data_consistency
+from src.core.data_quality import run_data_quality
 from src.nlp.preprocess import preprocess_text
 from src.nlp.postprocess import select_top_k
 from src.nlp.vectorizers import build_tfidf_vectorizer, fit_transform_tfidf
@@ -263,3 +264,75 @@ def test_data_consistency_missing_labels() -> None:
     result = run_data_consistency(data=data)
 
     assert result["is_consistent"] is False
+    
+## ============================================================
+## DATA QUALITY TESTS
+## ============================================================
+def test_data_quality_valid_dataset() -> None:
+    """
+        Validate correct dataset (no anomalies)
+
+        Returns:
+            None
+    """
+
+    texts = [
+        "patient fever infection",
+        "fracture tibia trauma",
+        "diabetes glucose high",
+    ]
+
+    labels = ["A00", "S82", "E11"]
+
+    result = run_data_quality(texts=texts, labels=labels)
+
+    assert result["score"] > 0.8
+    assert result["errors"] == 0
+
+def test_data_quality_detect_empty_text() -> None:
+    """
+        Detect empty text anomaly
+
+        Returns:
+            None
+    """
+
+    texts = ["", "valid text"]
+    labels = ["A00", "B00"]
+
+    result = run_data_quality(texts=texts, labels=labels)
+
+    assert result["errors"] > 0
+
+def test_data_quality_detect_label_mismatch() -> None:
+    """
+        Detect mismatch between texts and labels
+
+        Returns:
+            None
+    """
+
+    texts = ["text1", "text2"]
+    labels = ["A00"]
+
+    result = run_data_quality(texts=texts, labels=labels)
+
+    assert result["errors"] > 0
+
+def test_data_quality_strict_mode() -> None:
+    """
+        Strict mode should raise error on anomalies
+
+        Returns:
+            None
+    """
+
+    texts = ["", "bad data"]
+    labels = ["A00", "B00"]
+
+    with pytest.raises(Exception):
+        run_data_quality(
+            texts=texts,
+            labels=labels,
+            strict=True,
+        )

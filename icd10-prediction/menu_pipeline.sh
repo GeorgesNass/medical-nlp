@@ -6,12 +6,12 @@
 # Version: 1.0.0
 # Description:
 #   CLI menu to run the main icd10_prediction pipelines:
-#   - parse RSS files into a consolidated structured CSV (with data consistency)
-#   - build one CSV per admission_id from clinical_records + RSS metadata (with data consistency)
-#   - train baseline model and export metrics (with data consistency)
-#   - run EDA (label distribution + text length stats + plot) (with data consistency)
-#   - run full pipeline (parse-rss + build-clinical-csv + train + eda) (with data consistency)
-#   - run FastAPI service (with data consistency)
+#   - parse RSS files into a consolidated structured CSV (with data consistency + data quality)
+#   - build one CSV per admission_id from clinical_records + RSS metadata (with data consistency + data quality)
+#   - train baseline model and export metrics (with data consistency + data quality)
+#   - run EDA (label distribution + text length stats + plot) (with data consistency + data quality)
+#   - run full pipeline (parse-rss + build-clinical-csv + train + eda) (with data consistency + data quality)
+#   - run FastAPI service (with data consistency + data quality)
 ###############################################################################
 
 set -euo pipefail
@@ -46,12 +46,13 @@ run_python() {
 while true; do
   echo ""
   echo "Select an action:"
-  echo " 1) Parse RSS -> consolidated CSV (with data consistency)"
-  echo " 2) Build clinical_records CSVs (1 per admission_id) (with data consistency)"
-  echo " 3) Train baseline model + export metrics (with data consistency)"
-  echo " 4) Run EDA (label distribution + text stats + plot) (with data consistency)"
-  echo " 5) Run full pipeline (parse-rss + build-clinical-csv + train + eda) (with data consistency)"
-  echo " 6) Run API (uvicorn) (with data consistency)"
+  echo " 1) Parse RSS -> consolidated CSV (with data consistency + data quality)"
+  echo " 2) Build clinical_records CSVs (1 per admission_id) (with data consistency + data quality)"
+  echo " 3) Train baseline model + export metrics (with data consistency + data quality)"
+  echo " 4) Run EDA (label distribution + text stats + plot) (with data consistency + data quality)"
+  echo " 5) Run full pipeline (parse-rss + build-clinical-csv + train + eda) (with data consistency + data quality)"
+  echo " 6) Run API (uvicorn) (with data consistency + data quality)"
+  echo " 7) Run data quality check only"
   echo " 0) Exit"
   echo ""
 
@@ -137,6 +138,11 @@ while true; do
         run_python main.py --run-api --host "$HOST" --port "$PORT"
       fi
 
+      pause
+      ;;
+    7)
+      echo "Running standalone data quality check..."
+      run_python main.py --validate-config
       pause
       ;;
     0)
