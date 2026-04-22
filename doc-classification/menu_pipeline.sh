@@ -3,7 +3,7 @@
 ###############################################################################
 # Doc-Classification - Pipeline Menu
 # Author: Georges Nassopoulos
-# Version: 1.0.0
+# Version: 1.1.0
 # Description:
 #   CLI menu to run the main doc-classification pipelines (with data consistency + data quality):
 #   - build similarity index from labeled docs + manifest
@@ -11,6 +11,7 @@
 #   - export predictions to CSV
 #   - run EDA on a folder
 #   - run full pipeline (build-index + predict + export)
+#   - run data drift (Evidently)
 ###############################################################################
 
 set -euo pipefail
@@ -50,7 +51,8 @@ while true; do
   echo " 3) Export predictions to CSV (requires predict in same run) (data consistency + data quality)"
   echo " 4) Run EDA (choose folder) (data consistency + data quality)"
   echo " 5) Run full pipeline (build-index + predict + export) (data consistency + data quality)"
-  echo " 6) Run data quality check only 🔴"
+  echo " 6) Run data quality check only"
+  echo " 7) Run data drift"
   echo " 0) Exit"
   echo ""
 
@@ -147,6 +149,21 @@ while true; do
       echo "Running data quality check..."
 
       run_python main.py --validate-config
+
+      pause
+      ;;
+    7)
+      ## DATA DRIFT (DOC CLASSIFICATION + EVIDENTLY)
+      read -rp "Reference dataset [default: ./data/processed/reference.csv]: " REF
+      read -rp "Current dataset [default: ./data/processed/current.csv]: " CUR
+
+      REF="${REF:-./data/processed/reference.csv}"
+      CUR="${CUR:-./data/processed/current.csv}"
+
+      run_python main.py \
+        --mode drift \
+        --ref "$REF" \
+        --current "$CUR"
 
       pause
       ;;
