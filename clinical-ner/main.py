@@ -13,12 +13,14 @@ from __future__ import annotations
 import argparse
 import sys
 import time
+import pandas as pd
 from pathlib import Path
 from typing import Optional
 
 ## Core config and pipeline
 from src.core.data_consistency import run_data_consistency
 from src.core.data_quality import run_data_quality
+from src.core.data_drift import run_data_drift
 from src.core.config import ProjectConfig
 from src.pipeline import run_pipeline
 
@@ -55,7 +57,10 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--version", action="version", version=f"%(prog)s {APP_VERSION}")
     parser.add_argument("--dry-run", action="store_true", help="Validate inputs without executing pipeline")
     parser.add_argument("--validate-config", action="store_true", help="Validate configuration and exit")
-
+    parser.add_argument("--mode", type=str, default="", help="Optional mode (e.g. drift)")
+    parser.add_argument("--ref", type=str, default=None, help="Reference dataset for drift")
+    parser.add_argument("--current", type=str, default=None, help="Current dataset for drift")
+    
     ## Input
     parser.add_argument("--labeled-csv", type=str, default=None)
     parser.add_argument("--unlabeled-texts", type=str, default=None)
@@ -224,6 +229,51 @@ def main() -> int:
             )
 
             logger.info(f"Data quality score: {quality_result['score']}")
+
+        ## DATA DRIFT CHECK (CLINICAL NER + EVIDENTLY)
+        if args.mode == "drift":
+
+            if not args.ref or not args.current:
+                raise ValueError("Drift mode requires --ref and --current")
+
+            ref_path = Path(args.ref)
+            cur_path = Path(args.current)
+
+            if not ref_path.exists() or not cur_path.exists():
+                raise ValueError("Drift datasets not found")
+
+            df_ref = pd.read_csv(ref_path)
+            df_cur = pd.read_csv(cur_path)
+
+            drift_result = run_data_drift(
+                df_ref=df_ref,
+                df_current=df_cur,
+                strict=cfg.runtime.drift_strict_mode,
+            )
+
+            logger.info("Drift score | %s", drift_result["drift_score"])
+
+            if "evidently_report" in drift_result:
+                logger.info("Evidently report | %s", drift_result["evidently_report"])
+
+            if drift_result["errors"] > 0:
+                raise ClinicalNERError(
+                    message="Data drift detected",
+                    error_code="data_drift_error",
+                    origin="main",
+                )
+
+            logger.info(
+                "Summary | %s",
+                _build_summary(
+                    "drift",
+                    True,
+                    start_time,
+                    {"drift_score": drift_result["drift_score"]},
+                ),
+            )
+
+            return EXIT_SUCCESS
 
         ## Run pipeline
         output_path = run_pipeline(
