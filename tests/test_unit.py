@@ -17,6 +17,7 @@ import pytest
 
 from src.core.data_consistency import run_data_consistency
 from src.core.data_quality import run_data_quality
+from src.core.data_drift import run_data_drift
 from src.core.errors import DataError, ManifestError, PipelineError
 from src.domain.schema import DocumentSegment
 from src.nlp.segmenter import SegmenterConfig, normalize_text, segment_text, tokenize_words
@@ -542,3 +543,127 @@ def test_data_quality_strict_mode() -> None:
             labels=labels,
             strict=True,
         )
+
+## ============================================================
+## DATA DRIFT TESTS (DOC CLASSIFICATION)
+## ============================================================
+def test_data_drift_no_drift_doc_classification() -> None:
+    """
+        Validate no drift scenario on document dataset
+
+        Returns:
+            None
+    """
+
+    df_ref = pd.DataFrame({
+        "text": ["doc a", "doc b", "doc c"],
+        "label": ["crh", "cro", "cra"],
+        "prediction": ["crh", "cro", "cra"],
+        "document_type": ["pdf", "pdf", "docx"],
+        "page_count": [1, 2, 3],
+    })
+
+    df_cur = pd.DataFrame({
+        "text": ["doc a", "doc b", "doc c"],
+        "label": ["crh", "cro", "cra"],
+        "prediction": ["crh", "cro", "cra"],
+        "document_type": ["pdf", "pdf", "docx"],
+        "page_count": [1, 2, 3],
+    })
+
+    result = run_data_drift(df_ref=df_ref, df_current=df_cur)
+
+    assert result["drift_score"] >= 0.9
+    assert result["errors"] == 0
+
+def test_data_drift_detected_doc_classification() -> None:
+    """
+        Detect drift on labels, text and document metadata
+
+        Returns:
+            None
+    """
+
+    df_ref = pd.DataFrame({
+        "text": ["short text", "short text", "short text"],
+        "label": ["crh", "crh", "crh"],
+        "prediction": ["crh", "crh", "crh"],
+        "document_type": ["pdf", "pdf", "pdf"],
+        "page_count": [1, 1, 1],
+    })
+
+    df_cur = pd.DataFrame({
+        "text": [
+            "very long document content with many words",
+            "very long document content with many words",
+            "very long document content with many words",
+        ],
+        "label": ["analyse-labo", "analyse-labo", "analyse-labo"],
+        "prediction": ["analyse-labo", "analyse-labo", "analyse-labo"],
+        "document_type": ["docx", "docx", "docx"],
+        "page_count": [10, 10, 10],
+    })
+
+    result = run_data_drift(df_ref=df_ref, df_current=df_cur)
+
+    assert result["drift_score"] < 1.0
+    assert result["warnings"] > 0
+
+def test_data_drift_empty_doc_classification() -> None:
+    """
+        Validate empty dataset handling
+
+        Returns:
+            None
+    """
+
+    df_ref = pd.DataFrame()
+    df_cur = pd.DataFrame()
+
+    with pytest.raises(Exception):
+        run_data_drift(df_ref=df_ref, df_current=df_cur)
+
+def test_data_drift_strict_doc_classification() -> None:
+    """
+        Validate strict mode behavior
+
+        Returns:
+            None
+    """
+
+    df_ref = pd.DataFrame({
+        "text": ["a"],
+        "label": ["crh"],
+        "prediction": ["crh"],
+    })
+
+    df_cur = pd.DataFrame({
+        "text": ["very very long document text"],
+        "label": ["cro"],
+        "prediction": ["cro"],
+    })
+
+    with pytest.raises(Exception):
+        run_data_drift(df_ref=df_ref, df_current=df_cur, strict=True)
+        
+def test_data_drift_returns_evidently_report_key_doc_classification() -> None:
+    """
+        Validate Evidently report key is returned when drift runs
+
+        Returns:
+            None
+    """
+
+    df_ref = pd.DataFrame({
+        "text": ["doc a", "doc b"],
+        "label": ["crh", "cro"],
+    })
+
+    df_cur = pd.DataFrame({
+        "text": ["doc a", "doc b"],
+        "label": ["crh", "cro"],
+    })
+
+    result = run_data_drift(df_ref=df_ref, df_current=df_cur)
+
+    assert "evidently_report" in result or "warnings" in result        

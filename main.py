@@ -13,12 +13,14 @@ from __future__ import annotations
 import argparse
 import sys
 import time
+import pandas as pd
 from pathlib import Path
 from typing import Optional
 
 ## Project imports
 from src.core.data_consistency import run_data_consistency
 from src.core.data_quality import run_data_quality
+from src.core.data_drift import run_data_drift
 from src.core.config import CONFIG
 from src.core.eda import run_eda_on_folder
 from src.pipeline import (
@@ -53,6 +55,9 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--version", action="version", version=f"%(prog)s {APP_VERSION}")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--validate-config", action="store_true")
+    parser.add_argument("--mode", type=str, default="", help="Optional mode (e.g. drift).")
+    parser.add_argument("--ref", type=str, default="", help="Reference dataset path for drift.")
+    parser.add_argument("--current", type=str, default="", help="Current dataset path for drift.")    
 
     ## Actions
     parser.add_argument("--build-index", action="store_true")
@@ -159,6 +164,34 @@ def main() -> int:
 
             logger.info("Data quality score: %s", quality_result["score"])
 
+        ## DATA DRIFT CHECK (DOC CLASSIFICATION + EVIDENTLY)
+        if args.mode == "drift":
+
+            ref_path = Path(args.ref)
+            cur_path = Path(args.current)
+
+            if not ref_path.exists() or not cur_path.exists():
+                raise ValueError("Drift datasets not found")
+
+            df_ref = pd.read_csv(ref_path)
+            df_cur = pd.read_csv(cur_path)
+
+            drift_result = run_data_drift(
+                df_ref=df_ref,
+                df_current=df_cur,
+                strict=CONFIG.runtime.drift_strict_mode,
+            )
+
+            logger.info("Drift score | %s", drift_result["drift_score"])
+
+            if "evidently_report" in drift_result:
+                logger.info("Evidently report | %s", drift_result["evidently_report"])
+
+            if drift_result["errors"] > 0:
+                raise RuntimeError("Data drift failed")
+
+            return EXIT_SUCCESS
+            
         if args.validate_config:
             logger.info("Config OK | %s", runtime)
             logger.info("Summary | %s", _build_summary("validate-config", True, start_time))
@@ -169,7 +202,7 @@ def main() -> int:
         unlabeled_dir = Path(args.unlabeled_dir).expanduser().resolve()
         manifest_path = Path(args.manifest).expanduser().resolve()
 
-        if not any([args.build_index, args.predict, args.export, args.eda, args.run_all]):
+        if not any([args.build_index, args.predict, args.export, args.eda, args.run_all, args.mode == "drift"]):
             parser.print_help()
             return EXIT_SUCCESS
 
