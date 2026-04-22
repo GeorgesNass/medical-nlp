@@ -3,7 +3,7 @@
 ###############################################################################
 # ICD10-Prediction - Pipeline Menu
 # Author: Georges Nassopoulos
-# Version: 1.0.0
+# Version: 1.1.0
 # Description:
 #   CLI menu to run the main icd10_prediction pipelines:
 #   - parse RSS files into a consolidated structured CSV (with data consistency + data quality)
@@ -12,6 +12,7 @@
 #   - run EDA (label distribution + text length stats + plot) (with data consistency + data quality)
 #   - run full pipeline (parse-rss + build-clinical-csv + train + eda) (with data consistency + data quality)
 #   - run FastAPI service (with data consistency + data quality)
+#   - run data drift (Evidently)
 ###############################################################################
 
 set -euo pipefail
@@ -53,6 +54,7 @@ while true; do
   echo " 5) Run full pipeline (parse-rss + build-clinical-csv + train + eda) (with data consistency + data quality)"
   echo " 6) Run API (uvicorn) (with data consistency + data quality)"
   echo " 7) Run data quality check only"
+  echo " 8) Run data drift (NEW)"
   echo " 0) Exit"
   echo ""
 
@@ -143,6 +145,21 @@ while true; do
     7)
       echo "Running standalone data quality check..."
       run_python main.py --validate-config
+      pause
+      ;;
+    8)
+      ## DATA DRIFT (ICD10 + EVIDENTLY)
+      read -rp "Reference dataset [default: ./data/processed/train.csv]: " REF
+      read -rp "Current dataset [default: ./data/processed/new.csv]: " CUR
+
+      REF="${REF:-./data/processed/train.csv}"
+      CUR="${CUR:-./data/processed/new.csv}"
+
+      run_python main.py \
+        --mode drift \
+        --ref "$REF" \
+        --current "$CUR"
+
       pause
       ;;
     0)

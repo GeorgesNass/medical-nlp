@@ -10,10 +10,12 @@ __desc__ = "Unit tests for core utilities: postprocess, metrics and edge cases."
 from __future__ import annotations
 
 import numpy as np
+import pandas as pd
 import pytest
 
 from src.core.data_consistency import run_data_consistency
 from src.core.data_quality import run_data_quality
+from src.core.data_drift import run_data_drift
 from src.nlp.preprocess import preprocess_text
 from src.nlp.postprocess import select_top_k
 from src.nlp.vectorizers import build_tfidf_vectorizer, fit_transform_tfidf
@@ -336,3 +338,72 @@ def test_data_quality_strict_mode() -> None:
             labels=labels,
             strict=True,
         )
+        
+## ============================================================
+## DATA DRIFT TESTS (ICD10)
+## ============================================================
+def test_data_drift_no_drift_icd10() -> None:
+    """
+        Validate no drift scenario on ICD10 dataset
+    """
+
+    df_ref = pd.DataFrame({
+        "text": ["a", "b", "c"],
+        "label": ["A00", "B00", "C00"],
+        "prediction": ["A00", "B00", "C00"],
+    })
+
+    df_cur = pd.DataFrame({
+        "text": ["a", "b", "c"],
+        "label": ["A00", "B00", "C00"],
+        "prediction": ["A00", "B00", "C00"],
+    })
+
+    result = run_data_drift(df_ref=df_ref, df_current=df_cur)
+
+    assert result["drift_score"] >= 0.9
+    assert result["errors"] == 0
+
+def test_data_drift_detected_labels_icd10() -> None:
+    """
+        Detect drift on ICD10 labels
+    """
+
+    df_ref = pd.DataFrame({
+        "text": ["short", "short"],
+        "label": ["A00", "A00"],
+        "prediction": ["A00", "A00"],
+    })
+
+    df_cur = pd.DataFrame({
+        "text": ["long text", "long text"],
+        "label": ["B00", "B00"],
+        "prediction": ["B00", "B00"],
+    })
+
+    result = run_data_drift(df_ref=df_ref, df_current=df_cur)
+
+    assert result["drift_score"] < 1.0
+    assert result["warnings"] > 0
+
+def test_data_drift_empty_icd10() -> None:
+    """
+        Validate empty dataset handling
+    """
+
+    df_ref = pd.DataFrame()
+    df_cur = pd.DataFrame()
+
+    with pytest.raises(Exception):
+        run_data_drift(df_ref=df_ref, df_current=df_cur)
+
+def test_data_drift_strict_icd10() -> None:
+    """
+        Validate strict mode behavior
+    """
+
+    df_ref = pd.DataFrame({"text": ["a"], "label": ["A00"]})
+    df_cur = pd.DataFrame({"text": ["very long text"], "label": ["B00"]})
+
+    with pytest.raises(Exception):
+        run_data_drift(df_ref=df_ref, df_current=df_cur, strict=True)
