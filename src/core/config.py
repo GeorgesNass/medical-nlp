@@ -163,6 +163,13 @@ class RuntimeConfig:
             z_threshold: Z-score threshold
             iqr_multiplier: IQR multiplier
             anomaly_strict_mode: Raise error if anomaly detected
+            drift_detection_enabled: Enable data drift detection
+            drift_p_value_threshold: Statistical p-value threshold for drift detection
+            drift_entity_threshold: Threshold for entity distribution drift
+            drift_entity_count_threshold: Threshold for entity count drift
+            drift_text_threshold: Threshold for text feature drift
+            drift_evidently_enabled: Enable Evidently report generation
+            drift_strict_mode: Raise error if drift detected            
     """
 
     environment: str
@@ -200,6 +207,13 @@ class RuntimeConfig:
     z_threshold: float
     iqr_multiplier: float
     anomaly_strict_mode: bool
+    drift_detection_enabled: bool
+    drift_p_value_threshold: float
+    drift_entity_threshold: float
+    drift_entity_count_threshold: float
+    drift_text_threshold: float
+    drift_evidently_enabled: bool
+    drift_strict_mode: bool
     
 @dataclass(frozen=True)
 class ModelConfig:
@@ -902,6 +916,23 @@ def _validate_config(config: AppConfig) -> None:
             logger.error(msg)
             raise ConfigurationError(msg)
 
+    ## Validate drift parameters
+    if config.runtime.drift_detection_enabled:
+
+        _validate_confidence(
+            config.runtime.drift_p_value_threshold,
+            "DRIFT_P_VALUE_THRESHOLD",
+        )
+
+        if config.runtime.drift_entity_threshold < 0:
+            raise ConfigurationError("DRIFT_ENTITY_THRESHOLD must be >= 0")
+
+        if config.runtime.drift_entity_count_threshold < 0:
+            raise ConfigurationError("DRIFT_ENTITY_COUNT_THRESHOLD must be >= 0")
+
+        if config.runtime.drift_text_threshold < 0:
+            raise ConfigurationError("DRIFT_TEXT_THRESHOLD must be >= 0")
+            
 ## ============================================================
 ## EXPORT HELPERS
 ## ============================================================
@@ -1031,6 +1062,13 @@ def get_config(project_root: str | Path | None = None) -> AppConfig:
         z_threshold=_get_env_float("Z_THRESHOLD", 3.0),
         iqr_multiplier=_get_env_float("IQR_MULTIPLIER", 1.5),
         anomaly_strict_mode=_get_env_bool("ANOMALY_STRICT_MODE", False),
+        drift_detection_enabled=_get_env_bool("DRIFT_DETECTION_ENABLED", True),
+        drift_p_value_threshold=_get_env_float("DRIFT_P_VALUE_THRESHOLD", 0.05),
+        drift_entity_threshold=_get_env_float("DRIFT_ENTITY_THRESHOLD", 0.2),
+        drift_entity_count_threshold=_get_env_float("DRIFT_ENTITY_COUNT_THRESHOLD", 0.2),
+        drift_text_threshold=_get_env_float("DRIFT_TEXT_THRESHOLD", 0.2),
+        drift_evidently_enabled=_get_env_bool("DRIFT_EVIDENTLY_ENABLED", True),
+        drift_strict_mode=_get_env_bool("DRIFT_STRICT_MODE", False),        
     )
 
     ## Build model section

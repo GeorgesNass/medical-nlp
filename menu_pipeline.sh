@@ -3,13 +3,14 @@
 ###############################################################################
 # Clinical NER - Pipeline Menu
 # Author: Georges Nassopoulos
-# Version: 1.0.0
+# Version: 1.1.0
 # Description:
 #   CLI menu to run the main Clinical NER pipelines:
 #   - labeled mode (CSV with entities)
 #   - unlabeled mode (folder of .txt + dictionaries)
 #   - run unit tests
 #   - run quick smoke checks
+#   - run data drift (Evidently)
 #   - all modes include data consistency + data quality checks
 ###############################################################################
 
@@ -69,7 +70,8 @@ while true; do
   echo " 2) Run pipeline (UNLABELED TXT -> export CSV) (data consistency + data quality)"
   echo " 3) Run unit tests (pytest)"
   echo " 4) Quick smoke: create sample TXT and run unlabeled pipeline (data consistency + data quality)"
-  echo " 5) Run data quality check only 🔴"
+  echo " 5) Run data quality check only"
+  echo " 6) Run data drift"
   echo " 0) Exit"
   echo ""
 
@@ -137,6 +139,22 @@ while true; do
       echo ""
 
       run_python "${PROJECT_ROOT}/main.py" --validate-config
+
+      pause
+      ;;
+    6)
+      ## DATA DRIFT (CLINICAL NER + EVIDENTLY)
+      read -rp "Reference dataset CSV: " REF
+      ensure_file_exists "${REF}" || { pause; continue; }
+
+      read -rp "Current dataset CSV: " CUR
+      ensure_file_exists "${CUR}" || { pause; continue; }
+
+      run_python "${PROJECT_ROOT}/main.py" \
+        --mode drift \
+        --ref "${REF}" \
+        --current "${CUR}" \
+        --project-root "${PROJECT_ROOT}"
 
       pause
       ;;

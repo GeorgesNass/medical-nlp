@@ -11,6 +11,7 @@ from __future__ import annotations
 
 ## Standard library imports
 from pathlib import Path
+import pandas as pd
 
 ## Third-party imports
 import pytest
@@ -18,6 +19,7 @@ import pytest
 ## Core imports
 from src.core.data_consistency import run_data_consistency
 from src.core.data_quality import run_data_quality
+from src.core.data_drift import run_data_drift
 from src.core.config import ProjectConfig
 from src.core.entities import EntityLabel, EntityProvenance, NegationStatus
 from src.core.errors import ConfigurationError, DataError
@@ -574,3 +576,91 @@ def test_data_quality_strict_mode() -> None:
             labels=labels,
             strict=True,
         )
+        
+## ============================================================
+## DATA DRIFT TESTS (CLINICAL NER)
+## ============================================================
+def test_data_drift_no_drift_ner() -> None:
+    """
+        Validate no drift scenario for NER dataset
+
+        Returns:
+            None
+    """
+
+    df_ref = pd.DataFrame({
+        "text": ["patient asthma", "chronic diabetes"],
+        "entity_type": ["DISEASE", "DISEASE"],
+        "entities": [[{"label": "DISEASE"}], [{"label": "DISEASE"}]],
+    })
+
+    df_cur = pd.DataFrame({
+        "text": ["patient asthma", "chronic diabetes"],
+        "entity_type": ["DISEASE", "DISEASE"],
+        "entities": [[{"label": "DISEASE"}], [{"label": "DISEASE"}]],
+    })
+
+    result = run_data_drift(df_ref=df_ref, df_current=df_cur)
+
+    assert result["drift_score"] >= 0.9
+    assert result["errors"] == 0
+
+def test_data_drift_detected_ner() -> None:
+    """
+        Detect drift on entity distribution and text
+
+        Returns:
+            None
+    """
+
+    df_ref = pd.DataFrame({
+        "text": ["short", "short"],
+        "entity_type": ["DISEASE", "DISEASE"],
+        "entities": [[{"label": "DISEASE"}], [{"label": "DISEASE"}]],
+    })
+
+    df_cur = pd.DataFrame({
+        "text": ["very long clinical sentence with multiple tokens"] * 2,
+        "entity_type": ["MEDICATION", "MEDICATION"],
+        "entities": [[{"label": "MEDICATION"}], [{"label": "MEDICATION"}]],
+    })
+
+    result = run_data_drift(df_ref=df_ref, df_current=df_cur)
+
+    assert result["drift_score"] < 1.0
+    assert result["warnings"] > 0
+
+def test_data_drift_empty_ner() -> None:
+    """
+        Validate empty dataset handling
+
+        Returns:
+            None
+    """
+
+    df_ref = pd.DataFrame()
+    df_cur = pd.DataFrame()
+
+    with pytest.raises(Exception):
+        run_data_drift(df_ref=df_ref, df_current=df_cur)
+
+def test_data_drift_strict_mode_ner() -> None:
+    """
+        Validate strict mode behavior
+
+        Returns:
+            None
+    """
+
+    df_ref = pd.DataFrame({
+        "text": ["a"],
+        "entity_type": ["DISEASE"],
+    })
+
+    df_cur = pd.DataFrame({
+        "text": ["very very long text"],
+        "entity_type": ["MEDICATION"],
+    })
+
+    with pytest.raises(Exception):
+        run_data_drift(df_ref=df_ref, df_current=df_cur, strict=True)
