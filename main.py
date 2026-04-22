@@ -21,6 +21,7 @@ import uvicorn
 from src.utils.logging_utils import get_logger
 from src.core.data_consistency import run_data_consistency
 from src.core.data_quality import run_data_quality
+from src.core.data_drift import run_data_drift
 from src.core.errors import (
     ConfigurationError,
     DataError,
@@ -72,6 +73,7 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--version", action="version", version=f"%(prog)s {APP_VERSION}")
     parser.add_argument("--dry-run", action="store_true", help="Validate inputs and log intended actions without executing workflows.")
     parser.add_argument("--validate-config", action="store_true", help="Validate configuration loading and resolved default paths, then exit.")
+    parser.add_argument("--mode", type=str, default="", help="Optional mode (e.g. drift).")
 
     ## Main action flags
     parser.add_argument("--parse-rss", action="store_true", help="Parse all raw RSS files and export a consolidated CSV.")
@@ -80,6 +82,8 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--eda", action="store_true", help="Run basic EDA on per-admission CSV files (label distribution + text length stats).")
     parser.add_argument("--run-api", action="store_true", help="Run FastAPI service (uvicorn).")
     parser.add_argument("--run-all", action="store_true", help="Run parse-rss -> build-clinical-csv -> train -> eda in sequence.")
+    parser.add_argument("--ref", type=str, default="", help="Reference dataset path for drift.")
+    parser.add_argument("--current", type=str, default="", help="Current dataset path for drift.")
 
     ## Paths overrides (defaults from config)
     parser.add_argument("--rss-dir", type=str, default="", help="Path to data/raw/icd10/ (folder containing .rss files).")
@@ -290,6 +294,7 @@ def main() -> int:
                 args.eda,
                 args.run_api,
                 args.run_all,
+                args.mode == "drift",
             ]
         ):
             parser.print_help()
@@ -402,7 +407,35 @@ def main() -> int:
             except Exception as exc:
                 logger.exception("Data quality check failed: %s", exc)
                 raise
-                
+
+        ## DATA DRIFT CHECK (ICD10 + EVIDENTLY)
+        if args.mode == "drift":
+
+            ref_path = Path(args.ref)
+            cur_path = Path(args.current)
+
+            if not ref_path.exists() or not cur_path.exists():
+                raise DataError("Drift datasets not found")
+
+            df_ref = pd.read_csv(ref_path)
+            df_cur = pd.read_csv(cur_path)
+
+            drift_result = run_data_drift(
+                df_ref=df_ref,
+                df_current=df_cur,
+                strict=config.runtime.drift_strict_mode,
+            )
+
+            logger.info("Drift score | %s", drift_result["drift_score"])
+
+            if "evidently_report" in drift_result:
+                logger.info("Evidently report | %s", drift_result["evidently_report"])
+
+            if drift_result["errors"] > 0:
+                raise DataError("Data drift failed")
+
+            return EXIT_SUCCESS
+            
         if args.dry_run:
             logger.info(
                 "Dry-run | parse_rss=%s | build_clinical_csv=%s | train=%s | eda=%s | run_api=%s | run_all=%s",
