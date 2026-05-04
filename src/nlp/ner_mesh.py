@@ -12,29 +12,28 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List, Optional
 
-from src.core.config import get_settings
+from src.core.config import get_settings, get_config
+from src.nlp.preprocess import normalize_medical_text
 from src.mesh.query_mesh import search_mesh
 from src.utils.logging_utils import get_logger
 
 logger = get_logger("ner_mesh")
 
-
 ## ============================================================
 ## DATA STRUCTURES
 ## ============================================================
-
 @dataclass
 class DetectedEntity:
     """
-    Detected MeSH entity representation.
+        Detected MeSH entity representation
 
-    Attributes:
-        ui (str): Suggested MeSH UI.
-        label (str): Matched surface form.
-        start (int): Start character index.
-        end (int): End character index.
-        method (str): Detection method ('dict' or 'fts').
-        score (float): Optional confidence score.
+        Attributes:
+            ui (str): Suggested MeSH UI
+            label (str): Matched surface form
+            start (int): Start character index
+            end (int): End character index
+            method (str): Detection method ('dict' or 'fts')
+            score (float): Optional confidence score
     """
 
     ui: str
@@ -44,29 +43,27 @@ class DetectedEntity:
     method: str
     score: float = 0.0
 
-
 ## ============================================================
 ## DICTIONARY BUILDING
 ## ============================================================
-
 def build_label_dictionary(
     mesh_jsonl_path: Optional[Path] = None,
     max_synonyms: int = 8,
 ) -> Dict[str, str]:
     """
-    Build a lowercase label -> MeSH UI dictionary.
+        Build a lowercase label -> MeSH UI dictionary
 
-    Notes:
-        - Uses preferred terms + limited synonyms.
-        - Designed for fast exact matching.
-        - Memory-friendly if max_synonyms is kept low.
+        Notes:
+            - Uses preferred terms + limited synonyms
+            - Designed for fast exact matching
+            - Memory-friendly if max_synonyms is kept low
 
-    Args:
-        mesh_jsonl_path (Optional[Path]): Path to mesh_parsed.jsonl.
-        max_synonyms (int): Max synonyms kept per UI.
+        Args:
+            mesh_jsonl_path (Optional[Path]): Path to mesh_parsed.jsonl
+            max_synonyms (int): Max synonyms kept per UI
 
-    Returns:
-        Dict[str, str]: Mapping from normalized label to MeSH UI.
+        Returns:
+            Dict[str, str]: Mapping from normalized label to MeSH UI
     """
 
     import json
@@ -90,18 +87,24 @@ def build_label_dictionary(
             synonyms = (row.get("synonyms", []) or [])[:max_synonyms]
 
             for term in preferred + synonyms:
-                key = term.strip().lower()
+
+                config = get_config()
+
+                if config.feature_engineering.enabled:
+                    key = normalize_medical_text(term)
+                    logger.debug("Feature engineering applied in ner_mesh")
+                else:
+                    key = term.strip().lower()
+    
                 if key and key not in label_to_ui:
                     label_to_ui[key] = ui
 
     logger.info(f"Label dictionary built: {len(label_to_ui)} entries")
     return label_to_ui
 
-
 ## ============================================================
 ## ENTITY DETECTION
 ## ============================================================
-
 def detect_entities(
     text: str,
     label_dict: Optional[Dict[str, str]] = None,
@@ -109,29 +112,33 @@ def detect_entities(
     max_fts_hits: int = 1,
 ) -> List[DetectedEntity]:
     """
-    Detect MeSH entities in free text.
+        Detect MeSH entities in free text
 
-    Strategy:
-        1) Exact match using label dictionary (preferred + synonyms)
-        2) Optional fallback using SQLite FTS (term-level)
+        Strategy:
+            1) Exact match using label dictionary (preferred + synonyms)
+            2) Optional fallback using SQLite FTS (term-level)
 
-    Args:
-        text (str): Input medical text.
-        label_dict (Optional[Dict[str, str]]): Pre-built label dictionary.
-        use_fts_fallback (bool): Enable SQLite FTS fallback.
-        max_fts_hits (int): Max FTS results per token.
+        Args:
+            text (str): Input medical text.
+            label_dict (Optional[Dict[str, str]]): Pre-built label dictionary
+            use_fts_fallback (bool): Enable SQLite FTS fallback
+            max_fts_hits (int): Max FTS results per token
 
-    Returns:
-        List[DetectedEntity]: Detected entities.
+        Returns:
+            List[DetectedEntity]: Detected entities
     """
 
     detected: List[DetectedEntity] = []
-    lowered = text.lower()
+    config = get_config()
 
-    ## --------------------------------------------------------
-    ## 1) DICTIONARY MATCHING
-    ## --------------------------------------------------------
+    if config.feature_engineering.enabled:
+        text = normalize_medical_text(text)
+        logger.debug("Feature engineering applied in ner_mesh")
+        lowered = text
+    else:
+        lowered = text.lower()
 
+    ## DICTIONARY MATCHING
     if label_dict:
         for label, ui in label_dict.items():
             for match in re.finditer(rf"\b{re.escape(label)}\b", lowered):
@@ -146,12 +153,14 @@ def detect_entities(
                     )
                 )
 
-    ## --------------------------------------------------------
-    ## 2) FTS FALLBACK (TOKEN-LEVEL)
-    ## --------------------------------------------------------
-
+    ## FTS FALLBACK (TOKEN-LEVEL)
     if use_fts_fallback:
         tokens = set(re.findall(r"[A-Za-zÀ-ÖØ-öø-ÿ\-]{4,}", text))
+
+        if config.feature_engineering.enabled:
+            tokens = {normalize_medical_text(t) for t in tokens}
+            logger.debug("Feature engineering applied in ner_mesh")
+
         for token in tokens:
             try:
                 results = search_mesh(query=token, limit=max_fts_hits)

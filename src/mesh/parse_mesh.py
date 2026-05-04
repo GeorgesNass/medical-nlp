@@ -15,44 +15,39 @@ from typing import Dict, Iterable, List, Optional, Tuple
 from src.core.config import get_settings
 from src.utils.logging_utils import get_logger
 
-
 ## ============================================================
 ## LOGGER
 ## ============================================================
-
 logger = get_logger("parse_mesh")
-
 
 ## ============================================================
 ## XML PARSING HELPERS
 ## ============================================================
-
 def _safe_text(element: Optional[ET.Element]) -> str:
     """
-    Safely extract text from an XML element.
+        Safely extract text from an XML element
 
-    Args:
-        element (Optional[ET.Element]): XML element.
+        Args:
+            element (Optional[ET.Element]): XML element
 
-    Returns:
-        str: Element text or empty string.
+        Returns:
+            str: Element text or empty string
     """
 
     if element is None or element.text is None:
         return ""
     return element.text.strip()
 
-
 def _find_all_text(parent: ET.Element, xpath: str) -> List[str]:
     """
-    Extract a list of texts matching an XPath under a parent element.
+        Extract a list of texts matching an XPath under a parent element
 
-    Args:
-        parent (ET.Element): Parent XML element.
-        xpath (str): XPath expression.
+        Args:
+            parent (ET.Element): Parent XML element
+            xpath (str): XPath expression
 
-    Returns:
-        List[str]: Extracted texts (non-empty).
+        Returns:
+            List[str]: Extracted texts (non-empty)
     """
 
     out: List[str] = []
@@ -62,36 +57,34 @@ def _find_all_text(parent: ET.Element, xpath: str) -> List[str]:
             out.append(txt)
     return out
 
-
 def _parse_tree_numbers(record: ET.Element) -> List[str]:
     """
-    Parse tree numbers from a DescriptorRecord.
+        Parse tree numbers from a DescriptorRecord
 
-    Args:
-        record (ET.Element): DescriptorRecord XML element.
+        Args:
+            record (ET.Element): DescriptorRecord XML element
 
-    Returns:
-        List[str]: Tree numbers.
+        Returns:
+            List[str]: Tree numbers
     """
 
     return _find_all_text(record, ".//TreeNumberList/TreeNumber")
 
-
 def _parse_terms(record: ET.Element) -> Tuple[List[str], List[str]]:
     """
-    Parse descriptor preferred term and synonyms.
+        Parse descriptor preferred term and synonyms
 
-    The preferred term typically lives under:
-      DescriptorName/String
+        The preferred term typically lives under:
+          DescriptorName/String
 
-    All terms (preferred + variants) can be found under:
-      ConceptList/Concept/TermList/Term/String
+        All terms (preferred + variants) can be found under:
+          ConceptList/Concept/TermList/Term/String
 
-    Args:
-        record (ET.Element): DescriptorRecord XML element.
+        Args:
+            record (ET.Element): DescriptorRecord XML element
 
-    Returns:
-        Tuple[List[str], List[str]]: (preferred_terms, synonyms)
+        Returns:
+            Tuple[List[str], List[str]]: (preferred_terms, synonyms)
     """
 
     preferred = _find_all_text(record, ".//DescriptorName/String")
@@ -114,23 +107,22 @@ def _parse_terms(record: ET.Element) -> Tuple[List[str], List[str]]:
 
     return preferred, synonyms_deduped
 
-
 def _parse_descriptor_record(record: ET.Element) -> Dict:
     """
-    Convert a DescriptorRecord into a normalized dictionary.
+        Convert a DescriptorRecord into a normalized dictionary
 
-    Normalized output keys are intentionally minimal and stable:
-    - ui: MeSH unique identifier
-    - preferred_terms: list of preferred labels
-    - synonyms: list of alternative labels
-    - tree_numbers: list of tree positions
-    - scope_note: definition/description if available
+        Normalized output keys are intentionally minimal and stable:
+        - ui: MeSH unique identifier
+        - preferred_terms: list of preferred labels
+        - synonyms: list of alternative labels
+        - tree_numbers: list of tree positions
+        - scope_note: definition/description if available
 
-    Args:
-        record (ET.Element): DescriptorRecord XML element.
+        Args:
+            record (ET.Element): DescriptorRecord XML element
 
-    Returns:
-        Dict: Normalized record.
+        Returns:
+            Dict: Normalized record
     """
 
     ui = _safe_text(record.find(".//DescriptorUI"))
@@ -147,22 +139,20 @@ def _parse_descriptor_record(record: ET.Element) -> Dict:
         "source": "mesh_xml",
     }
 
-
 ## ============================================================
 ## MAIN PUBLIC FUNCTIONS
 ## ============================================================
-
 def iter_descriptor_records(xml_path: Path) -> Iterable[Dict]:
     """
-    Stream MeSH DescriptorRecords from an XML file.
+        Stream MeSH DescriptorRecords from an XML file
 
-    This uses iterparse to keep memory usage low for large MeSH dumps.
+        This uses iterparse to keep memory usage low for large MeSH dumps
 
-    Args:
-        xml_path (Path): Path to MeSH XML file.
+        Args:
+            xml_path (Path): Path to MeSH XML file
 
-    Yields:
-        Dict: Normalized descriptor record.
+        Yields:
+            Dict: Normalized descriptor record
     """
 
     logger.info(f"Streaming MeSH XML: {xml_path}")
@@ -182,27 +172,26 @@ def iter_descriptor_records(xml_path: Path) -> Iterable[Dict]:
             ## Free memory
             elem.clear()
 
-
 def parse_mesh_xml_to_jsonl(
     xml_path: Path,
     output_jsonl_path: Optional[Path] = None,
     max_records: Optional[int] = None,
 ) -> Path:
     """
-    Parse MeSH XML into a normalized JSONL file.
+        Parse MeSH XML into a normalized JSONL file
 
-    Each line in JSONL is a single MeSH descriptor record.
+        Each line in JSONL is a single MeSH descriptor record
 
-    Args:
-        xml_path (Path): Path to MeSH XML input file.
-        output_jsonl_path (Optional[Path]): Output JSONL path. If None, uses settings.mesh_parsed_file.
-        max_records (Optional[int]): Optional maximum number of records (debug/testing).
+        Args:
+            xml_path (Path): Path to MeSH XML input file
+            output_jsonl_path (Optional[Path]): Output JSONL path. If None, uses settings.mesh_parsed_file
+            max_records (Optional[int]): Optional maximum number of records (debug/testing)
 
-    Returns:
-        Path: Path to generated JSONL file.
+        Returns:
+            Path: Path to generated JSONL file
 
-    Raises:
-        FileNotFoundError: If the input XML file does not exist.
+        Raises:
+            FileNotFoundError: If the input XML file does not exist
     """
 
     if not xml_path.exists():

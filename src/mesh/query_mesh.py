@@ -11,43 +11,41 @@ import sqlite3
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from src.core.config import get_settings
+from src.core.config import get_config,  get_settings
+from src.nlp.preprocess import normalize_medical_text
 from src.utils.logging_utils import get_logger
 
 logger = get_logger("query_mesh")
 
-
 ## ============================================================
 ## DB HELPERS
 ## ============================================================
-
 def _resolve_db_path(db_path: Optional[Path] = None) -> Path:
     """
-    Resolve SQLite DB path.
+        Resolve SQLite DB path
 
-    Args:
-        db_path (Optional[Path]): Optional override.
+        Args:
+            db_path (Optional[Path]): Optional override
 
-    Returns:
-        Path: Resolved DB path.
+        Returns:
+            Path: Resolved DB path
     """
 
     settings = get_settings()
     return db_path if db_path else settings.data_dir / "interim" / "mesh.db"
 
-
 def _connect(db_path: Path) -> sqlite3.Connection:
     """
-    Create a SQLite connection and configure row_factory.
+        Create a SQLite connection and configure row_factory
 
-    Args:
-        db_path (Path): SQLite DB path.
+        Args:
+            db_path (Path): SQLite DB path
 
-    Returns:
-        sqlite3.Connection: SQLite connection.
+        Returns:
+            sqlite3.Connection: SQLite connection
 
-    Raises:
-        FileNotFoundError: If database does not exist.
+        Raises:
+            FileNotFoundError: If database does not exist
     """
 
     if not db_path.exists():
@@ -57,26 +55,24 @@ def _connect(db_path: Path) -> sqlite3.Connection:
     conn.row_factory = sqlite3.Row
     return conn
 
-
 ## ============================================================
 ## PUBLIC QUERIES
 ## ============================================================
-
 def search_mesh(
     query: str,
     limit: int = 10,
     db_path: Optional[Path] = None,
 ) -> List[Dict[str, Any]]:
     """
-    Search MeSH using SQLite FTS5.
+        Search MeSH using SQLite FTS5
 
-    Args:
-        query (str): FTS query string (supports FTS syntax).
-        limit (int): Max number of results.
-        db_path (Optional[Path]): Optional SQLite DB path override.
+        Args:
+            query (str): FTS query string (supports FTS syntax)
+            limit (int): Max number of results
+            db_path (Optional[Path]): Optional SQLite DB path override
 
-    Returns:
-        List[Dict[str, Any]]: List of matching entries.
+        Returns:
+            List[Dict[str, Any]]: List of matching entries
     """
 
     resolved_db = _resolve_db_path(db_path)
@@ -113,20 +109,19 @@ def search_mesh(
 
     return results
 
-
 def lookup_ui(ui: str, db_path: Optional[Path] = None) -> Dict[str, Any]:
     """
-    Lookup a MeSH entry by its UI.
+        Lookup a MeSH entry by its UI
 
-    Args:
-        ui (str): MeSH UI (e.g., D012345).
-        db_path (Optional[Path]): Optional SQLite DB path override.
+        Args:
+            ui (str): MeSH UI (e.g., D012345)
+            db_path (Optional[Path]): Optional SQLite DB path override
 
-    Returns:
-        Dict[str, Any]: MeSH entry fields.
+        Returns:
+            Dict[str, Any]: MeSH entry fields
 
-    Raises:
-        ValueError: If UI is not found.
+        Raises:
+            ValueError: If UI is not found
     """
 
     resolved_db = _resolve_db_path(db_path)
@@ -154,22 +149,21 @@ def lookup_ui(ui: str, db_path: Optional[Path] = None) -> Dict[str, Any]:
         "scope_note": row["scope_note"],
     }
 
-
 def browse_tree(
     tree_prefix: str,
     limit: int = 50,
     db_path: Optional[Path] = None,
 ) -> List[Dict[str, Any]]:
     """
-    Browse MeSH entries by tree prefix.
+        Browse MeSH entries by tree prefix
 
-    Args:
-        tree_prefix (str): Tree prefix (e.g., 'C08').
-        limit (int): Max number of results.
-        db_path (Optional[Path]): Optional SQLite DB path override.
+        Args:
+            tree_prefix (str): Tree prefix (e.g., 'C08')
+            limit (int): Max number of results
+            db_path (Optional[Path]): Optional SQLite DB path override
 
-    Returns:
-        List[Dict[str, Any]]: Matching entries (minimal fields).
+        Returns:
+            List[Dict[str, Any]]: Matching entries (minimal fields)
     """
 
     resolved_db = _resolve_db_path(db_path)

@@ -3,15 +3,16 @@
 ###############################################################################
 # MeSH Semantic Expansion - Pipeline Menu
 # Author: Georges Nassopoulos
-# Version: 1.0.0
+# Version: 1.1.0
 # Description:
 #   CLI menu to run the main project pipelines:
-#   - download MeSH
-#   - parse MeSH
-#   - index MeSH (SQLite FTS / FAISS)
-#   - extract candidates
-#   - build extended MeSH
-#   - run API
+#   - download MeSH (with data consistency)
+#   - parse MeSH (XML -> JSONL) (with data consistency)
+#   - index MeSH (SQLite FTS / FAISS) (with data consistency)
+#   - extract candidates (with data consistency)
+#   - build extended MeSH (with data consistency)
+#   - run API (with data consistency)
+#   - run data drift (Evidently)
 ###############################################################################
 
 set -euo pipefail
@@ -46,14 +47,15 @@ run_python() {
 while true; do
   echo ""
   echo "Select an action:"
-  echo " 1) Download MeSH"
-  echo " 2) Parse MeSH (XML -> JSONL)"
-  echo " 3) Build SQLite FTS index"
-  echo " 4) Build MeSH embeddings"
-  echo " 5) Build FAISS index"
-  echo " 6) Extract candidates from medical documents"
-  echo " 7) Build extended MeSH (from validated CSV)"
-  echo " 8) Run API (uvicorn)"
+  echo " 1) Download MeSH (with data consistency)"
+  echo " 2) Parse MeSH (XML -> JSONL) (with data consistency)"
+  echo " 3) Build SQLite FTS index (with data consistency)"
+  echo " 4) Build MeSH embeddings (with data consistency)"
+  echo " 5) Build FAISS index (with data consistency)"
+  echo " 6) Extract candidates from medical documents (with data consistency)"
+  echo " 7) Build extended MeSH (from validated CSV) (with data consistency)"
+  echo " 8) Run API (uvicorn) (with data consistency)"
+  echo " 9) Run data drift"
   echo " 0) Exit"
   echo ""
 
@@ -83,7 +85,14 @@ while true; do
       ;;
     6)
       read -rp "Path to medical docs folder: " DOCS_DIR
-      run_python -m src.utils.utils_cli cmd_extract_candidates "$DOCS_DIR"
+      read -rp "Enable feature engineering? (y/n): " FE
+
+      if [[ "$FE" == "y" ]]; then
+        run_python -m src.utils.utils_cli cmd_extract_candidates "$DOCS_DIR" --features
+      else
+        run_python -m src.utils.utils_cli cmd_extract_candidates "$DOCS_DIR"
+      fi
+
       pause
       ;;
     7)
@@ -91,11 +100,30 @@ while true; do
       pause
       ;;
     8)
+      read -rp "Enable feature engineering? (y/n): " FE
+
       echo ""
       echo "Starting API with uvicorn..."
       echo "CTRL+C to stop"
       echo ""
-      uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+      if [[ "$FE" == "y" ]]; then
+        uvicorn main:app --host 0.0.0.0 --port 8000 --reload --features
+      else
+        uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+      fi
+      ;;
+    9)
+      ## DATA DRIFT (MESH + EVIDENTLY)
+      read -rp "Reference dataset CSV: " REF
+      read -rp "Current dataset CSV: " CUR
+
+      run_python main.py \
+        --mode drift \
+        --ref "$REF" \
+        --current "$CUR"
+
+      pause
       ;;
     0)
       echo "Bye"

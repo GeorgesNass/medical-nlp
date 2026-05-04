@@ -134,6 +134,18 @@ class RuntimeConfig:
             batch_sleep_seconds: Sleep delay between batches
             request_timeout_seconds: Request timeout
             allowed_origins: Allowed HTTP origins for future API usage
+            anomaly_detection_enabled: Enable anomaly detection
+            anomaly_method: Detection method (zscore or iqr)
+            z_threshold: Z-score threshold
+            iqr_multiplier: IQR multiplier
+            anomaly_strict_mode: Raise error if anomaly detected  
+            drift_detection_enabled: Enable data drift detection
+            drift_p_value_threshold: Statistical p-value threshold for drift detection
+            drift_embedding_threshold: Threshold for embedding drift
+            drift_expansion_threshold: Threshold for expansion drift
+            drift_concept_threshold: Threshold for MeSH concept drift
+            drift_evidently_enabled: Enable Evidently report generation
+            drift_strict_mode: Raise error if drift detected            
     """
 
     environment: str
@@ -147,7 +159,19 @@ class RuntimeConfig:
     batch_sleep_seconds: float
     request_timeout_seconds: int
     allowed_origins: list[str]
-
+    anomaly_detection_enabled: bool
+    anomaly_method: str
+    z_threshold: float
+    iqr_multiplier: float
+    anomaly_strict_mode: bool
+    drift_detection_enabled: bool
+    drift_p_value_threshold: float
+    drift_embedding_threshold: float
+    drift_expansion_threshold: float
+    drift_concept_threshold: float
+    drift_evidently_enabled: bool
+    drift_strict_mode: bool
+    
 @dataclass(frozen=True)
 class PipelineConfig:
     """
@@ -167,6 +191,44 @@ class PipelineConfig:
     use_cache: bool
     export_validated_only: bool
 
+@dataclass(frozen=True)
+class FeatureEngineeringConfig:
+    """
+        Feature engineering configuration
+
+        Args:
+            enabled: Enable feature engineering
+            text_normalization_enabled: Normalize text
+            lowercase_enabled: Apply lowercase
+            embedding_batch_size: Batch size for embeddings
+            embedding_normalize: Normalize embeddings
+            feature_export_enabled: Enable export of features
+    """
+
+    enabled: bool
+    text_normalization_enabled: bool
+    lowercase_enabled: bool
+    embedding_batch_size: int
+    embedding_normalize: bool
+    feature_export_enabled: bool 
+    
+@dataclass(frozen=True)
+class DataConsistencyConfig:
+    """
+        Data consistency configuration
+
+        Args:
+            enabled: Enable consistency checks
+            strict_mode: Raise error if inconsistency
+            min_text_length: Minimum text length
+            min_embedding_dim: Minimum embedding dimension
+    """
+
+    enabled: bool
+    strict_mode: bool
+    min_text_length: int
+    min_embedding_dim: int
+    
 @dataclass(frozen=True)
 class PathsConfig:
     """
@@ -242,6 +304,7 @@ class AppConfig:
             pipeline: Pipeline configuration
             paths: Filesystem paths configuration
             secrets: Secret values
+            feature_engineering: Feature engineering configuration
     """
 
     app_name: str
@@ -251,7 +314,9 @@ class AppConfig:
     pipeline: PipelineConfig
     paths: PathsConfig
     secrets: SecretsConfig
-
+    data_consistency: DataConsistencyConfig
+    feature_engineering: FeatureEngineeringConfig
+    
 ## ============================================================
 ## DOTENV / ENV HELPERS
 ## ============================================================
@@ -689,11 +754,19 @@ def _validate_config(config: AppConfig) -> None:
     _validate_positive_int(config.runtime.batch_size, "BATCH_SIZE")
     _validate_positive_int(config.runtime.request_timeout_seconds, "REQUEST_TIMEOUT_SECONDS")
     _validate_non_negative_float(config.runtime.batch_sleep_seconds, "BATCH_SLEEP_SECONDS")
-
+    
+    ## Validate data consistency config
+    _validate_positive_int(config.data_consistency.min_text_length, "DATA_CONSISTENCY_MIN_TEXT_LENGTH")
+    _validate_positive_int(config.data_consistency.min_embedding_dim, "DATA_CONSISTENCY_MIN_EMBEDDING_DIM")
+    
     ## Validate pipeline parameters
     _validate_positive_int(config.pipeline.top_k_candidates, "TOP_K_CANDIDATES")
     _validate_probability(config.pipeline.similarity_threshold, "SIMILARITY_THRESHOLD")
 
+    ## Validate strict mode logic
+    if config.data_consistency.strict_mode and not config.data_consistency.enabled:
+        raise ConfigurationError("DATA_CONSISTENCY_STRICT requires DATA_CONSISTENCY_ENABLED=True")
+        
     ## Validate output suffixes
     if config.paths.export_candidates_csv.suffix.lower() != ".csv":
         raise ConfigurationError("EXPORT_CANDIDATES_CSV must point to a .csv file")
@@ -704,6 +777,48 @@ def _validate_config(config: AppConfig) -> None:
     if config.paths.report_diff_md.suffix.lower() != ".md":
         raise ConfigurationError("REPORT_DIFF_MD must point to a .md file")
 
+    ## Validate anomaly detection config
+    if config.runtime.anomaly_detection_enabled:
+
+        if config.runtime.anomaly_method not in {"zscore", "iqr"}:
+            raise ConfigurationError("ANOMALY_METHOD must be 'zscore' or 'iqr'")
+
+        if config.runtime.z_threshold <= 0:
+            raise ConfigurationError("Z_THRESHOLD must be > 0")
+
+        if config.runtime.iqr_multiplier <= 0:
+            raise ConfigurationError("IQR_MULTIPLIER must be > 0")
+
+    ## Validate drift parameters
+    if config.runtime.drift_detection_enabled:
+
+        _validate_probability(
+            config.runtime.drift_p_value_threshold,
+            "DRIFT_P_VALUE_THRESHOLD",
+        )
+
+        _validate_non_negative_float(
+            config.runtime.drift_embedding_threshold,
+            "DRIFT_EMBEDDING_THRESHOLD",
+        )
+
+        _validate_non_negative_float(
+            config.runtime.drift_expansion_threshold,
+            "DRIFT_EXPANSION_THRESHOLD",
+        )
+
+        _validate_non_negative_float(
+            config.runtime.drift_concept_threshold,
+            "DRIFT_CONCEPT_THRESHOLD",
+        )
+ 
+    ## Validate feature engineering config
+    if config.feature_engineering.enabled:
+        _validate_positive_int(
+            config.feature_engineering.embedding_batch_size,
+            "EMBEDDING_BATCH_SIZE",
+        )
+        
 ## ============================================================
 ## DIRECTORY HELPERS
 ## ============================================================
@@ -836,6 +951,18 @@ def get_config(env_path: Optional[Path] = None) -> AppConfig:
         batch_sleep_seconds=_get_profiled_env_float("BATCH_SLEEP_SECONDS", 0.0, profile),
         request_timeout_seconds=_get_profiled_env_int("REQUEST_TIMEOUT_SECONDS", 120, profile),
         allowed_origins=_get_env_list("ALLOWED_ORIGINS", ["*"]),
+        anomaly_detection_enabled=_get_profiled_env_bool("ANOMALY_DETECTION_ENABLED", True, profile),
+        anomaly_method=_get_profiled_env("ANOMALY_METHOD", "zscore", profile),
+        z_threshold=_get_profiled_env_float("Z_THRESHOLD", 3.0, profile),
+        iqr_multiplier=_get_profiled_env_float("IQR_MULTIPLIER", 1.5, profile),
+        anomaly_strict_mode=_get_profiled_env_bool("ANOMALY_STRICT_MODE", False, profile),
+        drift_detection_enabled=_get_profiled_env_bool("DRIFT_DETECTION_ENABLED", True, profile),
+        drift_p_value_threshold=_get_profiled_env_float("DRIFT_P_VALUE_THRESHOLD", 0.05, profile),
+        drift_embedding_threshold=_get_profiled_env_float("DRIFT_EMBEDDING_THRESHOLD", 0.2, profile),
+        drift_expansion_threshold=_get_profiled_env_float("DRIFT_EXPANSION_THRESHOLD", 0.2, profile),
+        drift_concept_threshold=_get_profiled_env_float("DRIFT_CONCEPT_THRESHOLD", 0.2, profile),
+        drift_evidently_enabled=_get_profiled_env_bool("DRIFT_EVIDENTLY_ENABLED", True, profile),
+        drift_strict_mode=_get_profiled_env_bool("DRIFT_STRICT_MODE", False, profile),        
     )
 
     ## Build pipeline section
@@ -850,7 +977,25 @@ def get_config(env_path: Optional[Path] = None) -> AppConfig:
         use_cache=_get_profiled_env_bool("USE_CACHE", True, profile),
         export_validated_only=_get_profiled_env_bool("EXPORT_VALIDATED_ONLY", False, profile),
     )
+        
+    ## Build feature engineering config
+    feature_engineering = FeatureEngineeringConfig(
+        enabled=_get_profiled_env_bool("FEATURE_ENGINEERING_ENABLED", True, profile),
+        text_normalization_enabled=_get_profiled_env_bool("TEXT_NORMALIZATION_ENABLED", True, profile),
+        lowercase_enabled=_get_profiled_env_bool("LOWERCASE_ENABLED", True, profile),
+        embedding_batch_size=_get_profiled_env_int("EMBEDDING_BATCH_SIZE", 32, profile),
+        embedding_normalize=_get_profiled_env_bool("EMBEDDING_NORMALIZE", True, profile),
+        feature_export_enabled=_get_profiled_env_bool("FEATURE_EXPORT_ENABLED", False, profile),
+    )
 
+    ## Build data consistency config
+    data_consistency = DataConsistencyConfig(
+        enabled=_get_profiled_env_bool("DATA_CONSISTENCY_ENABLED", True, profile),
+        strict_mode=_get_profiled_env_bool("DATA_CONSISTENCY_STRICT", False, profile),
+        min_text_length=_get_profiled_env_int("DATA_CONSISTENCY_MIN_TEXT_LENGTH", 3, profile),
+        min_embedding_dim=_get_profiled_env_int("DATA_CONSISTENCY_MIN_EMBEDDING_DIM", 10, profile),
+    )
+    
     ## Build paths section
     paths = PathsConfig(
         project_root=project_root,
@@ -894,6 +1039,8 @@ def get_config(env_path: Optional[Path] = None) -> AppConfig:
         pipeline=pipeline,
         paths=paths,
         secrets=secrets,
+        data_consistency=data_consistency,
+        feature_engineering=feature_engineering,
     )
 
     ## Validate final configuration

@@ -12,34 +12,33 @@ import sqlite3
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-from src.core.config import get_settings
+from src.core.config import get_config, get_settings
+from src.nlp.preprocess import normalize_medical_text
 from src.utils.logging_utils import get_logger
 
 logger = get_logger("index_mesh")
 
-
 ## ============================================================
 ## SQLITE (FTS5) INDEX
 ## ============================================================
-
 def build_sqlite_fts_index(
     mesh_jsonl_path: Optional[Path] = None,
     sqlite_db_path: Optional[Path] = None,
     overwrite: bool = False,
 ) -> Path:
     """
-    Build a SQLite database with FTS5 index from a MeSH JSONL file.
+        Build a SQLite database with FTS5 index from a MeSH JSONL file
 
-    Args:
-        mesh_jsonl_path (Optional[Path]): Path to mesh_parsed.jsonl.
-        sqlite_db_path (Optional[Path]): Output SQLite db path.
-        overwrite (bool): If True, overwrite an existing database.
+        Args:
+            mesh_jsonl_path (Optional[Path]): Path to mesh_parsed.jsonl
+            sqlite_db_path (Optional[Path]): Output SQLite db path
+            overwrite (bool): If True, overwrite an existing database
 
-    Returns:
-        Path: Path to SQLite database.
+        Returns:
+            Path: Path to SQLite database
 
-    Raises:
-        FileNotFoundError: If input JSONL does not exist.
+        Raises:
+            FileNotFoundError: If input JSONL does not exist
     """
 
     settings = get_settings()
@@ -101,11 +100,18 @@ def build_sqlite_fts_index(
             if not ui:
                 continue
 
+            config = get_config()
+
             preferred = " | ".join(row.get("preferred_terms", []) or [])
             synonyms = " | ".join(row.get("synonyms", []) or [])
             tree_numbers = " | ".join(row.get("tree_numbers", []) or [])
             scope_note = (row.get("scope_note") or "").strip()
 
+            if config.feature_engineering.enabled:
+                preferred = normalize_medical_text(preferred)
+                synonyms = normalize_medical_text(synonyms)
+                scope_note = normalize_medical_text(scope_note)
+                
             conn.execute(
                 """
                 INSERT OR REPLACE INTO mesh(ui, preferred_terms, synonyms, tree_numbers, scope_note)
@@ -129,22 +135,21 @@ def build_sqlite_fts_index(
     logger.info(f"SQLite FTS build completed. Records: {count}")
     return db_path
 
-
 def search_sqlite_fts(
     query: str,
     sqlite_db_path: Optional[Path] = None,
     limit: int = 10,
 ) -> List[Dict[str, Any]]:
     """
-    Search MeSH via SQLite FTS5.
+        Search MeSH via SQLite FTS5
 
-    Args:
-        query (str): Text query (FTS syntax supported).
-        sqlite_db_path (Optional[Path]): Path to SQLite database.
-        limit (int): Max number of results.
+        Args:
+            query (str): Text query (FTS syntax supported)
+            sqlite_db_path (Optional[Path]): Path to SQLite database
+            limit (int): Max number of results
 
-    Returns:
-        List[Dict[str, Any]]: Search results with basic fields.
+        Returns:
+            List[Dict[str, Any]]: Search results with basic fields
     """
 
     settings = get_settings()
@@ -153,6 +158,11 @@ def search_sqlite_fts(
     if not db_path.exists():
         raise FileNotFoundError(f"SQLite DB not found: {db_path}. Build it first.")
 
+    config = get_config()
+
+    if config.feature_engineering.enabled:
+        query = normalize_medical_text(query)
+        
     conn = sqlite3.connect(str(db_path))
     conn.row_factory = sqlite3.Row
 
@@ -185,20 +195,18 @@ def search_sqlite_fts(
 
     return results
 
-
 ## ============================================================
 ## FAISS INDEX (SEMANTIC SEARCH)
 ## ============================================================
-
 def _import_faiss():
     """
-    Import FAISS with a clear error message if not installed.
+        Import FAISS with a clear error message if not installed
 
-    Returns:
-        module: faiss module.
+        Returns:
+            module: faiss module
 
-    Raises:
-        ImportError: If faiss is not installed.
+        Raises:
+            ImportError: If faiss is not installed
     """
 
     try:
@@ -215,21 +223,21 @@ def _import_faiss():
 
 def _load_embeddings_parquet(embeddings_path: Path) -> Tuple[List[str], "Any"]:
     """
-    Load MeSH embeddings from a parquet file.
+        Load MeSH embeddings from a parquet file
 
-    Expected columns:
-    - ui (str)
-    - vector (list[float]) OR emb_0..emb_n (float columns)
+        Expected columns:
+        - ui (str)
+        - vector (list[float]) OR emb_0..emb_n (float columns)
 
-    Args:
-        embeddings_path (Path): Path to mesh_embeddings.parquet.
+        Args:
+            embeddings_path (Path): Path to mesh_embeddings.parquet
 
-    Returns:
-        Tuple[List[str], Any]: (ui_list, vectors_np)
+        Returns:
+            Tuple[List[str], Any]: (ui_list, vectors_np)
 
-    Raises:
-        FileNotFoundError: If parquet file not found.
-        ValueError: If expected columns not found.
+        Raises:
+            FileNotFoundError: If parquet file not found
+            ValueError: If expected columns not found
     """
 
     if not embeddings_path.exists():
@@ -261,7 +269,6 @@ def _load_embeddings_parquet(embeddings_path: Path) -> Tuple[List[str], "Any"]:
     ui_list = df["ui"].astype(str).to_list()
     return ui_list, vectors
 
-
 def build_faiss_index(
     embeddings_parquet_path: Optional[Path] = None,
     faiss_index_path: Optional[Path] = None,
@@ -270,19 +277,19 @@ def build_faiss_index(
     overwrite: bool = False,
 ) -> Tuple[Path, Path]:
     """
-    Build a FAISS index from precomputed MeSH embeddings.
+        Build a FAISS index from precomputed MeSH embeddings
 
-    This function expects embeddings to be generated elsewhere (src/nlp/embeddings.py).
+        This function expects embeddings to be generated elsewhere (src/nlp/embeddings.py)
 
-    Args:
-        embeddings_parquet_path (Optional[Path]): Path to mesh_embeddings.parquet.
-        faiss_index_path (Optional[Path]): Output path for FAISS index file.
-        id_map_path (Optional[Path]): Output path for FAISS id->ui mapping JSONL.
-        normalize (bool): If True, L2-normalize vectors and use cosine similarity (IndexFlatIP).
-        overwrite (bool): If True, overwrite existing files.
+        Args:
+            embeddings_parquet_path (Optional[Path]): Path to mesh_embeddings.parquet
+            faiss_index_path (Optional[Path]): Output path for FAISS index file
+            id_map_path (Optional[Path]): Output path for FAISS id->ui mapping JSONL
+            normalize (bool): If True, L2-normalize vectors and use cosine similarity (IndexFlatIP)
+            overwrite (bool): If True, overwrite existing files
 
-    Returns:
-        Tuple[Path, Path]: (faiss_index_path, id_map_path)
+        Returns:
+            Tuple[Path, Path]: (faiss_index_path, id_map_path)
     """
 
     settings = get_settings()
@@ -336,16 +343,15 @@ def build_faiss_index(
 
     return index_path, map_path
 
-
 def _load_id_map(id_map_path: Path) -> List[str]:
     """
-    Load FAISS id -> UI map.
+        Load FAISS id -> UI map
 
-    Args:
-        id_map_path (Path): Path to jsonl map.
+        Args:
+            id_map_path (Path): Path to jsonl map
 
-    Returns:
-        List[str]: ui_list where index corresponds to FAISS id.
+        Returns:
+            List[str]: ui_list where index corresponds to FAISS id
     """
 
     ui_list: List[str] = []
@@ -355,7 +361,6 @@ def _load_id_map(id_map_path: Path) -> List[str]:
             ui_list.append(obj["ui"])
     return ui_list
 
-
 def search_faiss(
     query_vector: "Any",
     faiss_index_path: Optional[Path] = None,
@@ -364,21 +369,21 @@ def search_faiss(
     normalize_query: bool = True,
 ) -> List[Dict[str, Any]]:
     """
-    Search MeSH via FAISS semantic similarity (requires a query vector).
+        Search MeSH via FAISS semantic similarity (requires a query vector)
 
-    Notes:
-        - Query vector must already be generated by embeddings backend.
-        - If the FAISS index was built with normalized vectors, keep normalize_query=True.
+        Notes:
+            - Query vector must already be generated by embeddings backend
+            - If the FAISS index was built with normalized vectors, keep normalize_query=True
 
-    Args:
-        query_vector (Any): Numpy array shaped (dim,) or (1, dim), float32.
-        faiss_index_path (Optional[Path]): Path to faiss index file.
-        id_map_path (Optional[Path]): Path to id->ui map jsonl.
-        top_k (int): Number of neighbors.
-        normalize_query (bool): Normalize query vector for cosine similarity.
+        Args:
+            query_vector (Any): Numpy array shaped (dim,) or (1, dim), float32
+            faiss_index_path (Optional[Path]): Path to faiss index file
+            id_map_path (Optional[Path]): Path to id->ui map jsonl
+            top_k (int): Number of neighbors
+            normalize_query (bool): Normalize query vector for cosine similarity
 
-    Returns:
-        List[Dict[str, Any]]: List of {ui, faiss_score}.
+        Returns:
+            List[Dict[str, Any]]: List of {ui, faiss_score}
     """
 
     settings = get_settings()
@@ -420,11 +425,9 @@ def search_faiss(
 
     return results
 
-
 ## ============================================================
 ## HYBRID SEARCH (FTS + FAISS)
 ## ============================================================
-
 def search_hybrid(
     query: str,
     query_vector: Optional["Any"] = None,
@@ -433,19 +436,25 @@ def search_hybrid(
     enable_faiss: bool = False,
 ) -> Dict[str, Any]:
     """
-    Hybrid search: text search via SQLite FTS + optional semantic search via FAISS.
+        Hybrid search: text search via SQLite FTS + optional semantic search via FAISS
 
-    Args:
-        query (str): Query text.
-        query_vector (Optional[Any]): Query embedding vector for FAISS search.
-        limit_fts (int): Number of FTS results.
-        top_k_faiss (int): Number of FAISS neighbors.
-        enable_faiss (bool): If True, include FAISS results.
+        Args:
+            query (str): Query text
+            query_vector (Optional[Any]): Query embedding vector for FAISS search
+            limit_fts (int): Number of FTS results
+            top_k_faiss (int): Number of FAISS neighbors
+            enable_faiss (bool): If True, include FAISS results
 
-    Returns:
-        Dict[str, Any]: Combined results.
+        Returns:
+            Dict[str, Any]: Combined results
     """
 
+    config = get_config()
+
+    if config.feature_engineering.enabled:
+        query = normalize_medical_text(query)
+        logger.debug("Feature engineering applied in index/search")
+        
     results: Dict[str, Any] = {
         "query": query,
         "fts": search_sqlite_fts(query=query, limit=limit_fts),

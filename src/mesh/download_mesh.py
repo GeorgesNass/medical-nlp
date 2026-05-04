@@ -16,28 +16,24 @@ from typing import Optional, Tuple
 from src.core.config import get_settings
 from src.utils.logging_utils import get_logger
 
-
 ## ============================================================
 ## LOGGER
 ## ============================================================
-
 logger = get_logger("download_mesh")
-
 
 ## ============================================================
 ## HASHING UTILITIES
 ## ============================================================
-
 def compute_sha256(file_path: Path, chunk_size: int = 1024 * 1024) -> str:
     """
-    Compute SHA256 hash of a file.
+        Compute SHA256 hash of a file
 
-    Args:
-        file_path (Path): Target file path.
-        chunk_size (int): Read chunk size in bytes.
+        Args:
+            file_path (Path): Target file path
+            chunk_size (int): Read chunk size in bytes
 
-    Returns:
-        str: SHA256 hex digest.
+        Returns:
+            str: SHA256 hex digest
     """
 
     sha = hashlib.sha256()
@@ -49,36 +45,33 @@ def compute_sha256(file_path: Path, chunk_size: int = 1024 * 1024) -> str:
             sha.update(chunk)
     return sha.hexdigest()
 
-
 def write_checksum_file(file_path: Path, sha256: str) -> Path:
     """
-    Write a .sha256 file next to the downloaded artifact.
+        Write a .sha256 file next to the downloaded artifact
 
-    Args:
-        file_path (Path): Downloaded file path.
-        sha256 (str): SHA256 hex digest.
+        Args:
+            file_path (Path): Downloaded file path
+            sha256 (str): SHA256 hex digest
 
-    Returns:
-        Path: Path to checksum file.
+        Returns:
+            Path: Path to checksum file
     """
 
     checksum_path = file_path.with_suffix(file_path.suffix + ".sha256")
     checksum_path.write_text(f"{sha256}  {file_path.name}\n", encoding="utf-8")
     return checksum_path
 
-
 ## ============================================================
 ## DOWNLOAD UTILITIES
 ## ============================================================
-
 def _download_to_path(url: str, output_path: Path, timeout_sec: int = 60) -> None:
     """
-    Download an artifact from an URL to a local file path.
+        Download an artifact from an URL to a local file path
 
-    Args:
-        url (str): Source URL.
-        output_path (Path): Destination path.
-        timeout_sec (int): Request timeout in seconds.
+        Args:
+            url (str): Source URL
+            output_path (Path): Destination path
+            timeout_sec (int): Request timeout in seconds
     """
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -97,26 +90,25 @@ def _download_to_path(url: str, output_path: Path, timeout_sec: int = 60) -> Non
     tmp_path.replace(output_path)
     logger.info(f"Download completed: {output_path}")
 
-
 def download_mesh(
     url: str,
     file_name: Optional[str] = None,
     overwrite: bool = False,
 ) -> Tuple[Path, Path]:
     """
-    Download a MeSH artifact and generate a checksum file.
+        Download a MeSH artifact and generate a checksum file
 
-    Args:
-        url (str): URL to download (e.g., MeSH XML/TTL/JSON).
-        file_name (Optional[str]): Output filename override. If None, inferred from URL.
-        overwrite (bool): If True, overwrite existing file.
+        Args:
+            url (str): URL to download (e.g., MeSH XML/TTL/JSON)
+            file_name (Optional[str]): Output filename override. If None, inferred from URL
+            overwrite (bool): If True, overwrite existing file
 
-    Returns:
-        Tuple[Path, Path]: (downloaded_file_path, checksum_file_path)
+        Returns:
+            Tuple[Path, Path]: (downloaded_file_path, checksum_file_path)
 
-    Raises:
-        FileExistsError: If file exists and overwrite is False.
-        ValueError: If output filename cannot be inferred.
+        Raises:
+            FileExistsError: If file exists and overwrite is False
+            ValueError: If output filename cannot be inferred
     """
 
     settings = get_settings()

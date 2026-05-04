@@ -9,6 +9,7 @@ __desc__ = "FastAPI routes for MeSH search, lookup, and browse endpoints."
 
 from fastapi import APIRouter, HTTPException
 
+from src.core.config import get_config
 from src.core.models import (
     MeshBrowseRequest,
     MeshLookupResponse,
@@ -22,24 +23,29 @@ logger = get_logger("routes_mesh")
 
 router = APIRouter()
 
-
 ## ============================================================
 ## ROUTE: SEARCH (FTS)
 ## ============================================================
-
 @router.post("/search", response_model=list[MeshSearchResult])
 def mesh_search(payload: MeshSearchRequest) -> list[MeshSearchResult]:
     """
-    Search MeSH using SQLite FTS5.
+        Search MeSH using SQLite FTS5
 
-    Args:
-        payload (MeshSearchRequest): Search request payload.
+        Args:
+            payload (MeshSearchRequest): Search request payload
 
-    Returns:
-        list[MeshSearchResult]: Ranked results.
+        Returns:
+            list[MeshSearchResult]: Ranked results
     """
 
     try:
+    
+        config = get_config()
+
+        ## Feature engineering active (no override here, just trace)
+        if config.feature_engineering.enabled:
+            logger.debug("Feature engineering enabled for mesh_search")
+    
         results = search_mesh(query=payload.query, limit=payload.limit)
 
         out: list[MeshSearchResult] = []
@@ -58,24 +64,28 @@ def mesh_search(payload: MeshSearchRequest) -> list[MeshSearchResult]:
         logger.error(f"MeSH search failed: {e}")
         raise HTTPException(status_code=500, detail="MeSH search failed.")
 
-
 ## ============================================================
 ## ROUTE: LOOKUP (UI)
 ## ============================================================
-
 @router.get("/lookup/{ui}", response_model=MeshLookupResponse)
 def mesh_lookup(ui: str) -> MeshLookupResponse:
     """
-    Lookup a MeSH record by UI.
+        Lookup a MeSH record by UI
 
-    Args:
-        ui (str): MeSH UI.
+        Args:
+            ui (str): MeSH UI
 
-    Returns:
-        MeshLookupResponse: Record details.
+        Returns:
+            MeshLookupResponse: Record details
     """
 
     try:
+    
+        config = get_config()
+
+        if config.feature_engineering.enabled:
+            logger.debug("Feature engineering enabled for mesh_lookup")
+            
         row = lookup_ui(ui)
         return MeshLookupResponse(**row)
     except ValueError as e:
@@ -84,24 +94,28 @@ def mesh_lookup(ui: str) -> MeshLookupResponse:
         logger.error(f"MeSH lookup failed: {e}")
         raise HTTPException(status_code=500, detail="MeSH lookup failed.")
 
-
 ## ============================================================
 ## ROUTE: BROWSE (TREE PREFIX)
 ## ============================================================
-
 @router.post("/browse")
 def mesh_browse(payload: MeshBrowseRequest) -> list[dict]:
     """
-    Browse MeSH by tree prefix.
+        Browse MeSH by tree prefix
 
-    Args:
-        payload (MeshBrowseRequest): Browse request payload.
+        Args:
+            payload (MeshBrowseRequest): Browse request payload
 
-    Returns:
-        list[dict]: Minimal browse results.
+        Returns:
+            list[dict]: Minimal browse results
     """
 
     try:
+
+        config = get_config()
+
+        if config.feature_engineering.enabled:
+            logger.debug("Feature engineering enabled for mesh_browse")
+            
         return browse_tree(tree_prefix=payload.tree_prefix, limit=payload.limit)
     except Exception as e:
         logger.error(f"MeSH browse failed: {e}")

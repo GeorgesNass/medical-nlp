@@ -99,7 +99,7 @@ class ExpandRequest(BaseModel):
     output_csv: Optional[str] = Field(default=None, description="Optional output CSV path override.")
     max_docs: Optional[int] = Field(default=None, ge=1, description="Optional max number of docs to process.")
     enable_faiss: bool = Field(default=False, description="Use FAISS for semantic suggestions.")
-
+    enable_feature_engineering: bool = Field(default=True, description="Enable feature engineering preprocessing pipeline.")
 
 class ExpandResponse(BaseModel):
     """
@@ -116,7 +116,7 @@ class ExpandResponse(BaseModel):
     output_csv: str
     total_candidates: int
     meta: Dict[str, Any] = Field(default_factory=dict)
-
+    feature_engineering: bool = Field(default=False, description="Indicates if feature engineering was used.")
 
 ## ============================================================
 ## PIPELINE ARTIFACT MODELS (CSV ROWS)
@@ -152,3 +152,6 @@ class CandidateRow(BaseModel):
     human_target_mesh_ui: str = ""
     human_new_entity_label: str = ""
     comment: str = ""
+
+    normalized_term: str = ""
+    token_count: int = 0
