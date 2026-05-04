@@ -13,15 +13,15 @@ import re
 from pathlib import Path
 from typing import Iterable, List, Optional
 
+from src.core.config import get_config
+from src.utils.normalization import normalize_medical_text
 from src.core.errors import DataError, PipelineError
 from src.utils.logging_utils import get_logger
-
 
 ## ============================================================
 ## LOGGER
 ## ============================================================
 logger = get_logger("io_utils")
-
 
 ## ============================================================
 ## CONSTANTS
@@ -34,7 +34,6 @@ _WHITESPACE_RE = re.compile(r"\s+")
 
 ## Some PDF conversions introduce weird control chars (keep conservative)
 _CONTROL_CHARS_RE = re.compile(r"[\x00-\x08\x0B\x0C\x0E-\x1F]")
-
 
 ## ============================================================
 ## FILE LISTING
@@ -78,7 +77,6 @@ def list_supported_files(folder: str | Path, recursive: bool = False) -> List[Pa
 
     return supported
 
-
 ## ============================================================
 ## LOADERS (TXT ONLY)
 ## ============================================================
@@ -119,7 +117,28 @@ def load_text_from_path(file_path: str | Path) -> str:
     ## Read text with safe fallbacks
     return _load_txt(path)
 
+def load_and_normalize_text_from_path(file_path: str | Path) -> str:
+    """
+        Load and normalize text using feature engineering pipeline
 
+        Args:
+            file_path: Input file path
+
+        Returns:
+            Processed text ready for downstream pipeline
+    """
+
+    ## Load raw text first
+    text = load_text_from_path(file_path)
+
+    ## Apply feature engineering if enabled
+    config = get_config()
+
+    if config.feature_engineering.enabled:
+        return normalize_medical_text(text)
+
+    return text
+    
 def load_text_from_bytes(
     content: bytes,
     encoding: str = "utf-8",
@@ -146,7 +165,6 @@ def load_text_from_bytes(
         return content.decode(encoding, errors="replace")
     except Exception as exc:
         raise PipelineError(f"Failed to decode bytes as {encoding}") from exc
-
 
 def _load_txt(path: Path) -> str:
     """
@@ -178,7 +196,6 @@ def _load_txt(path: Path) -> str:
     except Exception as exc:
         raise PipelineError(f"Failed to read TXT file: {path}") from exc
 
-
 ## ============================================================
 ## NORMALIZATION
 ## ============================================================
@@ -206,6 +223,12 @@ def normalize_document_text(text: str) -> str:
     if not text:
         return ""
 
+    ## Feature engineering override
+    config = get_config()
+
+    if config.feature_engineering.enabled:
+        return normalize_medical_text(text)
+        
     ## Remove control characters sometimes introduced by converters
     cleaned = _CONTROL_CHARS_RE.sub(" ", text)
 
@@ -213,7 +236,6 @@ def normalize_document_text(text: str) -> str:
     cleaned = _WHITESPACE_RE.sub(" ", cleaned)
 
     return cleaned.strip()
-
 
 def normalize_texts(texts: Iterable[str]) -> List[str]:
     """
@@ -226,8 +248,12 @@ def normalize_texts(texts: Iterable[str]) -> List[str]:
             List of normalized texts
     """
 
-    return [normalize_document_text(t or "") for t in texts]
+    config = get_config()
 
+    if config.feature_engineering.enabled:
+        return [normalize_medical_text(t or "") for t in texts]
+
+    return [normalize_document_text(t or "") for t in texts]
 
 def safe_strip(text: Optional[str]) -> str:
     """

@@ -256,6 +256,29 @@ class EmbeddingsConfig:
     cache_embeddings: bool
 
 @dataclass(frozen=True)
+class FeatureEngineeringConfig:
+    """
+        Feature engineering pipeline configuration
+
+        High-level purpose:
+            Control all preprocessing and feature extraction steps
+            applied before similarity search and labeling
+
+        Args:
+            enabled: Enable feature engineering pipeline
+            text_normalization_enabled: Apply text normalization
+            accent_removal_enabled: Remove accents from text
+            lowercase_enabled: Convert text to lowercase
+            feature_export_enabled: Export computed features
+    """
+
+    enabled: bool
+    text_normalization_enabled: bool
+    accent_removal_enabled: bool
+    lowercase_enabled: bool
+    feature_export_enabled: bool
+    
+@dataclass(frozen=True)
 class SimilarityConfig:
     """
         Similarity search and threshold configuration
@@ -321,6 +344,7 @@ class AppConfig:
             similarity: Similarity configuration
             data_consistency: Data consistency configuration
             secrets: Secrets configuration
+            feature_engineering: Feature engineering config for preprocessing and feature pipeline
     """
 
     app_name: str
@@ -333,6 +357,7 @@ class AppConfig:
     similarity: SimilarityConfig
     data_consistency: DataConsistencyConfig
     secrets: SecretsConfig
+    feature_engineering: FeatureEngineeringConfig
 
 ## ============================================================
 ## DOTENV / ENV HELPERS
@@ -879,6 +904,14 @@ def _validate_config(config: AppConfig) -> None:
 
         if config.runtime.drift_text_threshold < 0:
             raise ConfigurationError("DRIFT_TEXT_THRESHOLD must be >= 0")
+
+    ## Validate feature engineering config
+    if config.feature_engineering.enabled:
+
+        ## No hard constraints yet but keep hook for future
+        if not isinstance(config.feature_engineering.enabled, bool):
+            raise ConfigurationError("FEATURE_ENGINEERING_ENABLED must be a boolean")
+
             
 ## ============================================================
 ## EXPORT HELPERS
@@ -1044,6 +1077,15 @@ def get_config() -> AppConfig:
         cache_embeddings=_get_profiled_env_bool("CACHE_EMBEDDINGS", True, profile),
     )
 
+    ## BUILD FEATURE ENGINEERING CONFIG
+    feature_engineering = FeatureEngineeringConfig(
+        enabled=_get_env_bool("FEATURE_ENGINEERING_ENABLED", True),
+        text_normalization_enabled=_get_env_bool("TEXT_NORMALIZATION_ENABLED", True),
+        accent_removal_enabled=_get_env_bool("ACCENT_REMOVAL_ENABLED", True),
+        lowercase_enabled=_get_env_bool("LOWERCASE_ENABLED", True),
+        feature_export_enabled=_get_env_bool("FEATURE_EXPORT_ENABLED", False),
+    )
+
     ## Build similarity thresholds
     default_threshold = _get_profiled_env_float("DEFAULT_THRESHOLD", DEFAULT_THRESHOLD, profile)
     thresholds = _default_thresholds(default_threshold)
@@ -1085,6 +1127,7 @@ def get_config() -> AppConfig:
         runtime=runtime,
         segmentation=segmentation,
         embeddings=embeddings,
+        feature_engineering=feature_engineering,        
         similarity=similarity,
         secrets=secrets,
         data_consistency=data_consistency,

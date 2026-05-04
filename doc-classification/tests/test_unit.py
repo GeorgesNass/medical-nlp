@@ -22,6 +22,7 @@ from src.core.errors import DataError, ManifestError, PipelineError
 from src.domain.schema import DocumentSegment
 from src.nlp.segmenter import SegmenterConfig, normalize_text, segment_text, tokenize_words
 from src.nlp.similarity_index import SimilarityIndex
+from src.utils.normalization import normalize_medical_text
 from src.utils.io_utils import load_text_from_bytes, load_text_from_path
 
 ## ============================================================
@@ -215,6 +216,22 @@ def test_segment_text_returns_overlapping_segments() -> None:
     assert segments[0].start_char >= 0
     assert segments[0].end_char > segments[0].start_char
 
+def test_segment_contains_feature_metadata() -> None:
+    """
+        Test segment metadata contains feature info
+    """
+
+    ## Arrange
+    text = " ".join([f"mot{i}" for i in range(30)])
+
+    ## Act
+    segments = segment_text(text)
+
+    ## Assert
+    if segments:
+        seg = segments[0]
+        assert "char_length" in seg.meta
+        
 def test_segment_text_empty_returns_empty() -> None:
     """
         Test segmentation on empty text returns empty list.
@@ -255,6 +272,24 @@ def test_similarity_index_top_k_greater_than_size() -> None:
     results = index.search(query_vectors=[[1.0, 0.0]], top_k=10)
 
     assert len(results[0]) == 1
+ 
+## ============================================================
+## TESTS: FEATURE ENGINEERING NORMALIZATION
+## ============================================================
+def test_normalize_medical_text_basic() -> None:
+    """
+        Test feature engineering normalization pipeline
+    """
+
+    ## Arrange
+    text = "Élévation   CRP   \n\n  Patient"
+
+    ## Act
+    normalized = normalize_medical_text(text)
+
+    ## Assert
+    assert isinstance(normalized, str)
+    assert "elevation" in normalized or "élévation" in normalized
     
 ## ============================================================
 ## TESTS: SIMILARITY INDEX
@@ -374,6 +409,48 @@ def test_similarity_index_add_empty_vectors() -> None:
     index.add(vectors=[], segments=[], labels=[], source_files=[])
 
     assert index.size() == 0
+   
+def test_embedding_pipeline_shape() -> None:
+    """
+        Test embedding output shape
+    """
+
+    from src.nlp.embeddings import embed_segments_batch
+
+    ## Arrange
+    texts = ["hello world", "test embedding"]
+
+    ## Act
+    vectors = embed_segments_batch(texts)
+
+    ## Assert
+    assert isinstance(vectors, list)
+    assert len(vectors) == len(texts)
+    assert isinstance(vectors[0], list)
+
+def test_build_index_from_features() -> None:
+    """
+        Test building index from precomputed features
+    """
+
+    from src.nlp.similarity_index import build_index_from_segment_features
+
+    ## Arrange
+    vectors = [[1.0, 0.0]]
+    segments = _make_segments(1)
+    labels = ["crh"]
+    sources = ["file.txt"]
+
+    ## Act
+    index = build_index_from_segment_features(
+        vectors=vectors,
+        segments=segments,
+        labels=labels,
+        source_files=sources,
+    )
+
+    ## Assert
+    assert index.size() == 1
     
 ## ============================================================
 ## DATA CONSISTENCY (DOC CLASSIFICATION)

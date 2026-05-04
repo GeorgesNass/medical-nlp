@@ -19,12 +19,10 @@ from src.core.errors import PipelineError  ## errors wired
 from src.domain.schema import DocumentSegment
 from src.utils.logging_utils import get_logger
 
-
 ## -----------------------------
 ## Logger
 ## -----------------------------
 logger = get_logger("nlp_similarity_index")
-
 
 ## -----------------------------
 ## Data structures
@@ -47,7 +45,6 @@ class SimilarityResult:
     label: str
     source_file: str
     text: str
-
 
 ## -----------------------------
 ## Similarity index
@@ -85,9 +82,7 @@ class SimilarityIndex:
         ## Metadata aligned with vectors (same index)
         self._meta: List[Dict[str, str]] = []
 
-    ## -------------------------
     ## Index building
-    ## -------------------------
     def add(
         self,
         vectors: List[List[float]],
@@ -155,9 +150,11 @@ class SimilarityIndex:
 
         logger.info(f"Added {len(vectors)} segments to similarity index")
 
-    ## -------------------------
+        ## Feature export hook
+        if CONFIG.feature_engineering.feature_export_enabled:
+            logger.debug(f"Feature export enabled: indexed {len(vectors)} segments")
+            
     ## Querying
-    ## -------------------------
     def search(
         self,
         query_vectors: List[List[float]],
@@ -230,9 +227,7 @@ class SimilarityIndex:
 
         return all_results
 
-    ## -------------------------
     ## Utilities
-    ## -------------------------
     def size(self) -> int:
         """
             Return the number of indexed segments
@@ -242,3 +237,95 @@ class SimilarityIndex:
         """
 
         return 0 if self._vectors is None else self._vectors.shape[0]
+
+## ============================================================
+## FEATURE ENGINEERING INDEX HELPERS
+## ============================================================
+def build_index_from_segment_features(
+    vectors: List[List[float]],
+    segments: List[DocumentSegment],
+    labels: List[str],
+    source_files: List[str],
+) -> SimilarityIndex:
+    """
+        Build a similarity index from precomputed segment features
+
+        Args:
+            vectors: Embedding vectors
+            segments: Document segments
+            labels: Labels associated with segments
+            source_files: Source filenames
+
+        Returns:
+            Populated SimilarityIndex
+    """
+
+    ## Initialize index with config normalization
+    index = SimilarityIndex(normalize_vectors=CONFIG.embeddings.normalize)
+
+    ## Add data to index
+    index.add(
+        vectors=vectors,
+        segments=segments,
+        labels=labels,
+        source_files=source_files,
+    )
+
+    return index
+
+def save_index_metadata(
+    index: SimilarityIndex,
+    output_path: str,
+) -> None:
+    """
+        Save index metadata for reproducibility
+
+        Args:
+            index: Similarity index
+            output_path: File path
+    """
+
+    ## Skip if feature export disabled
+    if not CONFIG.feature_engineering.feature_export_enabled:
+        return
+
+    try:
+        payload = {
+            "size": index.size(),
+            "normalize_vectors": index.normalize_vectors,
+        }
+
+        import json
+
+        with open(output_path, "w", encoding="utf-8") as f:
+            json.dump(payload, f, indent=2, ensure_ascii=False)
+
+    except Exception as exc:
+        raise PipelineError(f"Failed to save index metadata: {output_path}") from exc
+
+def load_index_with_metadata(
+    vectors: List[List[float]],
+    segments: List[DocumentSegment],
+    labels: List[str],
+    source_files: List[str],
+) -> SimilarityIndex:
+    """
+        Rebuild index from stored features
+
+        Args:
+            vectors: Embedding vectors
+            segments: Document segments
+            labels: Labels
+            source_files: Source filenames
+
+        Returns:
+            Reconstructed SimilarityIndex
+    """
+
+    ## Simply rebuild index (no persistence layer yet)
+    return build_index_from_segment_features(
+        vectors=vectors,
+        segments=segments,
+        labels=labels,
+        source_files=source_files,
+    )

@@ -19,12 +19,10 @@ from src.labeling.similarity_labeler import DocumentPredictions, SimilarityLabel
 from src.nlp.similarity_index import SimilarityIndex
 from src.utils.logging_utils import get_logger
 
-
 ## -----------------------------
 ## Logger
 ## -----------------------------
 logger = get_logger("labeling_hybrid_labeler")
-
 
 ## -----------------------------
 ## Data structures
@@ -45,7 +43,6 @@ class HybridLabelerConfig:
 
     use_similarity: bool = True
     use_classifiers: bool = False
-
 
 ## -----------------------------
 ## Hybrid labeler
@@ -122,6 +119,9 @@ class HybridLabeler:
 
         ## Similarity-only path (current stable behavior)
         if self.config.use_similarity and not self.config.use_classifiers:
+        
+            logger.debug(f"HybridLabeler using feature-based similarity for file: {filename}")
+
             return self.similarity_labeler.predict(
                 filename=filename,
                 segments=segments,
@@ -130,19 +130,52 @@ class HybridLabeler:
 
         ## Hybrid path (reserved for future)
         if self.config.use_similarity and self.config.use_classifiers:
-            ## Step 1: similarity prediction (baseline)
+            
+            ## similarity prediction (baseline)
             sim_pred = self.similarity_labeler.predict(
                 filename=filename,
                 segments=segments,
                 segment_vectors=segment_vectors,
             )
 
-            ## Step 2: merge classifier outputs (not implemented yet)
+            ## merge classifier outputs (not implemented yet)
             ## For now, we return similarity results unchanged
             logger.warning(
                 "Hybrid mode requested (similarity + classifiers), but classifiers are not implemented yet"
             )
+            
+            logger.debug(f"HybridLabeler hybrid mode (features + classifiers) for file: {filename}")
+            
             return sim_pred
 
         ## Invalid configuration
         raise LabelingError("HybridLabeler configuration is invalid (no strategy enabled)")
+
+## ============================================================
+## FEATURE ENGINEERING HYBRID HELPERS
+## ============================================================
+def predict_from_features(
+    labeler: HybridLabeler,
+    filename: str,
+    segments,
+    segment_vectors,
+) -> DocumentPredictions:
+    """
+        Predict using precomputed feature pipeline outputs
+
+        Args:
+            labeler: HybridLabeler instance
+            filename: Document filename
+            segments: Document segments
+            segment_vectors: Precomputed embeddings
+
+        Returns:
+            DocumentPredictions
+    """
+
+    ## Delegate to core hybrid predict
+    return labeler.predict(
+        filename=filename,
+        segments=segments,
+        segment_vectors=segment_vectors,
+    )

@@ -3,7 +3,7 @@
 ###############################################################################
 # Doc-Classification - Pipeline Menu
 # Author: Georges Nassopoulos
-# Version: 1.1.0
+# Version: 1.2.0
 # Description:
 #   CLI menu to run the main doc-classification pipelines (with data consistency + data quality):
 #   - build similarity index from labeled docs + manifest
@@ -12,6 +12,7 @@
 #   - run EDA on a folder
 #   - run full pipeline (build-index + predict + export)
 #   - run data drift (Evidently)
+#   - feature engineering toggle
 ###############################################################################
 
 set -euo pipefail
@@ -39,6 +40,18 @@ run_python() {
   $PYTHON_BIN "$@"
 }
 
+## NEW: feature engineering toggle
+get_feature_flag() {
+  read -rp "Enable feature engineering? (y/n) [default: y]: " FEAT
+  FEAT="${FEAT:-y}"
+
+  if [[ "$FEAT" == "y" || "$FEAT" == "Y" ]]; then
+    echo "--features"
+  else
+    echo ""
+  fi
+}
+
 ## ---------------------------------------------------------------------------
 ## Menu
 ## ---------------------------------------------------------------------------
@@ -60,16 +73,20 @@ while true; do
 
   case "$choice" in
     1)
+      FEATURE_FLAG=$(get_feature_flag)
+
       read -rp "Labeled folder [default: ./data/labeled]: " LABELED_DIR
       read -rp "Manifest JSON [default: ./data/labeled_manifest.json]: " MANIFEST
 
       LABELED_DIR="${LABELED_DIR:-./data/labeled}"
       MANIFEST="${MANIFEST:-./data/labeled_manifest.json}"
 
-      run_python main.py --build-index --labeled-dir "$LABELED_DIR" --manifest "$MANIFEST"
+      run_python main.py --build-index $FEATURE_FLAG --labeled-dir "$LABELED_DIR" --manifest "$MANIFEST"
       pause
       ;;
     2)
+      FEATURE_FLAG=$(get_feature_flag)
+
       read -rp "Labeled folder [default: ./data/labeled]: " LABELED_DIR
       read -rp "Manifest JSON [default: ./data/labeled_manifest.json]: " MANIFEST
       read -rp "Unlabeled folder [default: ./data/unlabeled]: " UNLABELED_DIR
@@ -78,10 +95,12 @@ while true; do
       MANIFEST="${MANIFEST:-./data/labeled_manifest.json}"
       UNLABELED_DIR="${UNLABELED_DIR:-./data/unlabeled}"
 
-      run_python main.py --predict --labeled-dir "$LABELED_DIR" --manifest "$MANIFEST" --unlabeled-dir "$UNLABELED_DIR"
+      run_python main.py --predict $FEATURE_FLAG --labeled-dir "$LABELED_DIR" --manifest "$MANIFEST" --unlabeled-dir "$UNLABELED_DIR"
       pause
       ;;
     3)
+      FEATURE_FLAG=$(get_feature_flag)
+
       read -rp "Output CSV name [default: predictions.csv]: " OUTCSV
       read -rp "Include scores? (y/n) [default: y]: " INCSCORES
       read -rp "Include evidence? (y/n) [default: y]: " INCEVID
@@ -96,7 +115,7 @@ while true; do
       MANIFEST="${MANIFEST:-./data/labeled_manifest.json}"
       UNLABELED_DIR="${UNLABELED_DIR:-./data/unlabeled}"
 
-      CMD_ARGS=(main.py --predict --export --output-csv "$OUTCSV" --labeled-dir "$LABELED_DIR" --manifest "$MANIFEST" --unlabeled-dir "$UNLABELED_DIR")
+      CMD_ARGS=(main.py --predict --export $FEATURE_FLAG --output-csv "$OUTCSV" --labeled-dir "$LABELED_DIR" --manifest "$MANIFEST" --unlabeled-dir "$UNLABELED_DIR")
 
       if [[ "$INCSCORES" == "y" || "$INCSCORES" == "Y" ]]; then
         CMD_ARGS+=("--include-scores")
@@ -119,6 +138,8 @@ while true; do
       pause
       ;;
     5)
+      FEATURE_FLAG=$(get_feature_flag)
+
       read -rp "Labeled folder [default: ./data/labeled]: " LABELED_DIR
       read -rp "Manifest JSON [default: ./data/labeled_manifest.json]: " MANIFEST
       read -rp "Unlabeled folder [default: ./data/unlabeled]: " UNLABELED_DIR
@@ -133,7 +154,7 @@ while true; do
       INCSCORES="${INCSCORES:-y}"
       INCEVID="${INCEVID:-y}"
 
-      CMD_ARGS=(main.py --run-all --labeled-dir "$LABELED_DIR" --manifest "$MANIFEST" --unlabeled-dir "$UNLABELED_DIR" --output-csv "$OUTCSV")
+      CMD_ARGS=(main.py --run-all $FEATURE_FLAG --labeled-dir "$LABELED_DIR" --manifest "$MANIFEST" --unlabeled-dir "$UNLABELED_DIR" --output-csv "$OUTCSV")
 
       if [[ "$INCSCORES" == "y" || "$INCSCORES" == "Y" ]]; then
         CMD_ARGS+=("--include-scores")
