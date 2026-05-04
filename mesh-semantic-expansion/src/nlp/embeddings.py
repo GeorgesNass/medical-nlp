@@ -12,31 +12,30 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Literal, Optional, Tuple
 
-from src.core.config import get_settings
+from src.core.config import get_settings, get_config
+from src.nlp.preprocess import normalize_medical_text
 from src.utils.logging_utils import get_logger
 
 logger = get_logger("embeddings")
 
 EmbeddingBackend = Literal["sentence_transformers", "camembert_pooling", "fasttext"]
 
-
 ## ============================================================
 ## CONFIG (FROM .ENV)
 ## ============================================================
-
 @dataclass
 class EmbeddingConfig:
     """
-    Embedding configuration loaded from environment variables.
+        Embedding configuration loaded from environment variables
 
-    Attributes:
-        backend (EmbeddingBackend): Embedding backend to use.
-        st_model_name (str): Sentence-Transformers model name.
-        camembert_model_name (str): Transformers model name for CamemBERT pooling.
-        fasttext_model_path (Optional[Path]): Path to FastText model (.bin).
-        batch_size (int): Batch size for embedding computation.
-        max_length (int): Max token length for transformer models.
-        device (str): Device hint ('cpu' or 'cuda'). Backend-dependent.
+        Attributes:
+            backend (EmbeddingBackend): Embedding backend to use
+            st_model_name (str): Sentence-Transformers model name
+            camembert_model_name (str): Transformers model name for CamemBERT pooling
+            fasttext_model_path (Optional[Path]): Path to FastText model (.bin)
+            batch_size (int): Batch size for embedding computation
+            max_length (int): Max token length for transformer models
+            device (str): Device hint ('cpu' or 'cuda'). Backend-dependent
     """
 
     backend: EmbeddingBackend
@@ -47,22 +46,21 @@ class EmbeddingConfig:
     max_length: int
     device: str
 
-
 def get_embedding_config() -> EmbeddingConfig:
     """
-    Load embedding configuration from .env / environment variables.
+        Load embedding configuration from .env / environment variables
 
-    Expected .env keys:
-        EMBEDDING_BACKEND=sentence_transformers|camembert_pooling|fasttext
-        ST_MODEL_NAME=sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
-        CAMEMBERT_MODEL_NAME=camembert-base
-        FASTTEXT_MODEL_PATH=/path/to/cc.fr.300.bin
-        EMB_BATCH_SIZE=64
-        EMB_MAX_LENGTH=256
-        EMB_DEVICE=cpu|cuda
+        Expected .env keys:
+            EMBEDDING_BACKEND=sentence_transformers|camembert_pooling|fasttext
+            ST_MODEL_NAME=sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+            CAMEMBERT_MODEL_NAME=camembert-base
+            FASTTEXT_MODEL_PATH=/path/to/cc.fr.300.bin
+            EMB_BATCH_SIZE=64
+            EMB_MAX_LENGTH=256
+            EMB_DEVICE=cpu|cuda
 
-    Returns:
-        EmbeddingConfig: Loaded embedding configuration.
+        Returns:
+            EmbeddingConfig: Loaded embedding configuration
     """
 
     import os
@@ -96,29 +94,25 @@ def get_embedding_config() -> EmbeddingConfig:
         device=device,
     )
 
-
 ## ============================================================
 ## TEXT NORMALIZATION
 ## ============================================================
-
 def normalize_text(text: str) -> str:
     """
-    Normalize input text before embedding.
+        Normalize input text before embedding
 
-    Args:
-        text (str): Raw text.
+        Args:
+            text (str): Raw text
 
-    Returns:
-        str: Normalized text.
+        Returns:
+            str: Normalized text
     """
 
     return " ".join((text or "").strip().split())
 
-
 ## ============================================================
 ## BACKEND: SENTENCE-TRANSFORMERS
 ## ============================================================
-
 def _embed_sentence_transformers(
     texts: List[str],
     model_name: str,
@@ -126,16 +120,16 @@ def _embed_sentence_transformers(
     device: str,
 ) -> "Any":
     """
-    Compute embeddings using Sentence-Transformers.
+        Compute embeddings using Sentence-Transformers
 
-    Args:
-        texts (List[str]): Input texts.
-        model_name (str): Sentence-Transformers model name.
-        batch_size (int): Batch size.
-        device (str): Device (cpu/cuda).
+        Args:
+            texts (List[str]): Input texts
+            model_name (str): Sentence-Transformers model name
+            batch_size (int): Batch size
+            device (str): Device (cpu/cuda)
 
-    Returns:
-        Any: Numpy array of shape (n, dim), dtype float32.
+        Returns:
+            Any: Numpy array of shape (n, dim), dtype float32
     """
 
     try:
@@ -156,21 +150,19 @@ def _embed_sentence_transformers(
     )
     return np.asarray(embs, dtype="float32")
 
-
 ## ============================================================
 ## BACKEND: CAMEMBERT POOLING
 ## ============================================================
-
 def _mean_pooling(last_hidden_state: "Any", attention_mask: "Any") -> "Any":
     """
-    Apply mean pooling over token embeddings.
+        Apply mean pooling over token embeddings
 
-    Args:
-        last_hidden_state (Any): Tensor [batch, seq, hidden].
-        attention_mask (Any): Tensor [batch, seq].
+        Args:
+            last_hidden_state (Any): Tensor [batch, seq, hidden]
+            attention_mask (Any): Tensor [batch, seq]
 
-    Returns:
-        Any: Tensor [batch, hidden] pooled.
+        Returns:
+            Any: Tensor [batch, hidden] pooled
     """
 
     import torch  # type: ignore
@@ -180,7 +172,6 @@ def _mean_pooling(last_hidden_state: "Any", attention_mask: "Any") -> "Any":
     counts = torch.clamp(mask.sum(dim=1), min=1e-9)
     return summed / counts
 
-
 def _embed_camembert_pooling(
     texts: List[str],
     model_name: str,
@@ -189,21 +180,21 @@ def _embed_camembert_pooling(
     device: str,
 ) -> "Any":
     """
-    Compute embeddings using CamemBERT pooling via Hugging Face Transformers.
+        Compute embeddings using CamemBERT pooling via Hugging Face Transformers
 
-    Notes:
-        - This uses mean pooling on the last hidden state.
-        - For cosine similarity, you can normalize later before FAISS.
+        Notes:
+            - This uses mean pooling on the last hidden state
+            - For cosine similarity, you can normalize later before FAISS
 
-    Args:
-        texts (List[str]): Input texts.
-        model_name (str): Transformers model name (e.g., camembert-base).
-        batch_size (int): Batch size.
-        max_length (int): Max token length.
-        device (str): Device (cpu/cuda).
+        Args:
+            texts (List[str]): Input texts
+            model_name (str): Transformers model name (e.g., camembert-base)
+            batch_size (int): Batch size
+            max_length (int): Max token length
+            device (str): Device (cpu/cuda)
 
-    Returns:
-        Any: Numpy array of shape (n, dim), dtype float32.
+        Returns:
+            Any: Numpy array of shape (n, dim), dtype float32
     """
 
     try:
@@ -246,27 +237,25 @@ def _embed_camembert_pooling(
     embs = np.vstack(all_vecs).astype("float32")
     return embs
 
-
 ## ============================================================
 ## BACKEND: FASTTEXT
 ## ============================================================
-
 def _load_fasttext_model(model_path: Path) -> "Any":
     """
-    Load a FastText binary model.
+        Load a FastText binary model
 
-    Notes:
-        - On Windows, we recommend installing `fasttext-wheel` (prebuilt).
-        - The import name is still `fasttext`.
+        Notes:
+            - On Windows, we recommend installing `fasttext-wheel` (prebuilt)
+            - The import name is still `fasttext`
 
-    Args:
-        model_path (Path): Path to a FastText .bin model.
+        Args:
+            model_path (Path): Path to a FastText .bin model
 
-    Returns:
-        Any: FastText model instance.
+        Returns:
+            Any: FastText model instance
 
-    Raises:
-        FileNotFoundError: If model file does not exist.
+        Raises:
+            FileNotFoundError: If model file does not exist
     """
 
     if not model_path.exists():
@@ -288,18 +277,18 @@ def _embed_fasttext(
     model_path: Path,
 ) -> "Any":
     """
-    Compute embeddings using FastText.
+        Compute embeddings using FastText
 
-    Strategy:
-        - Vectorize each text as the average of word vectors.
-        - FastText handles OOV via subword n-grams.
+        Strategy:
+            - Vectorize each text as the average of word vectors
+            - FastText handles OOV via subword n-grams
 
-    Args:
-        texts (List[str]): Input texts.
-        model_path (Path): Path to FastText .bin model.
+        Args:
+            texts (List[str]): Input texts
+            model_path (Path): Path to FastText .bin model
 
-    Returns:
-        Any: Numpy array of shape (n, dim), dtype float32.
+        Returns:
+            Any: Numpy array of shape (n, dim), dtype float32
     """
 
     try:
@@ -323,30 +312,34 @@ def _embed_fasttext(
 ## ============================================================
 ## PUBLIC EMBEDDING API
 ## ============================================================
-
 def embed_texts(
     texts: List[str],
     backend: Optional[EmbeddingBackend] = None,
     config: Optional[EmbeddingConfig] = None,
 ) -> "Any":
     """
-    Compute embeddings for a list of texts using the selected backend.
+        Compute embeddings for a list of texts using the selected backend
 
-    Args:
-        texts (List[str]): Input texts.
-        backend (Optional[EmbeddingBackend]): Override backend.
-        config (Optional[EmbeddingConfig]): Optional preloaded config.
+        Args:
+            texts (List[str]): Input texts
+            backend (Optional[EmbeddingBackend]): Override backend
+            config (Optional[EmbeddingConfig]): Optional preloaded config
 
-    Returns:
-        Any: Numpy array (n, dim), dtype float32.
+        Returns:
+            Any: Numpy array (n, dim), dtype float32
     """
 
     cfg = config if config else get_embedding_config()
     selected = backend if backend else cfg.backend
 
     ## Normalize inputs
-    cleaned = [normalize_text(t) for t in texts]
+    config = get_config()
 
+    if config.feature_engineering.enabled:
+        cleaned = [normalize_medical_text(t) for t in texts]
+    else:
+        cleaned = [normalize_text(t) for t in texts]
+        
     logger.info(f"Embedding backend: {selected}. Texts: {len(cleaned)}")
 
     if selected == "sentence_transformers":
@@ -374,8 +367,19 @@ def embed_texts(
             model_path=cfg.fasttext_model_path,
         )
 
-    raise ValueError(f"Unsupported backend: {selected}")
+    ## ============================================================
+    ## FEATURE ENGINEERING: VECTOR NORMALIZATION
+    ## ============================================================
+    config = get_config()
 
+    if config.feature_engineering.embedding_normalize:
+        import numpy as np
+
+        norms = np.linalg.norm(vectors, axis=1, keepdims=True)
+        norms[norms == 0.0] = 1.0
+        vectors = vectors / norms
+        
+    raise ValueError(f"Unsupported backend: {selected}")
 
 def embed_query_text(
     text: str,
@@ -383,38 +387,36 @@ def embed_query_text(
     config: Optional[EmbeddingConfig] = None,
 ) -> "Any":
     """
-    Convenience method to embed a single query text.
+        Convenience method to embed a single query text
 
-    Args:
-        text (str): Query text.
-        backend (Optional[EmbeddingBackend]): Override backend.
-        config (Optional[EmbeddingConfig]): Optional preloaded config.
+        Args:
+            text (str): Query text
+            backend (Optional[EmbeddingBackend]): Override backend
+            config (Optional[EmbeddingConfig]): Optional preloaded config
 
-    Returns:
-        Any: Numpy array shape (dim,), float32.
+        Returns:
+            Any: Numpy array shape (dim,), float32
     """
 
     vectors = embed_texts([text], backend=backend, config=config)
     return vectors[0]
 
-
 ## ============================================================
 ## BUILD MESH EMBEDDINGS (mesh_parsed.jsonl -> parquet)
 ## ============================================================
-
 def _load_mesh_texts_for_embedding(mesh_jsonl_path: Path) -> Tuple[List[str], List[str]]:
     """
-    Load MeSH UIs and embedding texts from a JSONL file.
+        Load MeSH UIs and embedding texts from a JSONL file
 
-    Strategy:
-        - One embedding per UI
-        - Text = preferred term + synonyms (joined)
+        Strategy:
+            - One embedding per UI
+            - Text = preferred term + synonyms (joined)
 
-    Args:
-        mesh_jsonl_path (Path): Path to mesh_parsed.jsonl.
+        Args:
+            mesh_jsonl_path (Path): Path to mesh_parsed.jsonl
 
-    Returns:
-        Tuple[List[str], List[str]]: (ui_list, text_list)
+        Returns:
+            Tuple[List[str], List[str]]: (ui_list, text_list)
     """
 
     ui_list: List[str] = []
@@ -438,7 +440,14 @@ def _load_mesh_texts_for_embedding(mesh_jsonl_path: Path) -> Tuple[List[str], Li
                 ## Limit synonyms to keep text size stable
                 parts.extend(synonyms[:15])
 
-            text = " | ".join([normalize_text(p) for p in parts if normalize_text(p)])
+            config = get_config()
+
+            if config.feature_engineering.enabled:
+                text = " | ".join([normalize_medical_text(p) for p in parts if normalize_medical_text(p)])
+                logger.debug("Feature engineering embeddings applied | texts=%d", len(texts))
+            else:
+                text = " | ".join([normalize_text(p) for p in parts if normalize_text(p)])
+                
             if not text:
                 continue
 
@@ -447,22 +456,21 @@ def _load_mesh_texts_for_embedding(mesh_jsonl_path: Path) -> Tuple[List[str], Li
 
     return ui_list, text_list
 
-
 def save_embeddings_parquet(
     ui_list: List[str],
     vectors: "Any",
     output_path: Path,
 ) -> Path:
     """
-    Save embeddings to parquet as emb_0..emb_n columns.
+        Save embeddings to parquet as emb_0..emb_n columns
 
-    Args:
-        ui_list (List[str]): List of MeSH UI identifiers.
-        vectors (Any): Numpy array (n, dim).
-        output_path (Path): Parquet output path.
+        Args:
+            ui_list (List[str]): List of MeSH UI identifiers
+            vectors (Any): Numpy array (n, dim)
+            output_path (Path): Parquet output path
 
-    Returns:
-        Path: Output parquet path.
+        Returns:
+            Path: Output parquet path
     """
 
     try:
@@ -488,7 +496,6 @@ def save_embeddings_parquet(
     logger.info(f"Embeddings parquet saved: {output_path} (rows={len(df)}, dim={dim})")
     return output_path
 
-
 def build_mesh_embeddings(
     mesh_jsonl_path: Optional[Path] = None,
     output_parquet_path: Optional[Path] = None,
@@ -496,16 +503,16 @@ def build_mesh_embeddings(
     overwrite: bool = False,
 ) -> Path:
     """
-    Build MeSH embeddings parquet from mesh_parsed.jsonl.
+        Build MeSH embeddings parquet from mesh_parsed.jsonl
 
-    Args:
-        mesh_jsonl_path (Optional[Path]): Input MeSH JSONL path.
-        output_parquet_path (Optional[Path]): Output parquet path.
-        backend (Optional[EmbeddingBackend]): Optional backend override.
-        overwrite (bool): If True, overwrite existing parquet.
+        Args:
+            mesh_jsonl_path (Optional[Path]): Input MeSH JSONL path
+            output_parquet_path (Optional[Path]): Output parquet path
+            backend (Optional[EmbeddingBackend]): Optional backend override
+            overwrite (bool): If True, overwrite existing parquet
 
-    Returns:
-        Path: Path to generated parquet file.
+        Returns:
+            Path: Path to generated parquet file
     """
 
     settings = get_settings()

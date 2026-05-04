@@ -11,25 +11,25 @@ import re
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 
+from src.core.config import get_config
+from src.nlp.preprocess import normalize_medical_text
 from src.utils.logging_utils import get_logger
 
 logger = get_logger("judge_quality")
 
-
 ## ============================================================
 ## DATA STRUCTURES
 ## ============================================================
-
 @dataclass
 class JudgeResult:
     """
-    Evaluation result.
+        Evaluation result
 
-    Attributes:
-        verdict (str): 'accepted' | 'rejected' | 'unsure'
-        score (float): Normalized score in [0, 1].
-        rationale (str): Short explanation for traceability.
-        model (str): Backend model identifier.
+        Attributes:
+            verdict (str): 'accepted' | 'rejected' | 'unsure'
+            score (float): Normalized score in [0, 1]
+            rationale (str): Short explanation for traceability
+            model (str): Backend model identifier
     """
 
     verdict: str
@@ -37,33 +37,37 @@ class JudgeResult:
     rationale: str
     model: str
 
-
 ## ============================================================
 ## BASELINE HEURISTIC JUDGE (NO EXTERNAL API)
 ## ============================================================
-
 def judge_baseline(
     candidate_term: str,
     suggested_label: str,
 ) -> JudgeResult:
     """
-    Lightweight baseline judge without external dependencies.
+        Lightweight baseline judge without external dependencies
 
-    It checks:
-        - empty values
-        - basic lexical overlap (token containment)
-        - abbreviation patterns
+        It checks:
+            - empty values
+            - basic lexical overlap (token containment)
+            - abbreviation patterns
 
-    Args:
-        candidate_term (str): Extracted term from document.
-        suggested_label (str): Suggested official label.
+        Args:
+            candidate_term (str): Extracted term from document
+            suggested_label (str): Suggested official label
 
-    Returns:
-        JudgeResult: Baseline evaluation result.
+        Returns:
+            JudgeResult: Baseline evaluation result
     """
 
-    ct = (candidate_term or "").strip()
-    sl = (suggested_label or "").strip()
+    config = get_config()
+
+    if config.feature_engineering.enabled:
+        ct = normalize_medical_text(candidate_term or "")
+        sl = normalize_medical_text(suggested_label or "")
+    else:
+        ct = (candidate_term or "").strip()
+        sl = (suggested_label or "").strip()
 
     if not ct or not sl:
         return JudgeResult(
@@ -73,8 +77,8 @@ def judge_baseline(
             model="baseline",
         )
 
-    ct_low = ct.lower()
-    sl_low = sl.lower()
+    ct_token_count = len(ct_low.split())
+    sl_token_count = len(sl_low.split())
 
     ## Exact match
     if ct_low == sl_low:
@@ -118,6 +122,15 @@ def judge_baseline(
             model="baseline",
         )
 
+    ## Penalize extreme length mismatch
+    if abs(ct_token_count - sl_token_count) > 5:
+        return JudgeResult(
+            verdict="unsure",
+            score=0.3,
+            rationale="Token length mismatch between candidate and label.",
+            model="baseline",
+        )
+        
     return JudgeResult(
         verdict="unsure",
         score=max(0.25, overlap_ratio),
@@ -125,11 +138,9 @@ def judge_baseline(
         model="baseline",
     )
 
-
 ## ============================================================
 ## TRANSFORMERS JUDGE (LOCAL, NO LLM API)
 ## ============================================================
-
 def judge_transformers_cosine(
     candidate_term: str,
     suggested_label: str,
@@ -138,21 +149,21 @@ def judge_transformers_cosine(
     threshold_reject: float = 0.45,
 ) -> JudgeResult:
     """
-    Evaluate similarity using embedding cosine similarity (local judge).
+        Evaluate similarity using embedding cosine similarity (local judge)
 
-    Notes:
-        - Uses src/nlp/embeddings.py backends.
-        - Returns accepted/rejected/unsure based on thresholds.
+        Notes:
+            - Uses src/nlp/embeddings.py backends
+            - Returns accepted/rejected/unsure based on thresholds
 
-    Args:
-        candidate_term (str): Extracted term.
-        suggested_label (str): Suggested label.
-        backend (str): Embedding backend identifier.
-        threshold_accept (float): Accept threshold.
-        threshold_reject (float): Reject threshold.
+        Args:
+            candidate_term (str): Extracted term
+            suggested_label (str): Suggested label
+            backend (str): Embedding backend identifier
+            threshold_accept (float): Accept threshold
+            threshold_reject (float): Reject threshold
 
-    Returns:
-        JudgeResult: Evaluation result.
+        Returns:
+            JudgeResult: Evaluation result
     """
 
     from src.nlp.embeddings import embed_texts
@@ -162,7 +173,17 @@ def judge_transformers_cosine(
     except Exception as e:
         raise ImportError("Missing dependency: numpy required for cosine judge.") from e
 
-    texts = [candidate_term, suggested_label]
+    config = get_config()
+
+    if config.feature_engineering.enabled:
+        texts = [
+            normalize_medical_text(candidate_term),
+            normalize_medical_text(suggested_label),
+        ]
+        logger.debug("Feature engineering applied in judge_quality")
+    else:
+        texts = [candidate_term, suggested_label]
+
     vecs = embed_texts(texts, backend=backend)  # type: ignore
 
     v1 = vecs[0]
@@ -186,11 +207,9 @@ def judge_transformers_cosine(
         model=f"transformers_cosine:{backend}",
     )
 
-
 ## ============================================================
 ## LLM-AS-A-JUDGE (STUB)
 ## ============================================================
-
 def judge_llm_as_a_judge(
     candidate_term: str,
     suggested_label: str,
@@ -198,26 +217,26 @@ def judge_llm_as_a_judge(
     provider: str = "openai",
 ) -> JudgeResult:
     """
-    LLM-as-a-Judge stub.
+        LLM-as-a-Judge stub
 
-    This function is intentionally a stub to avoid inventing:
-        - provider credentials
-        - model names
-        - API contracts
+        This function is intentionally a stub to avoid inventing:
+            - provider credentials
+            - model names
+            - API contracts
 
-    Implementation will depend on your chosen provider and prompt template.
+        Implementation will depend on your chosen provider and prompt template
 
-    Args:
-        candidate_term (str): Extracted term.
-        suggested_label (str): Suggested label.
-        context (str): Optional context snippet.
-        provider (str): LLM provider label.
+        Args:
+            candidate_term (str): Extracted term
+            suggested_label (str): Suggested label
+            context (str): Optional context snippet
+            provider (str): LLM provider label
 
-    Returns:
-        JudgeResult: Placeholder result.
+        Returns:
+            JudgeResult: Placeholder result
 
-    Raises:
-        NotImplementedError: Always until integrated with a real LLM call.
+        Raises:
+            NotImplementedError: Always until integrated with a real LLM call
     """
 
     raise NotImplementedError(

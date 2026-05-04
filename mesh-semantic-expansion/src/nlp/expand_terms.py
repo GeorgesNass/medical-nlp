@@ -12,9 +12,10 @@ from dataclasses import asdict
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-from src.core.config import get_settings
+from src.core.config import get_settings, get_config
 from src.mesh.query_mesh import lookup_ui, search_mesh
 from src.nlp.ner_mesh import DetectedEntity, build_label_dictionary, detect_entities
+from src.nlp.preprocess import normalize_medical_text
 from src.utils.logging_utils import get_logger
 
 ## Lazy imports to keep baseline lightweight
@@ -23,37 +24,34 @@ from src.nlp.embeddings import embed_query_text
 
 logger = get_logger("expand_terms")
 
-
 ## ============================================================
 ## TEXT UTILITIES
 ## ============================================================
-
 def _normalize_spaces(text: str) -> str:
     """
-    Normalize whitespace in a text.
+        Normalize whitespace in a text
 
-    Args:
-        text (str): Input text.
+        Args:
+            text (str): Input text
 
-    Returns:
-        str: Normalized text.
+        Returns:
+            str: Normalized text
     """
 
     return " ".join((text or "").strip().split())
 
-
 def _extract_context(text: str, start: int, end: int, window: int = 60) -> str:
     """
-    Extract a context snippet around a match.
+        Extract a context snippet around a match
 
-    Args:
-        text (str): Full text.
-        start (int): Match start index.
-        end (int): Match end index.
-        window (int): Context window size.
+        Args:
+            text (str): Full text
+            start (int): Match start index
+            end (int): Match end index
+            window (int): Context window size
 
-    Returns:
-        str: Context snippet.
+        Returns:
+            str: Context snippet
     """
 
     if start < 0 or end < 0:
@@ -63,22 +61,20 @@ def _extract_context(text: str, start: int, end: int, window: int = 60) -> str:
     right = min(len(text), end + window)
     return _normalize_spaces(text[left:right])
 
-
 ## ============================================================
 ## CANDIDATE EXTRACTION HEURISTICS
 ## ============================================================
-
 def _find_abbreviation_patterns(text: str) -> List[Tuple[str, str, int, int]]:
     """
-    Extract abbreviation patterns like:
-        - "hypertension artérielle (HTA)"
-        - "infarctus du myocarde (IDM)"
+        Extract abbreviation patterns like:
+            - "hypertension artérielle (HTA)"
+            - "infarctus du myocarde (IDM)"
 
-    Args:
-        text (str): Document text.
+        Args:
+            text (str): Document text
 
-    Returns:
-        List[Tuple[str, str, int, int]]: (long_form, abbr, start, end)
+        Returns:
+            List[Tuple[str, str, int, int]]: (long_form, abbr, start, end)
     """
 
     pattern = re.compile(
@@ -102,19 +98,19 @@ def _find_abbreviation_patterns(text: str) -> List[Tuple[str, str, int, int]]:
 
 def _extract_candidate_terms(text: str, max_terms: int = 80) -> List[str]:
     """
-    Extract candidate terms from text using a lightweight heuristic.
+        Extract candidate terms from text using a lightweight heuristic
 
-    Strategy:
-        - Keep tokens/phrases with letters (including accents) and hyphens
-        - Filter short tokens
-        - Deduplicate
+        Strategy:
+            - Keep tokens/phrases with letters (including accents) and hyphens
+            - Filter short tokens
+            - Deduplicate
 
-    Args:
-        text (str): Document text.
-        max_terms (int): Max number of candidates.
+        Args:
+            text (str): Document text
+            max_terms (int): Max number of candidates
 
-    Returns:
-        List[str]: Candidate terms.
+        Returns:
+            List[str]: Candidate terms
     """
 
     tokens = re.findall(r"[A-Za-zÀ-ÖØ-öø-ÿ\-]{4,}", text)
@@ -131,21 +127,19 @@ def _extract_candidate_terms(text: str, max_terms: int = 80) -> List[str]:
 
     return uniq
 
-
 ## ============================================================
 ## MESH SUGGESTION (FTS)
 ## ============================================================
-
 def suggest_mesh_with_fts(term: str, limit: int = 3) -> List[Dict[str, Any]]:
     """
-    Suggest MeSH mappings using SQLite FTS.
+        Suggest MeSH mappings using SQLite FTS
 
-    Args:
-        term (str): Candidate term.
-        limit (int): Max suggestions.
+        Args:
+            term (str): Candidate term
+            limit (int): Max suggestions
 
-    Returns:
-        List[Dict[str, Any]]: Suggestions as {ui, preferred_terms, score}.
+        Returns:
+            List[Dict[str, Any]]: Suggestions as {ui, preferred_terms, score}
     """
 
     results = search_mesh(query=term, limit=limit)
@@ -162,40 +156,36 @@ def suggest_mesh_with_fts(term: str, limit: int = 3) -> List[Dict[str, Any]]:
 
     return suggestions
 
-
 ## ============================================================
 ## OPTIONAL: MESH SUGGESTION (FAISS)
 ## ============================================================
-
 def suggest_mesh_with_faiss(
     term: str,
     top_k: int = 3,
     embedding_backend: Optional[str] = None,
 ) -> List[Dict[str, Any]]:
     """
-    Suggest MeSH mappings using FAISS semantic similarity.
+        Suggest MeSH mappings using FAISS semantic similarity
 
-    Notes:
-        - Requires built FAISS index + id map.
-        - Requires query embedding (src/nlp/embeddings.py).
+        Notes:
+            - Requires built FAISS index + id map
+            - Requires query embedding (src/nlp/embeddings.py)
 
-    Args:
-        term (str): Candidate term.
-        top_k (int): Top-K semantic neighbors.
-        embedding_backend (Optional[str]): Override embedding backend.
+        Args:
+            term (str): Candidate term
+            top_k (int): Top-K semantic neighbors
+            embedding_backend (Optional[str]): Override embedding backend
 
-    Returns:
-        List[Dict[str, Any]]: Suggestions {ui, faiss_score}.
+        Returns:
+            List[Dict[str, Any]]: Suggestions {ui, faiss_score}
     """
 
     q_vec = embed_query_text(term, backend=embedding_backend)  # type: ignore
     return search_faiss(query_vector=q_vec, top_k=top_k)
 
-
 ## ============================================================
 ## MAIN: BUILD CANDIDATE ROWS
 ## ============================================================
-
 def build_candidate_rows_for_document(
     doc_id: str,
     text: str,
@@ -204,27 +194,29 @@ def build_candidate_rows_for_document(
     max_candidates: int = 100,
 ) -> List[Dict[str, Any]]:
     """
-    Build candidate rows from a single medical document.
+        Build candidate rows from a single medical document
 
-    Outputs are formatted to match pipelines CSV schema.
+        Outputs are formatted to match pipelines CSV schema
 
-    Args:
-        doc_id (str): Document identifier.
-        text (str): Document content.
-        label_dict (Optional[Dict[str, str]]): Optional MeSH label dictionary for entity detection.
-        enable_faiss (bool): If True, include semantic suggestions via FAISS.
-        max_candidates (int): Max candidates per document.
+        Args:
+            doc_id (str): Document identifier
+            text (str): Document content
+            label_dict (Optional[Dict[str, str]]): Optional MeSH label dictionary for entity detection
+            enable_faiss (bool): If True, include semantic suggestions via FAISS
+            max_candidates (int): Max candidates per document
 
-    Returns:
-        List[Dict[str, Any]]: Candidate rows.
+        Returns:
+            List[Dict[str, Any]]: Candidate rows
     """
 
     rows: List[Dict[str, Any]] = []
 
-    ## --------------------------------------------------------
-    ## 1) Detect MeSH entities already present in the document
-    ## --------------------------------------------------------
+    config = get_config()
 
+    if config.feature_engineering.enabled:
+        text = normalize_medical_text(text)
+        
+    ## Detect MeSH entities already present in the document
     entities: List[DetectedEntity] = detect_entities(
         text=text,
         label_dict=label_dict,
@@ -235,12 +227,14 @@ def build_candidate_rows_for_document(
     entity_ui_set = {e.ui for e in entities if e.ui}
     logger.debug(f"Detected entities in {doc_id}: {len(entities)} | unique UI: {len(entity_ui_set)}")
 
-    ## --------------------------------------------------------
-    ## 2) Extract abbreviation pairs (long form + ABBR)
-    ## --------------------------------------------------------
-
+    ## Extract abbreviation pairs (long form + ABBR)
     abbr_pairs = _find_abbreviation_patterns(text)
     for long_form, abbr, start, end in abbr_pairs[:max_candidates]:
+    
+        if config.feature_engineering.enabled:
+            long_form = normalize_medical_text(long_form)
+            abbr = normalize_medical_text(abbr)
+    
         context = _extract_context(text, start, end)
 
         ## Suggest mapping for abbreviation & long form
@@ -261,6 +255,8 @@ def build_candidate_rows_for_document(
                 "human_target_mesh_ui": "",
                 "human_new_entity_label": "",
                 "comment": "",
+                "normalized_term": term,
+                "token_count": len(term.split()),
             }
         )
 
@@ -277,15 +273,18 @@ def build_candidate_rows_for_document(
                 "human_target_mesh_ui": "",
                 "human_new_entity_label": "",
                 "comment": "",
+                "normalized_term": abbr,
+                "token_count": len(abbr.split()),
             }
         )
 
-    ## --------------------------------------------------------
-    ## 3) Extract generic candidate terms and propose mappings
-    ## --------------------------------------------------------
-
+    ## Extract generic candidate terms and propose mappings
     candidates = _extract_candidate_terms(text, max_terms=max_candidates)
     for term in candidates:
+        
+        if config.feature_engineering.enabled:
+            term = normalize_medical_text(term)
+    
         ## Skip if term is already a detected MeSH label (basic filter)
         if label_dict and term.lower() in label_dict:
             continue
@@ -322,6 +321,8 @@ def build_candidate_rows_for_document(
                 "human_target_mesh_ui": "",
                 "human_new_entity_label": "",
                 "comment": rows_comment,
+                "normalized_term": long_form,
+                "token_count": len(long_form.split()),
             }
         )
 
@@ -330,26 +331,24 @@ def build_candidate_rows_for_document(
 
     return rows
 
-
 ## ============================================================
 ## PUBLIC: DOCS FOLDER -> CANDIDATES ROWS
 ## ============================================================
-
 def build_candidate_rows_from_folder(
     docs_dir: Optional[Path] = None,
     max_docs: Optional[int] = None,
     enable_faiss: bool = False,
 ) -> List[Dict[str, Any]]:
     """
-    Build candidate rows from a folder of medical documents.
+        Build candidate rows from a folder of medical documents
 
-    Args:
-        docs_dir (Optional[Path]): Directory containing medical documents.
-        max_docs (Optional[int]): Optional max number of documents.
-        enable_faiss (bool): Include FAISS suggestions.
+        Args:
+            docs_dir (Optional[Path]): Directory containing medical documents
+            max_docs (Optional[int]): Optional max number of documents
+            enable_faiss (bool): Include FAISS suggestions
 
-    Returns:
-        List[Dict[str, Any]]: Candidate rows across docs.
+        Returns:
+            List[Dict[str, Any]]: Candidate rows across docs
     """
 
     settings = get_settings()

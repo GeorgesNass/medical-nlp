@@ -9,6 +9,7 @@ __desc__ = "FastAPI routes for running semantic expansion pipelines on medical d
 
 from fastapi import APIRouter, HTTPException
 
+from src.core.config import get_config
 from src.core.models import ExpandRequest, ExpandResponse
 from src.pipelines import run_extract_candidates_to_csv
 from src.utils.logging_utils import get_logger
@@ -17,29 +18,34 @@ logger = get_logger("routes_expand")
 
 router = APIRouter()
 
-
 ## ============================================================
 ## ROUTE: EXTRACT CANDIDATES -> CSV
 ## ============================================================
-
 @router.post("/extract_candidates", response_model=ExpandResponse)
 def extract_candidates(payload: ExpandRequest) -> ExpandResponse:
     """
-    Run the candidate extraction pipeline on a folder of medical documents.
+        Run the candidate extraction pipeline on a folder of medical documents
 
-    This endpoint:
-        - Reads medical documents from a directory
-        - Extracts candidate terms
-        - Exports them to a CSV for human validation
+        This endpoint:
+            - Reads medical documents from a directory
+            - Extracts candidate terms
+            - Exports them to a CSV for human validation
 
-    Args:
-        payload (ExpandRequest): Expansion pipeline request.
+        Args:
+            payload (ExpandRequest): Expansion pipeline request
 
-    Returns:
-        ExpandResponse: Pipeline execution summary.
+        Returns:
+            ExpandResponse: Pipeline execution summary
     """
 
     try:
+    
+        config = get_config()
+
+        ## Feature engineering override from API payload
+        if payload.enable_feature_engineering:
+            config.feature_engineering.enabled = True
+            
         output_csv, total = run_extract_candidates_to_csv(
             docs_dir=payload.docs_dir,
             output_csv=payload.output_csv,
@@ -54,6 +60,7 @@ def extract_candidates(payload: ExpandRequest) -> ExpandResponse:
             meta={
                 "docs_dir": payload.docs_dir,
                 "enable_faiss": payload.enable_faiss,
+                "feature_engineering": payload.enable_feature_engineering,
             },
         )
 

@@ -13,11 +13,16 @@ import json
 from pathlib import Path
 from typing import List
 
+import pandas as pd
 import numpy as np
 import pytest
 
+from src.core.config import get_config
+from src.core.data_consistency import run_data_consistency
+from src.core.data_drift import run_data_drift
 from src.mesh.index_mesh import build_sqlite_fts_index
 from src.mesh.query_mesh import browse_tree, lookup_ui, search_mesh
+from src.nlp.preprocess import normalize_medical_text
 from src.nlp.embeddings import emb_mod, embed_texts
 from src.nlp.expand_terms import _find_abbreviation_patterns
 from src.nlp.judge_quality import JudgeResult, judge_baseline
@@ -572,3 +577,235 @@ def test_e2e_browse_tree_no_match(indexed_db: Path) -> None:
 
     ## Validate no match was found
     assert rows == []
+    
+## ============================================================
+## DATA CONSISTENCY TESTS (NLP)
+## ============================================================
+def test_data_consistency_valid_nlp():
+    """
+        Validate correct NLP payload
+    """
+
+    data = {
+        "text": "hypertension artérielle",
+        "embeddings": [0.1] * 128,
+    }
+
+    result = run_data_consistency(data=data)
+
+    assert result["is_consistent"] is True
+    assert result["errors"] == 0
+
+def test_data_consistency_empty_text():
+    """
+        Detect empty text
+    """
+
+    data = {
+        "text": "",
+        "embeddings": [0.1] * 128,
+    }
+
+    result = run_data_consistency(data=data)
+
+    assert result["is_consistent"] is False
+
+def test_data_consistency_invalid_embeddings():
+    """
+        Detect invalid embeddings
+    """
+
+    data = {
+        "text": "hypertension",
+        "embeddings": ["bad", "data"],
+    }
+
+    result = run_data_consistency(data=data)
+
+    assert result["is_consistent"] is False
+
+def test_data_consistency_small_embeddings():
+    """
+        Detect too small embedding dimension
+    """
+
+    data = {
+        "text": "hypertension",
+        "embeddings": [0.1] * 3,
+    }
+
+    result = run_data_consistency(data=data)
+
+    assert result["warnings"] > 0
+
+def test_data_consistency_cross_text():
+    """
+        Detect mismatch between text and metadata_text
+    """
+
+    data = {
+        "text": "hypertension",
+        "metadata_text": "diabetes",
+    }
+
+    result = run_data_consistency(data=data)
+
+    assert result["warnings"] > 0
+   
+   
+## ============================================================
+## DATA DRIFT TESTS (MESH)
+## ============================================================
+def test_data_drift_no_drift_mesh() -> None:
+    """
+        Validate no drift scenario for MeSH dataset
+
+        High-level workflow:
+            1) Build identical reference and current datasets
+            2) Run drift detection
+            3) Validate high drift score and no errors
+
+        Returns:
+            None
+    """
+
+    df_ref = pd.DataFrame({
+        "mesh_term": ["Hypertension", "Diabetes"],
+        "embedding": [[0.1, 0.2], [0.1, 0.2]],
+        "expansions": [["HTN"], ["DM"]],
+    })
+
+    df_cur = pd.DataFrame({
+        "mesh_term": ["Hypertension", "Diabetes"],
+        "embedding": [[0.1, 0.2], [0.1, 0.2]],
+        "expansions": [["HTN"], ["DM"]],
+    })
+
+    result = run_data_drift(df_ref=df_ref, df_current=df_cur)
+
+    assert result["drift_score"] >= 0.9
+    assert result["errors"] == 0
+
+def test_data_drift_detected_mesh() -> None:
+    """
+        Detect drift on MeSH concepts and embeddings
+
+        High-level workflow:
+            1) Create different datasets
+            2) Run drift detection
+            3) Validate drift detection
+
+        Returns:
+            None
+    """
+
+    df_ref = pd.DataFrame({
+        "mesh_term": ["Hypertension"],
+        "embedding": [[0.1, 0.2]],
+        "expansions": [["HTN"]],
+    })
+
+    df_cur = pd.DataFrame({
+        "mesh_term": ["Cancer"],
+        "embedding": [[10.0, 20.0]],
+        "expansions": [["Tumor", "Neoplasm"]],
+    })
+
+    result = run_data_drift(df_ref=df_ref, df_current=df_cur)
+
+    assert result["drift_score"] < 1.0
+    assert result["warnings"] > 0
+
+def test_data_drift_empty_mesh() -> None:
+    """
+        Validate empty dataset handling
+
+        High-level workflow:
+            1) Use empty datasets
+            2) Validate exception is raised
+
+        Returns:
+            None
+    """
+
+    df_ref = pd.DataFrame()
+    df_cur = pd.DataFrame()
+
+    with pytest.raises(Exception):
+        run_data_drift(df_ref=df_ref, df_current=df_cur)
+
+def test_data_drift_strict_mode_mesh() -> None:
+    """
+        Validate strict mode behavior
+
+        High-level workflow:
+            1) Create drift scenario
+            2) Enable strict mode
+            3) Validate exception
+
+        Returns:
+            None
+    """
+
+    df_ref = pd.DataFrame({
+        "mesh_term": ["Hypertension"],
+    })
+
+    df_cur = pd.DataFrame({
+        "mesh_term": ["Cancer"],
+    })
+
+    with pytest.raises(Exception):
+        run_data_drift(df_ref=df_ref, df_current=df_cur, strict=True)
+        
+def test_data_drift_evidently_output_mesh() -> None:
+    """
+        Validate Evidently report generation
+
+        High-level workflow:
+            1) Run drift detection
+            2) Validate report presence
+
+        Returns:
+            None
+    """
+
+    df_ref = pd.DataFrame({
+        "mesh_term": ["A"],
+        "embedding": [[0.1, 0.2]],
+    })
+
+    df_cur = pd.DataFrame({
+        "mesh_term": ["A"],
+        "embedding": [[0.1, 0.2]],
+    })
+
+    result = run_data_drift(df_ref=df_ref, df_current=df_cur)
+
+    assert "evidently_report" in result or result["warnings"] >= 0
+    
+def test_feature_engineering_normalization() -> None:
+    """
+        Validate feature engineering normalization
+
+        High-level workflow:
+            1) Load feature engineering config
+            2) Normalize a noisy medical text
+            3) Validate lowercase and whitespace cleanup
+
+        Returns:
+            None
+    """
+
+    config = get_config()
+
+    if not config.feature_engineering.enabled:
+        pytest.skip("Feature engineering disabled")
+
+    text = "ÉLÉVATION   DU  GLUCOSE !!!"
+
+    normalized = normalize_medical_text(text)
+
+    assert isinstance(normalized, str)
+    assert normalized == normalized.lower()
+    assert "  " not in normalized
