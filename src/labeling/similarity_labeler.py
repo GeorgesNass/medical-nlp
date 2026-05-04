@@ -17,12 +17,10 @@ from src.labeling.label_definitions import LabelDefinition, build_label_definiti
 from src.nlp.similarity_index import SimilarityIndex, SimilarityResult
 from src.utils.logging_utils import get_logger
 
-
 ## -----------------------------
 ## Logger
 ## -----------------------------
 logger = get_logger("labeling_similarity_labeler")
-
 
 ## -----------------------------
 ## Results structures
@@ -44,7 +42,6 @@ class LabelPrediction:
     score: float
     evidence: Optional[SimilarityResult]
 
-
 @dataclass(frozen=True)
 class DocumentPredictions:
     """
@@ -57,7 +54,6 @@ class DocumentPredictions:
 
     filename: str
     predictions: Dict[str, LabelPrediction]
-
 
 ## -----------------------------
 ## Similarity labeler
@@ -157,4 +153,83 @@ class SimilarityLabeler:
             )
 
         logger.info(f"Predicted labels for file: {filename}")
+        
+        ## Feature engineering debug hook
+        logger.debug(f"Feature-based prediction completed for file: {filename}")
+                
         return DocumentPredictions(filename=filename, predictions=predictions)
+
+## ============================================================
+## FEATURE ENGINEERING LABELING HELPERS
+## ============================================================
+def predict_from_segment_features(
+    labeler: SimilarityLabeler,
+    filename: str,
+    segments: List[DocumentSegment],
+    segment_vectors: List[List[float]],
+) -> DocumentPredictions:
+    """
+        Predict labels from precomputed segment features
+
+        Args:
+            labeler: SimilarityLabeler instance
+            filename: Document filename
+            segments: Document segments
+            segment_vectors: Precomputed embeddings
+
+        Returns:
+            DocumentPredictions
+    """
+
+    ## Delegate to core predict
+    return labeler.predict(
+        filename=filename,
+        segments=segments,
+        segment_vectors=segment_vectors,
+    )
+
+def aggregate_feature_scores_by_label(
+    predictions: DocumentPredictions,
+) -> Dict[str, float]:
+    """
+        Extract scores per label from predictions
+
+        Args:
+            predictions: Document predictions
+
+        Returns:
+            Mapping label -> score
+    """
+
+    return {
+        label: float(pred.score)
+        for label, pred in predictions.predictions.items()
+    }
+
+def build_prediction_explanations(
+    predictions: DocumentPredictions,
+) -> Dict[str, Dict[str, str]]:
+    """
+        Build simple explanations per label
+
+        Args:
+            predictions: Document predictions
+
+        Returns:
+            Mapping label -> explanation dict
+    """
+
+    explanations: Dict[str, Dict[str, str]] = {}
+
+    for label, pred in predictions.predictions.items():
+
+        evidence = pred.evidence
+
+        explanations[label] = {
+            "predicted": str(pred.predicted),
+            "score": str(pred.score),
+            "source_file": evidence.source_file if evidence else "",
+            "matched_text": evidence.text if evidence else "",
+        }
+
+    return explanations

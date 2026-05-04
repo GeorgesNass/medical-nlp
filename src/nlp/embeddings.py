@@ -19,12 +19,10 @@ from src.core.config import CONFIG
 from src.core.errors import PipelineError
 from src.utils.logging_utils import get_logger
 
-
 ## -----------------------------
 ## Logger
 ## -----------------------------
 logger = get_logger("nlp_embeddings")
-
 
 ## -----------------------------
 ## Model registry
@@ -42,7 +40,6 @@ _DEFAULT_MODEL_IDS: Dict[str, str] = {
     ## Medical French model placeholder; override recommended
     "drbert": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
 }
-
 
 def _resolve_model_id(model_name: str) -> str:
     """
@@ -69,7 +66,6 @@ def _resolve_model_id(model_name: str) -> str:
     ## Fallback to built-in defaults
     return _DEFAULT_MODEL_IDS.get(model_name, _DEFAULT_MODEL_IDS["sentence_camembert"])
 
-
 def _resolve_device(use_gpu: bool) -> str:
     """
         Resolve device string for sentence-transformers.
@@ -92,7 +88,6 @@ def _resolve_device(use_gpu: bool) -> str:
 
     return "cpu"
 
-
 @dataclass(frozen=True)
 class EmbeddingConfig:
     """
@@ -109,7 +104,6 @@ class EmbeddingConfig:
     device: str
     batch_size: int
     normalize: bool
-
 
 class EmbeddingBackend:
     """
@@ -263,5 +257,101 @@ class EmbeddingBackend:
             except Exception as exc:
                 raise PipelineError("Failed to normalize embeddings") from exc
 
+        ## Optional feature export hook
+        if CONFIG.feature_engineering.feature_export_enabled:
+            logger.debug("Feature export enabled: embeddings generated")
+            
         ## Convert to list-of-lists for downstream compatibility
         return emb_array.tolist()
+
+## ============================================================
+## FEATURE ENGINEERING EMBEDDINGS HELPERS
+## ============================================================
+def embed_segments_batch(segments: List[str]) -> List[List[float]]:
+    """
+        Encode a batch of segment texts into embeddings
+
+        Args:
+            segments: List of segment texts
+
+        Returns:
+            List of embedding vectors
+    """
+
+    ## Initialize backend once
+    backend = EmbeddingBackend()
+
+    ## Encode segments
+    return backend.encode(segments)
+
+def embed_documents_segments(
+    documents_segments: List[List[str]],
+) -> List[List[List[float]]]:
+    """
+        Encode multiple documents made of segments
+
+        Args:
+            documents_segments: List of documents (each is list of segments)
+
+        Returns:
+            Nested list of embeddings per document
+    """
+
+    ## Initialize backend once
+    backend = EmbeddingBackend()
+
+    ## Encode document by document
+    return [backend.encode(segments) for segments in documents_segments]
+
+def normalize_vectors_if_needed(vectors: List[List[float]]) -> List[List[float]]:
+    """
+        Normalize vectors if config requires it
+
+        Args:
+            vectors: Input vectors
+
+        Returns:
+            Normalized vectors
+    """
+
+    ## Early exit
+    if not vectors:
+        return vectors
+
+    if not CONFIG.embeddings.normalize:
+        return vectors
+
+    try:
+        arr = np.asarray(vectors, dtype=np.float32)
+
+        ## Compute norms
+        norms = np.linalg.norm(arr, axis=1, keepdims=True)
+        norms[norms == 0.0] = 1.0
+
+        arr = arr / norms
+
+        return arr.tolist()
+
+    except Exception as exc:
+        raise PipelineError("Failed to normalize vectors") from exc
+
+def save_embeddings_cache(
+    embeddings: List[List[float]],
+    output_path: str,
+) -> None:
+    """
+        Save embeddings to disk for reuse
+
+        Args:
+            embeddings: List of embedding vectors
+            output_path: File path
+    """
+
+    ## Skip if disabled
+    if not CONFIG.embeddings.cache_embeddings:
+        return
+
+    try:
+        np.save(output_path, np.asarray(embeddings, dtype=np.float32))
+    except Exception as exc:
+        raise PipelineError(f"Failed to save embeddings cache: {output_path}") from exc

@@ -28,6 +28,7 @@ from src.pipeline import (
     export_predictions,
     predict_labels_for_unlabeled,
 )
+from src.utils.normalization import normalize_medical_text
 from src.utils.logging_utils import get_logger
 
 ## ============================================================
@@ -58,6 +59,7 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--mode", type=str, default="", help="Optional mode (e.g. drift).")
     parser.add_argument("--ref", type=str, default="", help="Reference dataset path for drift.")
     parser.add_argument("--current", type=str, default="", help="Current dataset path for drift.")    
+    parser.add_argument("--features", action="store_true", help="Enable feature engineering pipeline")
 
     ## Actions
     parser.add_argument("--build-index", action="store_true")
@@ -118,6 +120,7 @@ def _build_summary(action: str, success: bool, start: float, details: Optional[d
         "success": success,
         "duration_seconds": round(time.monotonic() - start, 3),
         "details": details or {},
+        "feature_engineering": CONFIG.feature_engineering.enabled,
     }
 
 ## ============================================================
@@ -136,6 +139,12 @@ def main() -> int:
     parser = _build_parser()
     args = parser.parse_args()
 
+    ## Feature engineering flag (CLI override)
+    if args.features:
+        logger.info("Feature engineering ENABLED via CLI")
+    else:
+        logger.info("Feature engineering DISABLED via CLI (using config)")
+        
     try:
         ## Validate runtime
         runtime = _validate_runtime()

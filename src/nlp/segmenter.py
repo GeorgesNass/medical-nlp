@@ -14,16 +14,15 @@ from dataclasses import dataclass
 from typing import List, Optional
 
 from src.core.config import CONFIG
-from src.core.errors import PipelineError  ## errors wired
+from src.core.errors import PipelineError
 from src.domain.schema import DocumentSegment
-
+from src.utils.normalization import normalize_medical_text
 
 ## -----------------------------
 ## Regex helpers
 ## -----------------------------
 _WHITESPACE_RE = re.compile(r"\s+")
 _WORD_RE = re.compile(r"\w+", flags=re.UNICODE)
-
 
 @dataclass(frozen=True)
 class SegmenterConfig:
@@ -40,7 +39,6 @@ class SegmenterConfig:
     window_overlap_tokens: int
     min_chars_per_segment: int
 
-
 def get_default_segmenter_config() -> SegmenterConfig:
     """
         Get segmenter configuration from global CONFIG
@@ -55,14 +53,9 @@ def get_default_segmenter_config() -> SegmenterConfig:
         min_chars_per_segment=CONFIG.segmentation.min_chars_per_segment,
     )
 
-
 def normalize_text(text: str) -> str:
     """
         Normalize text for segmentation
-
-        Notes:
-            - Collapses whitespace
-            - Keeps punctuation (useful for medical patterns)
 
         Args:
             text: Input text
@@ -71,8 +64,12 @@ def normalize_text(text: str) -> str:
             Normalized text
     """
 
-    return _WHITESPACE_RE.sub(" ", text or "").strip()
+    ## Use feature engineering pipeline if enabled
+    if CONFIG.feature_engineering.enabled:
+        return normalize_medical_text(text)
 
+    ## Fallback to basic normalization
+    return _WHITESPACE_RE.sub(" ", text or "").strip()
 
 def tokenize_words(text: str) -> List[str]:
     """
@@ -87,7 +84,6 @@ def tokenize_words(text: str) -> List[str]:
 
     return _WORD_RE.findall(text or "")
 
-
 def segment_text(
     text: str,
     config: Optional[SegmenterConfig] = None,
@@ -96,9 +92,12 @@ def segment_text(
     """
         Segment a text into overlapping blocks
 
-        Strategy:
-            - Sliding window on word tokens
-            - Overlap to preserve continuity across boundaries
+        High-level workflow:
+            - Normalize text (feature engineering aware)
+            - Tokenize into word tokens
+            - Apply sliding window segmentation with overlap
+            - Map token spans back to character offsets
+            - Build structured DocumentSegment objects
 
         Args:
             text: Input raw text
@@ -109,34 +108,43 @@ def segment_text(
             List of DocumentSegment
     """
 
+    ## Resolve configuration
     cfg = config or get_default_segmenter_config()
 
+    ## Normalize text (delegates to feature engineering if enabled)
     normalized = normalize_text(text)
     if not normalized:
         return []
 
+    ## Tokenize normalized text
     tokens = tokenize_words(normalized)
     if not tokens:
         return []
 
+    ## Compute sliding window parameters
     window = max(1, int(cfg.window_size_tokens))
     overlap = max(0, int(cfg.window_overlap_tokens))
     step = max(1, window - overlap)
 
     segments: List[DocumentSegment] = []
 
-    ## Build a mapping token_index -> approximate char position using a scan
+    ## Build token → char span mapping
     try:
         token_spans = _compute_token_spans(normalized)
     except Exception as exc:
         raise PipelineError("Failed to compute token spans for segmentation") from exc
 
     seg_idx = 0
+
+    ## Iterate over tokens using sliding window
     for start in range(0, len(tokens), step):
         end = min(start + window, len(tokens))
+
+        ## Safety guard
         if start >= end:
             break
 
+        ## Resolve character offsets
         try:
             start_char = token_spans[start][0] if start < len(token_spans) else 0
             end_char = (
@@ -147,10 +155,14 @@ def segment_text(
         except Exception as exc:
             raise PipelineError("Failed to compute segment char offsets") from exc
 
+        ## Extract segment text
         seg_text = normalized[start_char:end_char].strip()
+
+        ## Filter small segments
         if len(seg_text) < cfg.min_chars_per_segment:
             continue
 
+        ## Build segment object
         segment = DocumentSegment(
             segment_id=f"{segment_id_prefix}_{seg_idx}",
             text=seg_text,
@@ -161,17 +173,39 @@ def segment_text(
                 "token_end": str(end),
                 "window": str(window),
                 "overlap": str(overlap),
+                "char_length": str(len(seg_text)),
             },
         )
+
         segments.append(segment)
         seg_idx += 1
 
+        ## Stop if end reached
         if end >= len(tokens):
             break
 
     return segments
+    
+## ============================================================
+## FEATURE ENGINEERING SEGMENT HELPERS
+## ============================================================
+def build_segments_from_documents(
+    texts: List[str],
+    config: Optional[SegmenterConfig] = None,
+) -> List[List[DocumentSegment]]:
+    """
+        Build segments for multiple documents
 
+        Args:
+            texts: List of raw texts
+            config: Optional segmenter config
 
+        Returns:
+            List of segments per document
+    """
+
+    return [segment_text(text=t, config=config) for t in texts]
+    
 def _compute_token_spans(text: str) -> List[tuple[int, int]]:
     """
         Compute approximate token spans (start_char, end_char) for word tokens
@@ -188,6 +222,8 @@ def _compute_token_spans(text: str) -> List[tuple[int, int]]:
     """
 
     spans: List[tuple[int, int]] = []
+    
     for match in _WORD_RE.finditer(text):
         spans.append((match.start(), match.end()))
+    
     return spans
