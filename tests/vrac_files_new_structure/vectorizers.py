@@ -21,8 +21,6 @@ from scipy import sparse
 from sklearn.feature_extraction.text import HashingVectorizer, TfidfVectorizer
 
 ## Internal imports
-from src.core.config import get_config
-from src.nlp.preprocess import normalize_medical_text
 from src.utils.logging_utils import get_logger
 from src.utils.io_utils import ensure_parent_dir, write_json, read_json
 
@@ -100,9 +98,7 @@ def fit_transform_tfidf(
         )
 
     logger.info("Fitting TF-IDF | docs=%d", len(texts))
-    
-    texts_clean = preprocess_texts_for_vectorizer(texts)
-    X = vectorizer.fit_transform(texts_clean)
+    X = vectorizer.fit_transform(texts)
     logger.info("TF-IDF matrix shape: %s", X.shape)
 
     return X
@@ -124,8 +120,7 @@ def transform_tfidf(
     """
 
     logger.info("Transforming TF-IDF | docs=%d", len(texts))
-    texts_clean = preprocess_texts_for_vectorizer(texts)
-    X = vectorizer.transform(texts_clean)
+    X = vectorizer.transform(texts)
     logger.info("TF-IDF matrix shape: %s", X.shape)
     
     return X
@@ -176,37 +171,11 @@ def transform_hashing(
     """
 
     logger.info("Transforming hashing vectors | docs=%d", len(texts))
-    texts_clean = preprocess_texts_for_vectorizer(texts)
-    X = vectorizer.transform(texts_clean)
+    X = vectorizer.transform(texts)
     logger.info("Hashing matrix shape: %s", X.shape)
     
     return X
 
-## ============================================================
-## FEATURE ENGINEERING PIPELINE
-## ============================================================
-def preprocess_texts_for_vectorizer(texts: list[str]) -> list[str]:
-    """
-        Apply preprocessing before vectorization
-
-        Args:
-            texts: Raw texts
-
-        Returns:
-            Cleaned texts
-    """
-
-    config = get_config()
-
-    ## Feature engineering path
-    if config.feature_engineering.enabled:
-        return [normalize_medical_text(t or "") for t in texts]
-
-    logger.debug("Vectorizer preprocessing applied | texts=%d", len(texts))
-
-    ## Fallback (minimal)
-    return [t or "" for t in texts]
-    
 ## ============================================================
 ## SAVE / LOAD HELPERS
 ## ============================================================

@@ -24,7 +24,6 @@ from sklearn.metrics import (
 )
 
 ## Internal
-from src.core.config import get_config
 from src.utils.logging_utils import get_logger
 from src.utils.io_utils import ensure_parent_dir, write_json
 
@@ -123,35 +122,8 @@ def compute_top_k_accuracy(
         if true_label in top_k_preds[i]:
             correct += 1
 
-    logger.debug("Top-k evaluation completed | k=%d", k)
-
     return correct / len(y_true)
 
-## ============================================================
-## FEATURE ENGINEERING METRICS
-## ============================================================
-def compute_feature_statistics(
-    texts: List[str],
-) -> Dict[str, float]:
-    """
-        Compute basic feature statistics on text
-
-        Args:
-            texts: List of texts
-
-        Returns:
-            Statistics dict
-    """
-
-    lengths = [len(t or "") for t in texts]
-
-    return {
-        "num_samples": len(texts),
-        "avg_length": float(np.mean(lengths)) if lengths else 0.0,
-        "min_length": int(np.min(lengths)) if lengths else 0,
-        "max_length": int(np.max(lengths)) if lengths else 0,
-    }
-    
 ## ============================================================
 ## CONFUSION MATRIX
 ## ============================================================
@@ -200,11 +172,6 @@ def export_metrics(
 
     path = ensure_parent_dir(output_path)
 
-    config = get_config()
-
-    if config.feature_engineering.enabled:
-        logger.debug("Exporting metrics with feature engineering enabled")
-        
     write_json(metrics, path)
 
     logger.info("Metrics exported to %s", path)

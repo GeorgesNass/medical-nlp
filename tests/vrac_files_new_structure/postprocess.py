@@ -189,58 +189,6 @@ def enforce_parent_presence(
     return updated
 
 ## ============================================================
-## FEATURE ENGINEERING HELPERS
-## ============================================================
-def aggregate_feature_scores_by_label(
-    predictions: List[List[Tuple[str, float]]],
-) -> Dict[str, float]:
-    """
-        Aggregate scores per label across samples
-
-        Args:
-            predictions: List of predictions per sample
-
-        Returns:
-            Mapping label -> aggregated score
-    """
-
-    scores: Dict[str, float] = {}
-
-    for sample in predictions:
-        for label, score in sample:
-            scores[label] = scores.get(label, 0.0) + score
-
-    return scores
-    
-def build_prediction_explanations(
-    predictions: List[List[Tuple[str, float]]],
-) -> List[List[Dict[str, str]]]:
-    """
-        Build simple explanations for predictions
-
-        Args:
-            predictions: Predictions per sample
-
-        Returns:
-            Explanations per sample
-    """
-
-    explanations: List[List[Dict[str, str]]] = []
-
-    for sample in predictions:
-        sample_exp: List[Dict[str, str]] = []
-
-        for label, score in sample:
-            sample_exp.append({
-                "label": label,
-                "score": str(score),
-            })
-
-        explanations.append(sample_exp)
-
-    return explanations
-    
-## ============================================================
 ## HIGH-LEVEL POSTPROCESS
 ## ============================================================
 def postprocess_predictions(
@@ -299,7 +247,5 @@ def postprocess_predictions(
             predictions=predictions,
             taxonomy=taxonomy,
         )
-
-    logger.debug("Postprocessing complete | samples=%d", len(predictions))
 
     return predictions

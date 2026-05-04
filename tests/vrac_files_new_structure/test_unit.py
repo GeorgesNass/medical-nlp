@@ -13,11 +13,10 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from src.core.config import get_config
 from src.core.data_consistency import run_data_consistency
 from src.core.data_quality import run_data_quality
 from src.core.data_drift import run_data_drift
-from src.nlp.preprocess import preprocess_text, normalize_medical_text
+from src.nlp.preprocess import preprocess_text
 from src.nlp.postprocess import select_top_k
 from src.nlp.vectorizers import build_tfidf_vectorizer, fit_transform_tfidf
 from src.model.train import TrainingConfig, train_model
@@ -170,13 +169,8 @@ def test_e2e_tiny_train_predict_metrics() -> None:
     labels = np.array([0, 1, 2, 0, 1, 2])
 
     ## Preprocess texts
-    config = get_config()
+    processed = [preprocess_text(t) for t in texts]
 
-    if config.feature_engineering.enabled:
-        processed = [normalize_medical_text(t) for t in texts]
-    else:
-        processed = [preprocess_text(t) for t in texts]
-        
     ## Vectorize
     vectorizer = build_tfidf_vectorizer(max_features=5000)
     X = fit_transform_tfidf(vectorizer, processed)
@@ -413,45 +407,3 @@ def test_data_drift_strict_icd10() -> None:
 
     with pytest.raises(Exception):
         run_data_drift(df_ref=df_ref, df_current=df_cur, strict=True)
-        
-## ============================================================
-## FEATURE ENGINEERING TESTS
-## ============================================================
-def test_feature_engineering_normalization() -> None:
-    """
-        Ensure feature engineering normalization is applied correctly
-    """
-
-    config = get_config()
-
-    ## Force activation (safe assumption env already enabled)
-    if not config.feature_engineering.enabled:
-        pytest.skip("Feature engineering disabled")
-
-    text = "ÉLÉVATION   DU  GLUCOSE !!!"
-
-    normalized = normalize_medical_text(text)
-
-    assert normalized is not None
-    assert isinstance(normalized, str)
-
-    ## Check expected transformations
-    assert "é" not in normalized
-    assert normalized == normalized.lower()
-    assert "  " not in normalized
-    
-def test_feature_engineering_vectorizer_pipeline() -> None:
-    """
-        Ensure preprocessing is consistent with vectorizer
-    """
-
-    texts = [
-        "ÉLÉVATION glucose",
-        "fracture tibia",
-    ]
-
-    vectorizer = build_tfidf_vectorizer(max_features=1000)
-
-    X = fit_transform_tfidf(vectorizer, texts)
-
-    assert X.shape[0] == len(texts)

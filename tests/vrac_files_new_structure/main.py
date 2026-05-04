@@ -74,7 +74,6 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--dry-run", action="store_true", help="Validate inputs and log intended actions without executing workflows.")
     parser.add_argument("--validate-config", action="store_true", help="Validate configuration loading and resolved default paths, then exit.")
     parser.add_argument("--mode", type=str, default="", help="Optional mode (e.g. drift).")
-    parser.add_argument("--features", action="store_true", help="Enable feature engineering pipeline")
 
     ## Main action flags
     parser.add_argument("--parse-rss", action="store_true", help="Parse all raw RSS files and export a consolidated CSV.")
@@ -135,7 +134,6 @@ def _build_summary(
         "success": success,
         "duration_seconds": duration,
         "details": details or {},
-        "feature_engineering": True,
     }
 
 def _resolve_default_paths(config) -> dict:
@@ -263,22 +261,11 @@ def main() -> int:
 
     try:
         config = build_config()
-        
-        ## Feature engineering debug hook
-        if config.feature_engineering.enabled:
-            logger.debug("Feature engineering pipeline active")        
-        
         default_paths = _resolve_default_paths(config)
 
         parser = _build_parser()
         args = parser.parse_args()
 
-        ## Feature engineering flag (CLI override)
-        if args.features:
-            logger.info("Feature engineering ENABLED via CLI")
-        else:
-            logger.info("Feature engineering DISABLED (using config)")
-            
         if args.validate_config:
             logger.info("Configuration validation succeeded")
             logger.info(
@@ -450,7 +437,6 @@ def main() -> int:
             return EXIT_SUCCESS
             
         if args.dry_run:
-                
             logger.info(
                 "Dry-run | parse_rss=%s | build_clinical_csv=%s | train=%s | eda=%s | run_api=%s | run_all=%s",
                 bool(args.parse_rss),
@@ -474,9 +460,6 @@ def main() -> int:
                     start=start_time,
                 ),
             )
-            
-            logger.info("Feature engineering enabled: %s", config.feature_engineering.enabled)
-            
             return EXIT_SUCCESS
 
         ## RUN ALL

@@ -13,8 +13,6 @@ from typing import Any, Dict, List, Union
 
 import numpy as np
 
-from src.core.config import get_config
-from src.nlp.preprocess import normalize_medical_text
 from src.utils.logging_utils import get_logger
 from src.utils.stats_utils import compute_mean_std, compute_iqr_bounds
 
@@ -152,12 +150,6 @@ def run_data_quality(
         if len(texts) != len(labels):
             raise ValidationError("Texts and labels size mismatch")
 
-        ## Feature engineering preprocessing
-        config = get_config()
-
-        if config.feature_engineering.enabled:
-            texts = [normalize_medical_text(t or "") for t in texts]
-            
         ## TEXT VALIDATION
         empty_mask = [t is None or str(t).strip() == "" for t in texts]
 
@@ -189,27 +181,6 @@ def run_data_quality(
                 {"count": int(anomaly_mask.sum())},
             )
 
-        ## TOKEN DENSITY ANALYSIS
-        token_counts = np.array([len(str(t).split()) for t in texts], dtype=float)
-
-        if method == "zscore":
-            token_anomaly = _detect_zscore(token_counts, z_threshold)
-        elif method == "iqr":
-            token_anomaly = _detect_iqr(token_counts, iqr_multiplier)
-        else:
-            token_anomaly = np.zeros_like(token_counts, dtype=bool)
-
-        if token_anomaly.any():
-            _add_issue(
-                issues,
-                "token_density_anomaly",
-                "warning",
-                "Abnormal token density detected",
-                {"count": int(token_anomaly.sum())},
-            )
-  
-        logger.debug("Feature engineering quality checks applied | samples=%d", len(texts))
-        
         ## LABEL DISTRIBUTION CHECK
         unique, counts = np.unique(labels, return_counts=True)
         distribution = dict(zip(unique, counts))

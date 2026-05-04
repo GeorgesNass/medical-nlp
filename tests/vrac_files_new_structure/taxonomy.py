@@ -47,7 +47,9 @@ class ICD10Taxonomy:
             - Support roll-up operations
     """
 
+    ## ------------------------------------------------------------
     ## CONSTRUCTOR
+    ## ------------------------------------------------------------
     def __init__(self) -> None:
         """
             Initialize empty taxonomy
@@ -55,7 +57,9 @@ class ICD10Taxonomy:
         ## Dictionary: code -> ICD10Node
         self._nodes: Dict[str, ICD10Node] = {}
 
+    ## ------------------------------------------------------------
     ## NODE MANAGEMENT
+    ## ------------------------------------------------------------
     def add_node(
         self,
         code: str,
@@ -89,9 +93,9 @@ class ICD10Taxonomy:
         if parent and parent in self._nodes:
             self._nodes[parent].children.append(code)
 
-        logger.debug("Added ICD10 node: %s", code)
-
+    ## ------------------------------------------------------------
     ## LOOKUPS
+    ## ------------------------------------------------------------
     def get_node(self, code: str) -> Optional[ICD10Node]:
         """
             Retrieve node by code
@@ -133,7 +137,9 @@ class ICD10Taxonomy:
         node = self.get_node(code)       
         return node.children if node else []
 
+    ## ------------------------------------------------------------
     ## HIERARCHY OPERATIONS
+    ## ------------------------------------------------------------
     def get_ancestors(self, code: str) -> List[str]:
         """
             Retrieve all ancestors of a code
@@ -207,50 +213,9 @@ class ICD10Taxonomy:
 
         return current
 
-    ## FEATURE ENGINEERING HELPERS
-    def map_features_to_hierarchy(
-        self,
-        scores: Dict[str, float],
-    ) -> Dict[str, float]:
-        """
-            Propagate scores to parent nodes (roll-up)
-
-            Args:
-                scores: Mapping label -> score
-
-            Returns:
-                Updated scores including parents
-        """
-
-        updated = dict(scores)
-
-        for code, score in scores.items():
-
-            parent = self.get_parent(code)
-
-            while parent:
-                updated[parent] = updated.get(parent, 0.0) + score * 0.9
-                parent = self.get_parent(parent)
-
-        return updated
-  
-    def filter_valid_codes(
-        self,
-        codes: List[str],
-    ) -> List[str]:
-        """
-            Keep only valid ICD10 codes present in taxonomy
-
-            Args:
-                codes: Input codes
-
-            Returns:
-                Filtered codes
-        """
-
-        return [c for c in codes if self.contains(c)]
-        
+    ## ------------------------------------------------------------
     ## UTILITIES
+    ## ------------------------------------------------------------
     def contains(self, code: str) -> bool:
         """
             Check if taxonomy contains code

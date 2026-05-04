@@ -57,8 +57,6 @@ def get_top_features_linear(
     ## Get indices sorted by descending weight
     top_indices = np.argsort(coef)[::-1][:top_k]
 
-    logger.debug("Top features extracted | count=%d", len(top_indices))
-
     return [(feature_names[i], float(coef[i])) for i in top_indices]
 
 def get_bottom_features_linear(
@@ -120,36 +118,6 @@ def get_feature_importance_tree(
 
     return [(feature_names[i], float(importances[i])) for i in indices]
 
-## ============================================================
-## FEATURE ENGINEERING EXPLANATIONS
-## ============================================================
-def explain_prediction_from_vector(
-    vector: np.ndarray,
-    feature_names: List[str],
-    top_k: int = 20,
-) -> List[Tuple[str, float]]:
-    """
-        Explain a single prediction from feature vector
-
-        Args:
-            vector: Feature vector (1D array)
-            feature_names: Feature names
-            top_k: Number of features
-
-        Returns:
-            List of (feature, value)
-    """
-
-    if hasattr(vector, "toarray"):
-        vector = vector.toarray().ravel()
-        
-    if vector.ndim != 1:
-        raise ValueError("vector must be 1D")
-
-    indices = np.argsort(vector)[::-1][:top_k]
-
-    return [(feature_names[i], float(vector[i])) for i in indices if vector[i] != 0.0]
-    
 ## ============================================================
 ## EXPORT UTILITY
 ## ============================================================

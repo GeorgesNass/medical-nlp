@@ -12,8 +12,6 @@ from __future__ import annotations
 import re
 from typing import Any, Dict, List, Optional
 
-from src.core.config import get_config
-from src.nlp.preprocess import normalize_medical_text
 from src.utils.logging_utils import get_logger
 from src.utils.data_utils import (
     normalize_data,
@@ -93,13 +91,7 @@ def _validate_text(
     text = data.get("text", "")
 
     ## Normalize text
-    config = get_config()
-
-    if config.feature_engineering.enabled:
-        normalized = normalize_medical_text(text)
-    else:
-        normalized = normalize_data({"text": text}).get("text", "")
-        
+    normalized = normalize_data({"text": text}).get("text", "")
     data["text"] = normalized
 
     ## Check empty
@@ -196,39 +188,6 @@ def _validate_duplicates(
             {"count": duplicates},
         )
 
-def _validate_feature_quality(
-    data: Dict[str, Any],
-    issues: List[Dict[str, Any]],
-) -> None:
-    """
-        Validate feature-related properties (text length, token density)
-
-        Args:
-            data: Input data
-            issues: Issue list
-    """
-
-    text = data.get("text", "")
-
-    if len(text) > 10000:
-        _add_issue(
-            issues,
-            "text_too_long",
-            "warning",
-            "Text unusually long",
-            {"length": len(text)},
-        )
-
-    token_count = len(text.split())
-
-    if token_count == 0:
-        _add_issue(
-            issues,
-            "token_empty",
-            "error",
-            "No tokens after preprocessing",
-        )
-        
 def _validate_structure(
     data: Dict[str, Any],
     issues: List[Dict[str, Any]],
@@ -302,8 +261,6 @@ def run_data_consistency(
 
         ## Validate duplicates
         _validate_duplicates(data, issues)
-        
-        _validate_feature_quality(data, issues)
 
         ## Validate structure
         _validate_structure(data, issues)
@@ -326,8 +283,6 @@ def run_data_consistency(
         ## Strict mode
         if strict and errors:
             raise ValidationError("Data consistency failed")
-
-        logger.debug("Feature engineering consistency checks applied")
 
         return result
 

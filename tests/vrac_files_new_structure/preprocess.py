@@ -11,11 +11,9 @@ from __future__ import annotations
 
 ## Standard library imports
 import re
-import unicodedata
 from typing import List
 
 ## Internal imports
-from src.core.config import get_config
 from src.utils.logging_utils import get_logger
 
 ## ============================================================
@@ -145,58 +143,6 @@ def filter_short_tokens(tokens: List[str], min_length: int = 2) -> List[str]:
     return [t for t in tokens if len(t) >= min_length]
 
 ## ============================================================
-## FEATURE ENGINEERING NORMALIZATION
-## ============================================================
-def remove_accents(text: str) -> str:
-    """
-        Remove accents from text using unicode normalization
-
-        Args:
-            text: Input text
-
-        Returns:
-            Accent-free text
-    """
-
-    normalized = unicodedata.normalize("NFD", text)
-    return "".join(c for c in normalized if unicodedata.category(c) != "Mn")
-
-def normalize_medical_text(text: str) -> str:
-    """
-        Apply feature engineering normalization pipeline
-
-        Args:
-            text: Raw input text
-
-        Returns:
-            Normalized text
-    """
-
-    config = get_config()
-
-    ## Early exit
-    if not config.feature_engineering.enabled:
-        return text
-
-    safe_text = text or ""
-
-    ## Whitespace normalization
-    if config.feature_engineering.text_normalization_enabled:
-        safe_text = normalize_whitespace(safe_text)
-
-    ## Lowercase
-    if config.feature_engineering.lowercase_enabled:
-        safe_text = safe_text.lower()
-
-    ## Accent removal
-    if config.feature_engineering.accent_removal_enabled:
-        safe_text = remove_accents(safe_text)
-
-    logger.debug("Feature engineering normalization applied")
-
-    return safe_text
-    
-## ============================================================
 ## HIGH-LEVEL PIPELINE
 ## ============================================================
 def preprocess_text(
@@ -242,19 +188,16 @@ def preprocess_text(
             reason=f"Preprocessing failed: expected string, got {type(text)}."
         )
 
-    ## Feature engineering override
-    config = get_config()
-
-    if config.feature_engineering.enabled:
-        return normalize_medical_text(text)
-        
     logger.debug("Starting preprocessing")
 
+    ## Step 1: Normalize whitespace
     text = normalize_whitespace(text)
 
+    ## Step 2: Lowercase (optional)
     if lowercase:
         text = to_lowercase(text)
 
+    ## Step 3: Optional masking
     if mask_numeric:
         text = mask_numbers(text)
 

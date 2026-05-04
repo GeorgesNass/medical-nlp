@@ -228,29 +228,6 @@ class ModelConfig:
     threshold: float
 
 @dataclass(frozen=True)
-class FeatureEngineeringConfig:
-    """
-        Feature engineering configuration
-
-        Args:
-            enabled: Enable feature engineering pipeline
-            text_normalization_enabled: Apply text normalization
-            accent_removal_enabled: Remove accents
-            lowercase_enabled: Apply lowercase
-            embedding_batch_size: Batch size for embeddings
-            embedding_normalize: Normalize embeddings
-            feature_export_enabled: Enable feature export
-    """
-
-    enabled: bool
-    text_normalization_enabled: bool
-    accent_removal_enabled: bool
-    lowercase_enabled: bool
-    embedding_batch_size: int
-    embedding_normalize: bool
-    feature_export_enabled: bool
-
-@dataclass(frozen=True)
 class DataConsistencyConfig:
     """
         Data consistency configuration
@@ -296,7 +273,6 @@ class AppConfig:
             runtime: Runtime configuration
             model: Model configuration
             secrets: Secret values
-            feature_engineering: Feature engineering config preprocessing and feature pipeline
     """
 
     app_name: str
@@ -307,7 +283,6 @@ class AppConfig:
     model: ModelConfig
     secrets: SecretsConfig
     data_consistency: DataConsistencyConfig
-    feature_engineering: FeatureEngineeringConfig
     
 ## ============================================================
 ## DOTENV / ENV HELPERS
@@ -762,7 +737,7 @@ def _validate_config(config: AppConfig) -> None:
 
         Returns:
             None
-    """
+        """
 
     ## Validate runtime numeric parameters
     _validate_non_negative_int(config.runtime.random_seed, "RANDOM_SEED")
@@ -819,14 +794,7 @@ def _validate_config(config: AppConfig) -> None:
 
         if config.runtime.drift_prediction_threshold < 0:
             raise ConfigurationError("DRIFT_PREDICTION_THRESHOLD must be >= 0")
-  
-    ## Validate feature engineering config
-    if config.feature_engineering.enabled:
-        _validate_positive_int(
-            config.feature_engineering.embedding_batch_size,
-            "EMBEDDING_BATCH_SIZE",
-        )
-        
+            
 ## ============================================================
 ## EXPORT HELPERS
 ## ============================================================
@@ -983,17 +951,6 @@ def get_config() -> AppConfig:
         threshold=_get_profiled_env_float("THRESHOLD", 0.5, profile),
     )
 
-    ## BUILD FEATURE ENGINEERING CONFIG
-    feature_engineering = FeatureEngineeringConfig(
-        enabled=_get_env_bool("FEATURE_ENGINEERING_ENABLED", True),
-        text_normalization_enabled=_get_env_bool("TEXT_NORMALIZATION_ENABLED", True),
-        accent_removal_enabled=_get_env_bool("ACCENT_REMOVAL_ENABLED", True),
-        lowercase_enabled=_get_env_bool("LOWERCASE_ENABLED", True),
-        embedding_batch_size=_get_env_int("EMBEDDING_BATCH_SIZE", 32),
-        embedding_normalize=_get_env_bool("EMBEDDING_NORMALIZE", True),
-        feature_export_enabled=_get_env_bool("FEATURE_EXPORT_ENABLED", False),
-    )
-
     ## Build data consistency config
     data_consistency = DataConsistencyConfig(
         enabled=_get_env_bool("DATA_CONSISTENCY_ENABLED", True),
@@ -1024,8 +981,7 @@ def get_config() -> AppConfig:
         runtime=runtime,
         model=model,
         secrets=secrets,
-        data_consistency=data_consistency,
-        feature_engineering=feature_engineering,        
+        data_consistency=data_consistency,        
     )
 
     ## Validate final configuration
