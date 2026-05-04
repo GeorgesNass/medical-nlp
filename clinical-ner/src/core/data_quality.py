@@ -13,6 +13,8 @@ from typing import Any, Dict, List
 
 import numpy as np
 
+from src.core.config import get_config
+from src.nlp.normalization import normalize_clinical_text
 from src.utils.logging_utils import get_logger
 from src.utils.stats_utils import compute_mean_std, compute_iqr_bounds
 
@@ -209,6 +211,11 @@ def run_data_quality(
 
     issues: List[Dict[str, Any]] = []
 
+    config = get_config()
+
+    if config.feature_engineering.enabled:
+        texts = [normalize_clinical_text(t) for t in texts]
+        
     try:
         ## BASIC VALIDATION
         if not texts or not labels:
@@ -232,6 +239,15 @@ def run_data_quality(
         ## SEQUENCE LENGTH ANALYSIS
         lengths = np.array([len(str(text).split()) for text in texts], dtype=float)
 
+        if config.feature_engineering.enabled:
+            avg_token_lengths = np.array(
+                [
+                    np.mean([len(w) for w in str(text).split()]) if str(text).split() else 0
+                    for text in texts
+                ],
+                dtype=float,
+            )
+    
         if method == "zscore":
             anomaly_mask = _detect_zscore(lengths, z_threshold)
         elif method == "iqr":
@@ -248,6 +264,22 @@ def run_data_quality(
                 {"count": int(anomaly_mask.sum())},
             )
 
+        ## FEATURE ENGINEERING: TOKEN LENGTH ANOMALY
+        if config.feature_engineering.enabled:
+            if method == "zscore":
+                token_anomaly = _detect_zscore(avg_token_lengths, z_threshold)
+            else:
+                token_anomaly = _detect_iqr(avg_token_lengths, iqr_multiplier)
+
+            if token_anomaly.any():
+                _add_issue(
+                    issues,
+                    "token_length_anomaly",
+                    "warning",
+                    "Abnormal token length detected",
+                    {"count": int(token_anomaly.sum())},
+                )
+                
         ## LABEL CONSISTENCY CHECK
         invalid_label_count = 0
         invalid_transition_count = 0
@@ -268,6 +300,11 @@ def run_data_quality(
 
             ## optional sequence/token alignment heuristic
             token_count = len(str(texts[index]).split())
+
+            if config.feature_engineering.enabled:
+                token_count = len(str(texts[index]).split())
+                logger.debug("Feature engineering applied in data_quality")
+
             if token_count != len(tag_sequence):
                 _add_issue(
                     issues,

@@ -11,6 +11,8 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
 
+from src.core.config import get_config
+from src.nlp.normalization import normalize_clinical_text
 from src.utils.logging_utils import get_logger
 from src.utils.data_utils import (
     normalize_data,
@@ -89,8 +91,18 @@ def _validate_text(
     text = data.get("text", "")
 
     ## Normalize
-    normalized = normalize_data({"text": text}).get("text", "")
+    config = get_config()
+
+    if config.feature_engineering.enabled:
+        normalized = normalize_clinical_text(text)
+    else:
+        normalized = normalize_data({"text": text}).get("text", "")
+
     data["text"] = normalized
+    
+    if config.feature_engineering.enabled:
+        data["text_length"] = len(normalized)
+        data["token_count"] = len(normalized.split())
 
     ## Empty check
     if not normalized:
@@ -187,9 +199,16 @@ def _validate_entities(
                 "Label must be string",
                 {"index": idx},
             )
+        
+        config = get_config()
+
+        if config.feature_engineering.enabled and isinstance(entity, dict):
+            entity_text = text[start:end]
+            entity["normalized_text"] = normalize_clinical_text(entity_text)
+            entity["token_count"] = len(entity["normalized_text"].split())
+            logger.debug("Feature engineering applied in data_consistency")            
 
         spans.append((start, end))
-
 
     ## Overlap detection
     spans_sorted = sorted(spans, key=lambda x: x[0])

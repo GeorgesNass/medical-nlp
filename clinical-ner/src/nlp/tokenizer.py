@@ -11,18 +11,29 @@ from __future__ import annotations
 
 ## Standard library imports
 from typing import Iterable, List
+    
+try:
+    import spacy  # type: ignore
+except Exception as exc:
+    msg = "spaCy library is required for spaCy tokenization"
+    logger.error(msg)
+    raise ConfigurationError(msg) from exc
+try:
+    from transformers import AutoTokenizer  # type: ignore
+except Exception as exc:
+    msg = "transformers library is required for HF tokenization"
+    logger.error(msg)
+    raise ConfigurationError(msg) from exc
 
 ## Centralized errors and logging
+from src.core.config import get_config
 from src.core.errors import ConfigurationError
+from src.nlp.normalization import normalize_clinical_text
 from src.utils.logging_utils import get_logger
-
-## Generic utilities
 from src.utils.utils import ensure_str
-
 
 ## Module-level logger
 logger = get_logger(name="clinical_ner.tokenizer")
-
 
 def simple_tokenize(text: str) -> List[str]:
     """
@@ -34,9 +45,14 @@ def simple_tokenize(text: str) -> List[str]:
         Returns:
             List of tokens
     """
+    
     ## Basic whitespace split
-    return ensure_str(text).split()
+    config = get_config()
 
+    if config.feature_engineering.enabled:
+        text = normalize_clinical_text(text)
+
+    return ensure_str(text).split()
 
 def spacy_tokenize(text: str, model: str = "en_core_web_sm") -> List[str]:
     """
@@ -52,12 +68,6 @@ def spacy_tokenize(text: str, model: str = "en_core_web_sm") -> List[str]:
         Raises:
             ConfigurationError: If spaCy is not installed or model is missing
     """
-    try:
-        import spacy  # type: ignore
-    except Exception as exc:
-        msg = "spaCy library is required for spaCy tokenization"
-        logger.error(msg)
-        raise ConfigurationError(msg) from exc
 
     try:
         nlp = spacy.load(model)
@@ -67,9 +77,13 @@ def spacy_tokenize(text: str, model: str = "en_core_web_sm") -> List[str]:
         raise ConfigurationError(msg) from exc
 
     ## Tokenize text
+    config = get_config()
+
+    if config.feature_engineering.enabled:
+        text = normalize_clinical_text(text)
+
     doc = nlp(ensure_str(text))
     return [tok.text for tok in doc]
-
 
 def hf_tokenize(
     text: str,
@@ -88,20 +102,19 @@ def hf_tokenize(
         Raises:
             ConfigurationError: If transformers is not installed
     """
-    try:
-        from transformers import AutoTokenizer  # type: ignore
-    except Exception as exc:
-        msg = "transformers library is required for HF tokenization"
-        logger.error(msg)
-        raise ConfigurationError(msg) from exc
-
+    
     ## Load tokenizer
     tokenizer = AutoTokenizer.from_pretrained(model_name)
 
     ## Tokenize text
-    tokens = tokenizer.tokenize(ensure_str(text))
-    return tokens
+    config = get_config()
 
+    if config.feature_engineering.enabled:
+        text = normalize_clinical_text(text)
+
+    tokens = tokenizer.tokenize(ensure_str(text))
+    
+    return tokens
 
 def batch_tokenize(
     texts: Iterable[str],
@@ -122,6 +135,7 @@ def batch_tokenize(
         Raises:
             ConfigurationError: If method is unknown
     """
+    
     ## Normalize method
     m = ensure_str(method).strip().lower()
 
@@ -137,3 +151,24 @@ def batch_tokenize(
     msg = f"Unknown tokenization method: {method}"
     logger.error(msg)
     raise ConfigurationError(msg)
+
+## ============================================================
+## TOKEN FEATURES
+## ============================================================
+def compute_token_features(tokens: List[str]) -> dict:
+    """
+        Compute token-level features
+
+        Args:
+            tokens: List of tokens
+
+        Returns:
+            Dictionary with token statistics
+    """
+
+    return {
+        "token_count": len(tokens),
+        "avg_token_length": (
+            sum(len(t) for t in tokens) / max(1, len(tokens))
+        ),
+    }

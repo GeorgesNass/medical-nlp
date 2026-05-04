@@ -13,6 +13,7 @@ from typing import Tuple, Dict, Any
 
 import numpy as np
 
+from src.core.config import get_config
 from src.utils.logging_utils import get_logger
 
 ## ============================================================
@@ -110,3 +111,39 @@ def winsorize(arr: np.ndarray, lower_q: float = 0.05, upper_q: float = 0.95) -> 
 
     ## clip values
     return np.clip(arr, lower, upper)
+    
+## ============================================================
+## FEATURE ENGINEERING TEXT STATS
+## ============================================================
+def compute_text_stats(text: str) -> Dict[str, Any]:
+    """
+        Compute text-level feature statistics
+
+        High-level workflow:
+            1) Extract raw text
+            2) Compute character length
+            3) Compute token count
+            4) Compute average token length
+
+        Args:
+            text: Input text
+
+        Returns:
+            Dictionary with text features
+    """
+
+    config = get_config()
+
+    tokens = str(text).split()
+
+    stats = {
+        "char_length": len(text),
+        "token_count": len(tokens),
+    }
+
+    if config.feature_engineering.enabled:
+        stats["avg_token_length"] = (
+            sum(len(t) for t in tokens) / max(1, len(tokens))
+        )
+
+    return stats

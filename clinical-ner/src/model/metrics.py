@@ -13,17 +13,14 @@ from __future__ import annotations
 from typing import Iterable
 
 ## Centralized errors and logging
+from src.core.config import get_config
 from src.core.errors import DataError
-from src.utils.logging_utils import get_logger
-
-## Core domain imports
 from src.core.schema import Entity, Record
 from src.core.entities import EntityLabel
-
+from src.utils.logging_utils import get_logger
 
 ## Module-level logger
 logger = get_logger(name="clinical_ner.metrics")
-
 
 def _entity_key(ent: Entity) -> tuple:
     """
@@ -35,9 +32,14 @@ def _entity_key(ent: Entity) -> tuple:
         Returns:
             Tuple uniquely identifying an entity span and label
     """
+    
+    config = get_config()
+
+    if config.feature_engineering.enabled and ent.normalized_text:
+        return (ent.normalized_text, ent.label.value)
+
     return (ent.start, ent.end, ent.label.value)
-
-
+    
 def compute_entity_metrics(
     gold_records: Iterable[Record],
     pred_records: Iterable[Record],
@@ -107,6 +109,9 @@ def compute_entity_metrics(
         else 0.0
     )
 
+    if config.feature_engineering.enabled:
+        avg_entity_length = sum(len(k[0]) for k in gold_entities if isinstance(k[0], str)) / max(1, len(gold_entities))
+        
     ## Log summary
     logger.info(
         "Entity metrics computed | TP=%d FP=%d FN=%d",
@@ -119,4 +124,5 @@ def compute_entity_metrics(
         "precision": precision,
         "recall": recall,
         "f1": f1,
+        "avg_entity_length": avg_entity_length if config.feature_engineering.enabled else None,
     }

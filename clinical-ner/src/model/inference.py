@@ -12,25 +12,37 @@ from __future__ import annotations
 ## Standard library imports
 from pathlib import Path
 from typing import Iterable
+  
+try:
+    from transformers import pipeline  # type: ignore
+except Exception as exc:
+    msg = "transformers library is required for Hugging Face inference"
+    logger.error(msg)
+    raise ConfigurationError(msg) from exc
 
-## Core domain imports
+try:
+    import spacy  # type: ignore
+except Exception as exc:
+    msg = "spaCy library is required for spaCy inference"
+    logger.error(msg)
+    raise ConfigurationError(msg) from exc
+
 from src.core.entities import (
     EntityLabel,
     EntityProvenance,
+    build_entity_features
 )
+from src.core.config import get_config
+from src.nlp.normalization import normalize_clinical_text
 from src.core.schema import Entity, Record
-
-## Centralized errors and logging
 from src.core.errors import ConfigurationError
 from src.utils.logging_utils import get_logger
 
 ## Generic utilities
 from src.utils.utils import ensure_str
 
-
 ## Module-level logger
 logger = get_logger(name="clinical_ner.inference")
-
 
 def load_hf_pipeline(model_name: str, device: str = "cpu"):
     """
@@ -46,12 +58,6 @@ def load_hf_pipeline(model_name: str, device: str = "cpu"):
         Raises:
             ConfigurationError: If transformers is not installed
     """
-    try:
-        from transformers import pipeline  # type: ignore
-    except Exception as exc:
-        msg = "transformers library is required for Hugging Face inference"
-        logger.error(msg)
-        raise ConfigurationError(msg) from exc
 
     logger.info("Loading Hugging Face NER model: %s", model_name)
     return pipeline(
@@ -60,7 +66,6 @@ def load_hf_pipeline(model_name: str, device: str = "cpu"):
         aggregation_strategy="simple",
         device=0 if device == "cuda" else -1,
     )
-
 
 def infer_entities_hf(
     records: Iterable[Record],
@@ -82,6 +87,7 @@ def infer_entities_hf(
         Returns:
             Updated list of Record objects with inferred entities
     """
+    
     ## Load HF pipeline
     nlp = load_hf_pipeline(model_name=model_name, device=device)
 
@@ -89,7 +95,14 @@ def infer_entities_hf(
 
     for record in records:
         ## Run model on full text
-        outputs = nlp(record.text)
+        config = get_config()
+
+        if config.feature_engineering.enabled:
+            processed_text = normalize_clinical_text(record.text)
+        else:
+            processed_text = record.text
+
+        outputs = nlp(processed_text)
 
         for out in outputs:
             score = float(out.get("score", 0.0))
@@ -108,6 +121,8 @@ def infer_entities_hf(
                 continue
 
             ## Build entity
+            features = build_entity_features(out.get("word"))
+
             entity = Entity(
                 id=f"ent_{len(record.entities):06d}",
                 text=out.get("word"),
@@ -116,6 +131,11 @@ def infer_entities_hf(
                 label=label,
                 confidence=score,
                 source=EntityProvenance.MODEL,
+
+                ## Feature engineering
+                normalized_text=features.normalized_text,
+                token_count=features.token_count,
+                char_length=features.char_length,
             )
 
             record.entities.append(entity)
@@ -123,7 +143,6 @@ def infer_entities_hf(
         updated_records.append(record)
 
     return updated_records
-
 
 def infer_entities_spacy(
     records: Iterable[Record],
@@ -144,12 +163,6 @@ def infer_entities_spacy(
         Raises:
             ConfigurationError: If spaCy is not installed or model is missing
     """
-    try:
-        import spacy  # type: ignore
-    except Exception as exc:
-        msg = "spaCy library is required for spaCy inference"
-        logger.error(msg)
-        raise ConfigurationError(msg) from exc
 
     model_path = Path(model_path).resolve()
 
@@ -164,8 +177,15 @@ def infer_entities_spacy(
     updated_records: list[Record] = []
 
     for record in records:
-        doc = nlp(record.text)
+        config = get_config()
 
+        if config.feature_engineering.enabled:
+            processed_text = normalize_clinical_text(record.text)
+        else:
+            processed_text = record.text
+
+        doc = nlp(processed_text)
+        
         for ent in doc.ents:
             ## Map spaCy label
             label = (
@@ -178,6 +198,8 @@ def infer_entities_spacy(
                 continue
 
             ## Build entity
+            features = build_entity_features(ent.text)
+
             entity = Entity(
                 id=f"ent_{len(record.entities):06d}",
                 text=ent.text,
@@ -185,6 +207,11 @@ def infer_entities_spacy(
                 end=ent.end_char,
                 label=label,
                 source=EntityProvenance.MODEL,
+
+                ## Feature engineering
+                normalized_text=features.normalized_text,
+                token_count=features.token_count,
+                char_length=features.char_length,
             )
 
             record.entities.append(entity)

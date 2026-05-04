@@ -21,19 +21,16 @@ from src.core.entities import (
     NegationStatus,
     is_temporality_applicable,
 )
+from src.core.config import get_config
+from src.core.entities import build_entity_features
 from src.core.schema import Entity, Record
-
-## Centralized errors and logging
 from src.core.errors import DataError
-from src.utils.logging_utils import get_logger
-
-## Generic utilities
+from src.nlp.normalization import normalize_clinical_text
 from src.utils.utils import ensure_str
-
+from src.utils.logging_utils import get_logger
 
 ## Module-level logger
 logger = get_logger(name="clinical_ner.rules")
-
 
 def load_dictionary_terms(dictionaries_root: str | Path) -> dict[str, dict[str, str]]:
     """
@@ -66,7 +63,6 @@ def load_dictionary_terms(dictionaries_root: str | Path) -> dict[str, dict[str, 
     ## This must be implemented later based on your dictionary file formats
     return {}
 
-
 def dictionary_match(
     text: str,
     dictionary: dict[str, dict[str, str]],
@@ -87,11 +83,18 @@ def dictionary_match(
         Returns:
             List of detected Entity objects
     """
+    
     ## Initialize output list
     entities: list[Entity] = []
 
     ## Short-circuit on empty input
+    config = get_config()
+
     raw_text = ensure_str(text)
+
+    if config.feature_engineering.enabled:
+        raw_text = normalize_clinical_text(raw_text)
+        
     if raw_text.strip() == "" or not dictionary:
         return entities
 
@@ -102,6 +105,10 @@ def dictionary_match(
 
         ## Skip invalid terms
         term_clean = ensure_str(term).strip()
+
+        if config.feature_engineering.enabled:
+            term_clean = normalize_clinical_text(term_clean)
+
         if term_clean == "":
             continue
 
@@ -117,6 +124,8 @@ def dictionary_match(
             dictionary_src = meta.get("dictionary", DictionarySource.MESH.value)
 
             ## Build entity object
+            features = build_entity_features(match.group(0))
+
             ent = Entity(
                 id=f"ent_{len(entities):06d}",
                 text=match.group(0),
@@ -130,6 +139,11 @@ def dictionary_match(
                 else DictionarySource.MESH,
                 source=provenance,
                 confidence=1.0,
+
+                ## Feature engineering
+                normalized_text=features.normalized_text,
+                token_count=features.token_count,
+                char_length=features.char_length,
             )
 
             ## Validate entity object (will enforce concept_id/name for auto provenance)
@@ -138,7 +152,6 @@ def dictionary_match(
             entities.append(ent)
 
     return entities
-
 
 def detect_negation_for_entity(record: Record, ent: Entity, window: int = 12) -> NegationStatus:
     """
@@ -152,10 +165,18 @@ def detect_negation_for_entity(record: Record, ent: Entity, window: int = 12) ->
         Returns:
             NegationStatus
     """
+    
     ## Negation cues baseline
     negation_cues = {"no", "not", "without", "denies", "deny", "absence", "absent"}
 
-    tokens = ensure_str(record.text).lower().split()
+    config = get_config()
+
+    if config.feature_engineering.enabled:
+        text = normalize_clinical_text(record.text)
+    else:
+        text = record.text
+
+    tokens = ensure_str(text).lower().split()
 
     ## Compute token index approximation
     token_index = len(record.text[: ent.start].split())
@@ -163,7 +184,6 @@ def detect_negation_for_entity(record: Record, ent: Entity, window: int = 12) ->
     context = set(tokens[start:token_index])
 
     return NegationStatus.NEGATED if context & negation_cues else NegationStatus.NOT_NEGATED
-
 
 def apply_negation_rules(record: Record, window: int = 12) -> None:
     """
@@ -173,10 +193,10 @@ def apply_negation_rules(record: Record, window: int = 12) -> None:
             record: Record containing entities
             window: Number of tokens before entity to inspect
     """
+    
     for ent in record.entities:
         ## Assign negation based on local context
         ent.negation = detect_negation_for_entity(record=record, ent=ent, window=window)
-
 
 def infer_temporality_for_entity(record: Record, ent: Entity) -> str | None:
     """
@@ -189,13 +209,21 @@ def infer_temporality_for_entity(record: Record, ent: Entity) -> str | None:
         Returns:
             Temporality string or None
     """
+    
     ## Keywords baseline
     past_cues = {"history", "previously", "formerly", "past"}
     chronic_cues = {"chronic", "long-term", "longterm", "longstanding"}
     current_cues = {"currently", "ongoing", "today", "active", "now"}
     future_cues = {"will", "planned", "schedule", "tomorrow", "next"}
 
-    tokens = ensure_str(record.text).lower().split()
+    config = get_config()
+
+    if config.feature_engineering.enabled:
+        text = normalize_clinical_text(record.text)
+    else:
+        text = record.text
+
+    tokens = ensure_str(text).lower().split()
 
     ## Default temporality is None and validated later in Entity.validate()
     if any(cue in tokens for cue in past_cues):
@@ -211,7 +239,6 @@ def infer_temporality_for_entity(record: Record, ent: Entity) -> str | None:
 
     return None
 
-
 def apply_temporality_rules(record: Record) -> None:
     """
         Apply rule-based temporality inference to entities in a record
@@ -222,6 +249,7 @@ def apply_temporality_rules(record: Record) -> None:
         Raises:
             DataError: If inferred temporality violates business rules
     """
+    
     for ent in record.entities:
         ## Skip labels without temporality
         if not is_temporality_applicable(ent.label):

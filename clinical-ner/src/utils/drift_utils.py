@@ -20,6 +20,8 @@ from scipy.stats import ks_2samp, chi2_contingency
 from evidently.report import Report
 from evidently.metric_preset import DataDriftPreset
     
+from src.core.config import get_config
+from src.nlp.normalization import normalize_clinical_text
 from src.utils.logging_utils import get_logger
 
 try:
@@ -105,7 +107,12 @@ def compute_text_stats(df: pd.DataFrame) -> pd.DataFrame:
     data: Dict[str, pd.Series] = {}
 
     if "text" in df.columns:
+        config = get_config()
+
         text_series = df["text"].fillna("").astype(str)
+
+        if config.feature_engineering.enabled:
+            text_series = text_series.apply(normalize_clinical_text)
 
         ## LENGTH
         data["text_length"] = text_series.str.len()
@@ -113,6 +120,11 @@ def compute_text_stats(df: pd.DataFrame) -> pd.DataFrame:
         ## WORD COUNT
         data["text_word_count"] = text_series.str.split().apply(len)
 
+        if config.feature_engineering.enabled:
+            data["avg_token_length"] = text_series.apply(
+                lambda t: sum(len(w) for w in t.split()) / max(1, len(t.split()))
+            )
+            
     return pd.DataFrame(data)
 
 def compute_ner_stats(df: pd.DataFrame) -> pd.DataFrame:
@@ -136,6 +148,15 @@ def compute_ner_stats(df: pd.DataFrame) -> pd.DataFrame:
             lambda x: len(x) if isinstance(x, list) else 0
         )
 
+        config = get_config()
+
+        if config.feature_engineering.enabled and "text" in df.columns:
+            text_len = df["text"].fillna("").astype(str).apply(len)
+
+            data["entity_density"] = entities.apply(
+                lambda x: len(x) if isinstance(x, list) else 0
+            ) / text_len.replace(0, 1)
+            
     return pd.DataFrame(data)
 
 def generate_evidently_report(

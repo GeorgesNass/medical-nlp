@@ -3,7 +3,7 @@
 ###############################################################################
 # Clinical NER - Pipeline Menu
 # Author: Georges Nassopoulos
-# Version: 1.1.0
+# Version: 1.2.0
 # Description:
 #   CLI menu to run the main Clinical NER pipelines:
 #   - labeled mode (CSV with entities)
@@ -12,6 +12,7 @@
 #   - run quick smoke checks
 #   - run data drift (Evidently)
 #   - all modes include data consistency + data quality checks
+#   - feature engineering toggle available
 ###############################################################################
 
 set -euo pipefail
@@ -66,10 +67,10 @@ ensure_dir_exists() {
 while true; do
   echo ""
   echo "Select an action:"
-  echo " 1) Run pipeline (LABELED CSV -> export CSV) (data consistency + data quality)"
-  echo " 2) Run pipeline (UNLABELED TXT -> export CSV) (data consistency + data quality)"
+  echo " 1) Run pipeline (LABELED CSV -> export CSV)"
+  echo " 2) Run pipeline (UNLABELED TXT -> export CSV)"
   echo " 3) Run unit tests (pytest)"
-  echo " 4) Quick smoke: create sample TXT and run unlabeled pipeline (data consistency + data quality)"
+  echo " 4) Quick smoke test"
   echo " 5) Run data quality check only"
   echo " 6) Run data drift"
   echo " 0) Exit"
@@ -78,34 +79,57 @@ while true; do
   read -rp "Your choice: " choice
 
   case "${choice}" in
+
     1)
       read -rp "Path to labeled CSV: " LABELED_CSV
       ensure_file_exists "${LABELED_CSV}" || { pause; continue; }
 
+      read -rp "Enable feature engineering? (y/n): " FE
+
       read -rp "Output CSV path (default: artifacts/exports/clinical_ner_records.csv): " OUT_CSV
       OUT_CSV="${OUT_CSV:-${PROJECT_ROOT}/artifacts/exports/clinical_ner_records.csv}"
 
-      run_python "${PROJECT_ROOT}/main.py" \
-        --labeled-csv "${LABELED_CSV}" \
-        --output-csv "${OUT_CSV}" \
-        --project-root "${PROJECT_ROOT}"
+      if [[ "$FE" == "y" ]]; then
+        run_python "${PROJECT_ROOT}/main.py" \
+          --labeled-csv "${LABELED_CSV}" \
+          --output-csv "${OUT_CSV}" \
+          --project-root "${PROJECT_ROOT}" \
+          --features
+      else
+        run_python "${PROJECT_ROOT}/main.py" \
+          --labeled-csv "${LABELED_CSV}" \
+          --output-csv "${OUT_CSV}" \
+          --project-root "${PROJECT_ROOT}"
+      fi
 
       pause
       ;;
+
     2)
       read -rp "Path to folder containing .txt docs: " DOCS_DIR
       ensure_dir_exists "${DOCS_DIR}" || { pause; continue; }
 
+      read -rp "Enable feature engineering? (y/n): " FE
+
       read -rp "Output CSV path (default: artifacts/exports/clinical_ner_records.csv): " OUT_CSV
       OUT_CSV="${OUT_CSV:-${PROJECT_ROOT}/artifacts/exports/clinical_ner_records.csv}"
 
-      run_python "${PROJECT_ROOT}/main.py" \
-        --unlabeled-texts "${DOCS_DIR}" \
-        --output-csv "${OUT_CSV}" \
-        --project-root "${PROJECT_ROOT}"
+      if [[ "$FE" == "y" ]]; then
+        run_python "${PROJECT_ROOT}/main.py" \
+          --unlabeled-texts "${DOCS_DIR}" \
+          --output-csv "${OUT_CSV}" \
+          --project-root "${PROJECT_ROOT}" \
+          --features
+      else
+        run_python "${PROJECT_ROOT}/main.py" \
+          --unlabeled-texts "${DOCS_DIR}" \
+          --output-csv "${OUT_CSV}" \
+          --project-root "${PROJECT_ROOT}"
+      fi
 
       pause
       ;;
+
     3)
       echo ""
       echo "Running pytest..."
@@ -113,37 +137,44 @@ while true; do
       (cd "${PROJECT_ROOT}" && "${PYTHON_BIN}" -m pytest -q)
       pause
       ;;
+
     4)
       echo ""
-      echo "Creating a tiny smoke dataset in data/raw/smoke_docs..."
-      echo ""
+      echo "Creating smoke dataset..."
       SMOKE_DIR="${PROJECT_ROOT}/data/raw/smoke_docs"
       mkdir -p "${SMOKE_DIR}"
 
       echo "Patient denies asthma. Chronic diabetes. Aspirin current." > "${SMOKE_DIR}/doc1.txt"
 
+      read -rp "Enable feature engineering? (y/n): " FE
+
       OUT_CSV="${PROJECT_ROOT}/artifacts/exports/smoke_out.csv"
 
-      run_python "${PROJECT_ROOT}/main.py" \
-        --unlabeled-texts "${SMOKE_DIR}" \
-        --output-csv "${OUT_CSV}" \
-        --project-root "${PROJECT_ROOT}"
+      if [[ "$FE" == "y" ]]; then
+        run_python "${PROJECT_ROOT}/main.py" \
+          --unlabeled-texts "${SMOKE_DIR}" \
+          --output-csv "${OUT_CSV}" \
+          --project-root "${PROJECT_ROOT}" \
+          --features
+      else
+        run_python "${PROJECT_ROOT}/main.py" \
+          --unlabeled-texts "${SMOKE_DIR}" \
+          --output-csv "${OUT_CSV}" \
+          --project-root "${PROJECT_ROOT}"
+      fi
 
-      echo ""
       echo "Smoke output: ${OUT_CSV}"
       pause
       ;;
+
     5)
       echo ""
       echo "Running data quality check..."
-      echo ""
-
       run_python "${PROJECT_ROOT}/main.py" --validate-config
-
       pause
       ;;
+
     6)
-      ## DATA DRIFT (CLINICAL NER + EVIDENTLY)
       read -rp "Reference dataset CSV: " REF
       ensure_file_exists "${REF}" || { pause; continue; }
 
@@ -158,13 +189,16 @@ while true; do
 
       pause
       ;;
+
     0)
       echo "Bye"
       exit 0
       ;;
+
     *)
       echo "Invalid choice."
       pause
       ;;
+
   esac
 done
