@@ -18,11 +18,11 @@ from typing import Dict, List, Optional, Tuple
 import pandas as pd
 
 ## Internal imports
-from src.core.config import get_config
 from src.utils.logging_utils import get_logger
 from src.core.errors import (
     log_and_raise_missing_file,
 )
+
 
 ## ============================================================
 ## LOGGER
@@ -41,7 +41,9 @@ class ICD10MemoryIndex:
             - Simple keyword-based description search
     """
 
+    ## ------------------------------------------------------------
     ## CONSTRUCTOR
+    ## ------------------------------------------------------------
     def __init__(self, dataframe: pd.DataFrame) -> None:
         """
             Initialize in-memory index from DataFrame
@@ -60,20 +62,16 @@ class ICD10MemoryIndex:
         ## Normalize and load entries
         for _, row in dataframe.iterrows():
             code = str(row["code"]).strip()
-            
-            config = get_config()
-
             description = str(row["description"]).strip()
 
-            if config.feature_engineering.enabled:
-                description = description.lower()
-    
             if code:
                 self._by_code[code] = description
 
         logger.info("Loaded %d ICD10 codes into memory index", len(self._by_code))
 
+    ## ------------------------------------------------------------
     ## LOOKUP METHODS
+    ## ------------------------------------------------------------
     def get_description(self, code: str) -> Optional[str]:
         """
             Retrieve description by code
@@ -84,7 +82,6 @@ class ICD10MemoryIndex:
             Returns:
                 Description or None
         """
-        
         return self._by_code.get(code)
 
     def search(self, query: str, top_k: int = 5) -> List[Tuple[str, str]]:
@@ -132,7 +129,9 @@ class ICD10SQLiteIndex:
             - Persistent storage
     """
 
+    ## ------------------------------------------------------------
     ## CONSTRUCTOR
+    ## ------------------------------------------------------------
     def __init__(self, db_path: str | Path) -> None:
         """
             Initialize SQLite index
@@ -147,7 +146,9 @@ class ICD10SQLiteIndex:
         ## Ensure FTS table exists
         self._initialize()
 
+    ## ------------------------------------------------------------
     ## TABLE INITIALIZATION
+    ## ------------------------------------------------------------
     def _initialize(self) -> None:
         """
             Create FTS table if not exists
@@ -164,7 +165,9 @@ class ICD10SQLiteIndex:
 
         self._conn.commit()
 
+    ## ------------------------------------------------------------
     ## BUILD INDEX
+    ## ------------------------------------------------------------
     def build_from_dataframe(self, dataframe: pd.DataFrame) -> None:
         """
             Populate SQLite FTS index from DataFrame
@@ -189,7 +192,9 @@ class ICD10SQLiteIndex:
 
         logger.info("SQLite ICD10 index built with %d entries", len(dataframe))
 
+    ## ------------------------------------------------------------
     ## SEARCH
+    ## ------------------------------------------------------------
     def search(self, query: str, top_k: int = 5) -> List[Tuple[str, str]]:
         """
             Full-text search using SQLite FTS
@@ -218,7 +223,9 @@ class ICD10SQLiteIndex:
 
         return results
 
+    ## ------------------------------------------------------------
     ## CLOSE CONNECTION
+    ## ------------------------------------------------------------
     def close(self) -> None:
         """
             Close SQLite connection
@@ -248,78 +255,3 @@ def load_icd10_csv(csv_path: str | Path) -> pd.DataFrame:
     logger.info("Loading ICD10 CSV from %s", path)
 
     return pd.read_csv(path)
- 
-## ============================================================
-## FEATURE ENGINEERING INDEX HELPERS
-## ============================================================
-def build_index_from_segment_features(
-    vectors: List[List[float]],
-    metadata: List[Dict[str, str]],
-) -> Dict[str, List[float]]:
-    """
-        Build simple in-memory feature index
-
-        Args:
-            vectors: Embedding vectors
-            metadata: Associated metadata (must contain "code")
-
-        Returns:
-            Mapping code -> vector
-    """
-
-    index: Dict[str, List[float]] = {}
-
-    for vec, meta in zip(vectors, metadata):
-
-        code = meta.get("code")
-
-        if not code:
-            continue
-
-        index[code] = vec
-
-    logger.info("Feature index built | size=%d", len(index))
-
-    return index
-    
-def save_index_metadata(index: Dict[str, List[float]], output_path: str) -> None:
-    """
-        Save index metadata (light version)
-
-        Args:
-            index: Feature index
-            output_path: File path
-    """
-
-    config = get_config()
-
-    if not config.feature_engineering.feature_export_enabled:
-        return
-
-    import json
-
-    payload = {
-        "size": len(index),
-    }
-
-    with open(output_path, "w", encoding="utf-8") as f:
-        json.dump(payload, f, indent=2)
-
-    logger.info("Saved index metadata: %s", output_path)
-    
-def load_index_with_metadata(
-    vectors: List[List[float]],
-    metadata: List[Dict[str, str]],
-) -> Dict[str, List[float]]:
-    """
-        Rebuild feature index
-
-        Args:
-            vectors: Embeddings
-            metadata: Metadata
-
-        Returns:
-            Index
-    """
-
-    return build_index_from_segment_features(vectors, metadata)    

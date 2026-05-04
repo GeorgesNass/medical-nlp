@@ -43,8 +43,6 @@ except Exception:
     BILSTM_AVAILABLE = False
 
 ## Internal
-from src.nlp.vectorizers import preprocess_texts_for_vectorizer
-from src.core.config import get_config
 from src.core.data_quality import run_data_quality
 from src.core.errors import ModelError
 from src.utils.io_utils import ensure_parent_dir
@@ -193,8 +191,6 @@ def _write_fasttext_train_file(
     with path.open("w", encoding="utf-8") as f:
         for text, label in zip(texts, y, strict=False):
             safe_text = " ".join(str(text).splitlines()).strip()
-            if get_config().feature_engineering.enabled:
-                safe_text = preprocess_texts_for_vectorizer([safe_text])[0]
             f.write(f"__label__{int(label)} {safe_text}\n")
 
     return path
@@ -339,12 +335,6 @@ def train_model(
 
     logger.info("Starting training | type=%s", config.model_type)
 
-    ## Feature engineering preprocessing (texts only)
-    config = get_config()
-
-    if texts is not None and config.feature_engineering.enabled:
-        texts = preprocess_texts_for_vectorizer(texts)
-        
     ## DATA QUALITY CHECK 
     try:
         ## check dataset before training
@@ -392,8 +382,6 @@ def train_model(
     ## BILSTM
     if model_type == "bilstm":
         return _train_bilstm_classifier(X=X, y=y, config=config)
-
-    logger.debug("Feature engineering applied to training data")
 
     raise ModelError("Unsupported model_type")
 

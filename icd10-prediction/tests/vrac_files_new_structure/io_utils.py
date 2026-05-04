@@ -18,8 +18,6 @@ from typing import Any, Dict, Iterable, List, Optional
 import pandas as pd
 
 ## Internal imports
-from src.core.config import get_config
-from src.nlp.preprocess import normalize_medical_text
 from src.utils.logging_utils import get_logger
 from src.core.errors import (
     log_and_raise_missing_file,
@@ -347,32 +345,3 @@ def write_text(
     logger.info("Wrote text: %s | chars=%d", path, len(content))
     
     return path
-    
-## ============================================================
-## FEATURE ENGINEERING IO HELPERS
-## ============================================================
-def load_and_normalize_text_from_path(
-    file_path: str | Path,
-    encoding: str = "utf-8",
-) -> str:
-    """
-        Load and normalize text using feature engineering pipeline
-
-        Args:
-            file_path: Input file path
-            encoding: File encoding
-
-        Returns:
-            Normalized text ready for pipeline
-    """
-
-    ## Load raw text
-    text = read_text(file_path, encoding=encoding)
-
-    ## Apply feature engineering if enabled
-    config = get_config()
-
-    if config.feature_engineering.enabled:
-        return normalize_medical_text(text)
-
-    return text    

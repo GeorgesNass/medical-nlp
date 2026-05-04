@@ -10,12 +10,8 @@ __desc__ = "Utility functions for ICD10 classification: normalization, label val
 from __future__ import annotations
 
 import re
-import csv
-from pathlib import Path
 from typing import Any, Dict, List
 
-from src.core.config import get_config
-from src.nlp.preprocess import normalize_medical_text
 from src.utils import get_logger
 
 ## ============================================================
@@ -34,22 +30,16 @@ def normalize_data(data: Dict[str, Any]) -> Dict[str, Any]:
             Dict[str, Any]
     """
 
-    config = get_config()
-
     normalized = {}
 
     for key, value in data.items():
 
         ## Normalize string
         if isinstance(value, str):
+            logger.debug(f"Normalizing string: {key}")
+            value = value.strip().upper()
+            value = re.sub(r"\s+", " ", value)
 
-            if config.feature_engineering.enabled:
-                value = normalize_medical_text(value)
-            else:
-                logger.debug(f"Normalizing string: {key}")            
-                value = value.strip().upper()
-                value = re.sub(r"\s+", " ", value)
-        
         ## Normalize list
         if isinstance(value, list):
             logger.debug(f"Normalizing list: {key}")
@@ -223,84 +213,3 @@ def compute_quality_score(data: Dict[str, Any]) -> float:
     logger.debug(f"Quality score: {score}")
 
     return score
-    
-## ============================================================
-## FEATURE ENGINEERING EXPORTS
-## ============================================================
-def export_document_features_to_csv(
-    data: Dict[str, Any],
-    output_path: str,
-) -> None:
-    """
-        Export document-level features to CSV
-
-        Args:
-            data: Input document
-            output_path: Output CSV path
-    """
-
-    try:
-        path = Path(output_path)
-        path.parent.mkdir(parents=True, exist_ok=True)
-
-        text = data.get("text", "")
-        labels = data.get("labels", [])
-
-        with open(path, "w", newline="", encoding="utf-8") as f:
-            writer = csv.writer(f, delimiter=";")
-
-            ## Header
-            writer.writerow([
-                "text_length",
-                "num_labels",
-                "quality_score",
-            ])
-
-            ## Row
-            writer.writerow([
-                len(text),
-                len(labels) if isinstance(labels, list) else 0,
-                compute_quality_score(data),
-            ])
-
-    except Exception as exc:
-        logger.error(f"Failed to export document features: {output_path}")
-        raise
-
-def export_feature_summary(
-    dataset: List[Dict[str, Any]],
-    output_path: str,
-) -> None:
-    """
-        Export dataset-level feature summary
-
-        Args:
-            dataset: List of documents
-            output_path: Output file path
-    """
-
-    try:
-        path = Path(output_path)
-        path.parent.mkdir(parents=True, exist_ok=True)
-
-        lengths = [len(d.get("text", "")) for d in dataset]
-        label_counts = [
-            len(d.get("labels", [])) if isinstance(d.get("labels", []), list) else 0
-            for d in dataset
-        ]
-
-        summary = {
-            "num_samples": len(dataset),
-            "avg_text_length": sum(lengths) / len(lengths) if lengths else 0.0,
-            "avg_num_labels": sum(label_counts) / len(label_counts) if label_counts else 0.0,
-            "min_text_length": min(lengths) if lengths else 0,
-            "max_text_length": max(lengths) if lengths else 0,
-        }
-
-        with open(path, "w", encoding="utf-8") as f:
-            for k, v in summary.items():
-                f.write(f"{k};{v}\n")
-
-    except Exception as exc:
-        logger.error(f"Failed to export feature summary: {output_path}")
-        raise

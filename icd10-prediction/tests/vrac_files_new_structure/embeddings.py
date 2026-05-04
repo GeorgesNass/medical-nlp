@@ -17,7 +17,6 @@ from typing import List, Optional
 import numpy as np
 
 ## Internal imports
-from src.core.config import get_config
 from src.utils.logging_utils import get_logger
 
 ## ============================================================
@@ -107,12 +106,6 @@ def encode_texts(
         normalize_embeddings=normalize,
     )
 
-    ## Feature engineering normalization safety
-    if normalize:
-        norms = np.linalg.norm(embeddings, axis=1, keepdims=True)
-        norms[norms == 0.0] = 1.0
-        embeddings = embeddings / norms
-        
     logger.info("Embeddings shape: %s", embeddings.shape)
 
     return embeddings
@@ -161,49 +154,3 @@ def build_embeddings(
         batch_size=batch_size,
         normalize=normalize,
     )
-    
-## ============================================================
-## FEATURE ENGINEERING WRAPPER
-## ============================================================
-def embed_segments_batch(texts: List[str]) -> List[List[float]]:
-    """
-        Encode texts using global config (feature engineering aware)
-
-        Args:
-            texts: List of texts
-
-        Returns:
-            List of embedding vectors
-    """
-
-    config = get_config()
-
-    embeddings = build_embeddings(
-        texts=texts,
-        model_name=config.model.pretrained_model_name,
-        batch_size=config.feature_engineering.embedding_batch_size,
-        normalize=config.feature_engineering.embedding_normalize,
-        use_gpu=config.runtime.use_gpu,
-    )
-
-    return embeddings.tolist()
-    
-def save_embeddings_cache(
-    embeddings: np.ndarray,
-    output_path: str,
-) -> None:
-    """
-        Save embeddings to disk
-
-        Args:
-            embeddings: Embedding matrix
-            output_path: File path
-    """
-
-    config = get_config()
-
-    if not config.feature_engineering.feature_export_enabled:
-        return
-
-    np.save(output_path, embeddings)
-    logger.info("Saved embeddings cache: %s", output_path)

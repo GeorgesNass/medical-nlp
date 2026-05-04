@@ -18,8 +18,6 @@ import numpy as np
 from scipy import sparse
 
 ## Internal
-from src.core.config import get_config
-from src.nlp.vectorizers import transform_tfidf, preprocess_texts_for_vectorizer
 from src.utils.logging_utils import get_logger
 from src.core.errors import ModelError
 from src.model.train import load_model
@@ -122,8 +120,6 @@ def predict_with_probabilities(
     probs = _get_probabilities(model, X)
     preds = np.argmax(probs, axis=1)
 
-    logger.debug("Prediction pipeline executed | samples=%d", X.shape[0])
-
     return preds, probs
 
 def load_and_predict(
@@ -146,36 +142,3 @@ def load_and_predict(
     model = load_model(model_path)
 
     return predict_with_probabilities(model, X)
-    
-## ============================================================
-## FEATURE ENGINEERING PREDICTION
-## ============================================================
-def predict_from_features(
-    model: Any,
-    vectorizer: Any,
-    texts: List[str],
-) -> Tuple[np.ndarray, np.ndarray]:
-    """
-        Predict directly from raw texts using feature pipeline
-
-        Args:
-            model: Trained model
-            vectorizer: Fitted vectorizer
-            texts: Raw input texts
-
-        Returns:
-            Tuple (preds, probs)
-    """
-
-    config = get_config()
-
-    ## Preprocess texts (shared with training)
-    texts_clean = preprocess_texts_for_vectorizer(texts)
-
-    ## Transform to feature space
-    X = vectorizer.transform(texts_clean)
-
-    ## Predict
-    preds, probs = predict_with_probabilities(model, X)
-
-    return preds, probs
