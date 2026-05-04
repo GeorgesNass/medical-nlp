@@ -15,21 +15,17 @@ import unicodedata
 from typing import Iterable
 
 ## Centralized errors and logging
+from src.core.config import get_config
 from src.core.errors import DataError
-from src.utils.logging_utils import get_logger
-
-## Generic utilities
 from src.utils.utils import ensure_str
-
+from src.utils.logging_utils import get_logger
 
 ## Module-level logger
 logger = get_logger(name="clinical_ner.normalization")
 
-
 ## Regex patterns for normalization
 _MULTI_SPACE_RE = re.compile(r"\s+")
 _ZERO_WIDTH_RE = re.compile(r"[\u200B-\u200D\uFEFF]")
-
 
 def normalize_unicode(text: str) -> str:
     """
@@ -41,6 +37,7 @@ def normalize_unicode(text: str) -> str:
         Returns:
             Normalized text
     """
+    
     ## Ensure input is string
     raw = ensure_str(text)
 
@@ -52,7 +49,6 @@ def normalize_unicode(text: str) -> str:
 
     return normalized
 
-
 def strip_accents(text: str) -> str:
     """
         Remove accents from a text string
@@ -63,10 +59,10 @@ def strip_accents(text: str) -> str:
         Returns:
             Text without accents
     """
+    
     ## Normalize to NFD then drop combining marks
     normalized = unicodedata.normalize("NFD", ensure_str(text))
     return "".join(ch for ch in normalized if unicodedata.category(ch) != "Mn")
-
 
 def normalize_whitespace(text: str) -> str:
     """
@@ -78,10 +74,10 @@ def normalize_whitespace(text: str) -> str:
         Returns:
             Text with normalized whitespace
     """
+    
     ## Replace any whitespace run with a single space
     collapsed = _MULTI_SPACE_RE.sub(" ", ensure_str(text))
     return collapsed.strip()
-
 
 def normalize_case(text: str, mode: str = "lower") -> str:
     """
@@ -97,6 +93,7 @@ def normalize_case(text: str, mode: str = "lower") -> str:
         Raises:
             DataError: If mode is invalid
     """
+    
     ## Normalize mode
     m = ensure_str(mode).strip().lower()
 
@@ -112,7 +109,6 @@ def normalize_case(text: str, mode: str = "lower") -> str:
     msg = f"Invalid case mode: {mode}"
     logger.error(msg)
     raise DataError(msg)
-
 
 def normalize_text(
     text: str,
@@ -132,6 +128,7 @@ def normalize_text(
         Returns:
             Normalized text
     """
+    
     ## Normalize unicode first
     out = normalize_unicode(text)
 
@@ -147,7 +144,6 @@ def normalize_text(
         out = normalize_whitespace(out)
 
     return out
-
 
 def normalize_corpus(
     texts: Iterable[str],
@@ -167,6 +163,7 @@ def normalize_corpus(
         Returns:
             List of normalized texts
     """
+    
     ## Apply normalization to each element
     return [
         normalize_text(
@@ -177,3 +174,52 @@ def normalize_corpus(
         )
         for t in texts
     ]
+
+## ============================================================
+## FEATURE ENGINEERING NORMALIZATION
+## ============================================================
+def normalize_clinical_text(text: str) -> str:
+    """
+        Normalize clinical text using feature engineering configuration
+
+        High-level workflow:
+            1) Normalize unicode
+            2) Optionally remove accents
+            3) Apply casing normalization
+            4) Normalize whitespace
+
+        Args:
+            text: Raw clinical text
+
+        Returns:
+            Normalized clinical text
+    """
+
+    config = get_config()
+    fe = config.feature_engineering
+
+    out = normalize_unicode(text)
+
+    if fe.remove_accents_enabled:
+        out = strip_accents(out)
+
+    if fe.lowercase_enabled:
+        out = out.lower()
+
+    if fe.text_normalization_enabled:
+        out = normalize_whitespace(out)
+
+    return out
+    
+def normalize_entity_text(text: str) -> str:
+    """
+        Normalize entity text (alias of clinical normalization)
+
+        Args:
+            text: Entity text
+
+        Returns:
+            Normalized entity text
+    """
+    
+    return normalize_clinical_text(text)

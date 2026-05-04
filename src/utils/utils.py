@@ -14,7 +14,6 @@ import re
 from datetime import date, datetime
 from typing import Any, Iterable
 
-
 ## ---------------------------------------------------------------------------
 ## Regex patterns (kept here because they are generic project-wide constraints)
 ## ---------------------------------------------------------------------------
@@ -26,11 +25,9 @@ ENTITY_ID_RE = re.compile(r"^ent_[0-9]{6}$")
 RECORD_ID_RE = re.compile(r"^[A-Za-z0-9_.:-]{1,128}$")
 PATIENT_ID_RE = re.compile(r"^[A-Za-z0-9_.:-]{1,128}$")
 
-
 ## ---------------------------------------------------------------------------
 ## String and type normalization helpers
 ## ---------------------------------------------------------------------------
-
 def ensure_str(value: Any) -> str:
     """
         Ensure a value is a string
@@ -41,13 +38,13 @@ def ensure_str(value: Any) -> str:
         Returns:
             A safe string representation
     """
+    
     ## Keep empty string for None to avoid "None" appearing in CSV
     if value is None:
         return ""
     if isinstance(value, str):
         return value
     return str(value)
-
 
 def ensure_str_or_none(value: Any) -> str | None:
     """
@@ -59,14 +56,13 @@ def ensure_str_or_none(value: Any) -> str | None:
         Returns:
             A stripped string or None
     """
+    
     raw = ensure_str(value).strip()
     return raw if raw else None
-
 
 ## ---------------------------------------------------------------------------
 ## Date parsing helpers
 ## ---------------------------------------------------------------------------
-
 def parse_date_to_iso(value: str | None) -> str | None:
     """
         Parse a date-like string into ISO format yyyy-mm-dd
@@ -107,11 +103,9 @@ def parse_date_to_iso(value: str | None) -> str | None:
     ## Fallback: keep original raw string (still useful for traceability)
     return raw
 
-
 ## ---------------------------------------------------------------------------
 ## JSON helpers (safe loads, stable dumps, list extraction)
 ## ---------------------------------------------------------------------------
-
 def safe_json_loads(value: str | None, default: Any = None) -> Any:
     """
         Safely load JSON from a string
@@ -123,6 +117,7 @@ def safe_json_loads(value: str | None, default: Any = None) -> Any:
         Returns:
             Parsed JSON object or default
     """
+    
     if default is None:
         default = []
 
@@ -138,7 +133,6 @@ def safe_json_loads(value: str | None, default: Any = None) -> Any:
     except json.JSONDecodeError:
         return default
 
-
 def json_dumps(data: Any, ensure_ascii: bool = False) -> str:
     """
         Dump data to JSON string with stable settings
@@ -150,9 +144,9 @@ def json_dumps(data: Any, ensure_ascii: bool = False) -> str:
         Returns:
             JSON string
     """
+    
     ## separators for compactness, keep keys order stable if dict insertion order is stable
     return json.dumps(data, ensure_ascii=ensure_ascii, separators=(",", ":"))
-
 
 def load_list_of_dicts_from_json(value: str | None) -> list[dict[str, Any]]:
     """
@@ -174,11 +168,9 @@ def load_list_of_dicts_from_json(value: str | None) -> list[dict[str, Any]]:
             out.append(item)
     return out
 
-
 ## ---------------------------------------------------------------------------
 ## ID helpers
 ## ---------------------------------------------------------------------------
-
 def is_valid_entity_id(entity_id: str) -> bool:
     """
         Check if an entity id matches the canonical format
@@ -189,8 +181,8 @@ def is_valid_entity_id(entity_id: str) -> bool:
         Returns:
             True if valid, otherwise False
     """
+    
     return bool(ENTITY_ID_RE.match(ensure_str(entity_id).strip()))
-
 
 def is_valid_record_id(record_id: str) -> bool:
     """
@@ -202,8 +194,8 @@ def is_valid_record_id(record_id: str) -> bool:
         Returns:
             True if valid, otherwise False
     """
+    
     return bool(RECORD_ID_RE.match(ensure_str(record_id).strip()))
-
 
 def is_valid_patient_id(patient_id: str) -> bool:
     """
@@ -215,8 +207,8 @@ def is_valid_patient_id(patient_id: str) -> bool:
         Returns:
             True if valid, otherwise False
     """
+    
     return bool(PATIENT_ID_RE.match(ensure_str(patient_id).strip()))
-
 
 def ensure_unique_ids(ids: Iterable[str]) -> bool:
     """
@@ -228,14 +220,14 @@ def ensure_unique_ids(ids: Iterable[str]) -> bool:
         Returns:
             True if all unique, otherwise False
     """
+    
     values = [ensure_str(x) for x in ids]
+   
     return len(values) == len(set(values))
-
 
 ## ---------------------------------------------------------------------------
 ## Export helpers (generic, avoid importing core.schema to prevent circular deps)
 ## ---------------------------------------------------------------------------
-
 def records_to_jsonl(records: Iterable[Any]) -> str:
     """
         Serialize records to a JSONL string
@@ -250,6 +242,7 @@ def records_to_jsonl(records: Iterable[Any]) -> str:
         Returns:
             JSONL string
     """
+    
     lines: list[str] = []
 
     for r in records:

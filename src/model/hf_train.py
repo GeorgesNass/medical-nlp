@@ -14,17 +14,15 @@ from pathlib import Path
 from typing import Iterable
 
 ## Centralized errors and logging
+from src.core.config import get_config
 from src.core.errors import ConfigurationError, DataError
-from src.utils.logging_utils import get_logger
-
-## Core domain imports
 from src.core.schema import Record
 from src.core.entities import EntityLabel
-
+from src.nlp.normalization import normalize_clinical_text
+from src.utils.logging_utils import get_logger
 
 ## Module-level logger
 logger = get_logger(name="clinical_ner.hf_train")
-
 
 def _ensure_transformers_available() -> None:
     """
@@ -33,6 +31,7 @@ def _ensure_transformers_available() -> None:
         Raises:
             ConfigurationError: If required libraries are missing
     """
+    
     try:
         import transformers  # noqa: F401 # type: ignore
         import torch  # noqa: F401 # type: ignore
@@ -40,7 +39,6 @@ def _ensure_transformers_available() -> None:
         msg = "transformers and torch are required for Hugging Face training"
         logger.error(msg)
         raise ConfigurationError(msg) from exc
-
 
 def _build_hf_dataset(records: Iterable[Record]) -> list[dict]:
     """
@@ -58,12 +56,21 @@ def _build_hf_dataset(records: Iterable[Record]) -> list[dict]:
     dataset: list[dict] = []
 
     for rec in records:
+        
+        config = get_config()
+        
         if not rec.entities:
             continue
 
+        if config.feature_engineering.enabled:
+            processed_text = normalize_clinical_text(rec.text)
+            logger.info("Feature engineering applied in HF dataset building")
+        else:
+            processed_text = rec.text
+
         dataset.append(
             {
-                "text": rec.text,
+                "text": processed_text,
                 "entities": [
                     {"start": e.start, "end": e.end, "label": e.label.value}
                     for e in rec.entities
@@ -77,7 +84,6 @@ def _build_hf_dataset(records: Iterable[Record]) -> list[dict]:
         raise DataError(msg)
 
     return dataset
-
 
 def train_hf_ner(
     records: Iterable[Record],

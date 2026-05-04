@@ -259,6 +259,27 @@ class DataConsistencyConfig:
     max_entity_span: int
     
 @dataclass(frozen=True)
+class FeatureEngineeringConfig:
+    """
+        Feature engineering configuration
+
+        Args:
+            enabled: Enable feature engineering pipeline
+            text_normalization_enabled: Apply text normalization
+            lowercase_enabled: Apply lowercase normalization
+            remove_accents_enabled: Remove accents from text
+            tokenization_enabled: Enable token-level processing
+            compute_token_stats: Compute token statistics
+    """
+
+    enabled: bool
+    text_normalization_enabled: bool
+    lowercase_enabled: bool
+    remove_accents_enabled: bool
+    tokenization_enabled: bool
+    compute_token_stats: bool
+    
+@dataclass(frozen=True)
 class DictionaryConfig:
     """
         Configuration for dictionary-based auto-labeling
@@ -307,6 +328,7 @@ class AppConfig:
             dictionaries: Dictionary settings
             secrets: Optional secrets
             extra: Additional project-specific metadata
+            feature_engineering: Feature engineering configuration
     """
 
     app_name: str
@@ -319,6 +341,7 @@ class AppConfig:
     secrets: SecretsConfig
     extra: dict[str, Any] = field(default_factory=dict)
     data_consistency: DataConsistencyConfig
+    feature_engineering: FeatureEngineeringConfig
     
 ## ============================================================
 ## DOTENV / ENV HELPERS
@@ -1089,7 +1112,16 @@ def get_config(project_root: str | Path | None = None) -> AppConfig:
         min_text_length=_get_env_int("DATA_CONSISTENCY_MIN_TEXT_LENGTH", 3),
         max_entity_span=_get_env_int("DATA_CONSISTENCY_MAX_ENTITY_SPAN", 100),
     )
-    
+ 
+    feature_engineering = FeatureEngineeringConfig(
+        enabled=_get_env_bool("FEATURE_ENGINEERING_ENABLED", True),
+        text_normalization_enabled=_get_env_bool("FE_TEXT_NORMALIZATION", True),
+        lowercase_enabled=_get_env_bool("FE_LOWERCASE", True),
+        remove_accents_enabled=_get_env_bool("FE_REMOVE_ACCENTS", True),
+        tokenization_enabled=_get_env_bool("FE_TOKENIZATION", True),
+        compute_token_stats=_get_env_bool("FE_TOKEN_STATS", True),
+    )
+     
     ## Build dictionary section
     dictionaries = DictionaryConfig(
         dictionaries_root=paths.artifacts_dictionaries_dir,
@@ -1127,7 +1159,8 @@ def get_config(project_root: str | Path | None = None) -> AppConfig:
             "is_linux": IS_LINUX,
             "is_macos": IS_MACOS,
         },
-        data_consistency=data_consistency,        
+        data_consistency=data_consistency,
+        feature_engineering=feature_engineering,        
     )
 
     ## Validate final configuration

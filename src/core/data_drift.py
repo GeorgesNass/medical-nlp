@@ -13,6 +13,8 @@ from typing import Any, Dict, List, Optional
 
 import pandas as pd
 
+from src.core.config import get_config
+from src.nlp.normalization import normalize_clinical_text
 from src.utils.logging_utils import get_logger
 from src.utils.drift_utils import (
     compute_ks_test,
@@ -218,6 +220,14 @@ def run_data_drift(
     """
 
     issues: List[Dict[str, Any]] = []
+  
+    config = get_config()
+
+    if config.feature_engineering.enabled:
+        if "text" in df_ref.columns:
+            df_ref["text"] = df_ref["text"].astype(str).apply(normalize_clinical_text)
+        if "text" in df_current.columns:
+            df_current["text"] = df_current["text"].astype(str).apply(normalize_clinical_text)  
 
     try:
         if df_ref.empty or df_current.empty:
@@ -253,6 +263,20 @@ def run_data_drift(
         ## TEXT DRIFT
         ref_text = compute_text_stats(df_ref)
         cur_text = compute_text_stats(df_current)
+
+        if config.feature_engineering.enabled:
+            ## Add token-based features
+            ref_text["token_count"] = df_ref["text"].apply(lambda t: len(str(t).split()))
+            cur_text["token_count"] = df_current["text"].apply(lambda t: len(str(t).split()))
+
+            ref_text["avg_token_length"] = df_ref["text"].apply(
+                lambda t: sum(len(w) for w in str(t).split()) / max(1, len(str(t).split()))
+            )
+            cur_text["avg_token_length"] = df_current["text"].apply(
+                lambda t: sum(len(w) for w in str(t).split()) / max(1, len(str(t).split()))
+            )
+            
+            logger.debug("Feature engineering applied in data_drift")
 
         for col in ref_text.columns:
             if col not in cur_text.columns:

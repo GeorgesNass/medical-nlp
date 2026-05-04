@@ -20,7 +20,7 @@ import pytest
 from src.core.data_consistency import run_data_consistency
 from src.core.data_quality import run_data_quality
 from src.core.data_drift import run_data_drift
-from src.core.config import ProjectConfig
+from src.core.config import get_config, ProjectConfig
 from src.core.entities import EntityLabel, EntityProvenance, NegationStatus
 from src.core.errors import ConfigurationError, DataError
 from src.core.schema import Entity, Record
@@ -28,6 +28,7 @@ from src.core.schema import Entity, Record
 ## NLP imports
 from src.nlp.normalization import normalize_text
 from src.nlp.rules import apply_negation_rules, apply_temporality_rules
+from src.nlp.normalization import normalize_clinical_text
 
 ## Pipeline imports
 from src.pipeline import run_pipeline
@@ -44,6 +45,7 @@ def test_normalize_text_basic() -> None:
         Returns:
             None
     """
+    
     out = normalize_text("  Héllo   World  ", to_case="lower", remove_accents=True)
     assert out == "hello world"
 
@@ -57,6 +59,7 @@ def test_entity_validation_ok() -> None:
         Returns:
             None
     """
+    
     ent = Entity(
         id="ent_000001",
         text="aspirin",
@@ -83,6 +86,7 @@ def test_entity_validation_invalid_id() -> None:
         Returns:
             None
     """
+    
     ent = Entity(
         id="bad_id",
         text="aspirin",
@@ -105,6 +109,7 @@ def test_entity_validation_future_for_disease_raises() -> None:
         Returns:
             None
     """
+    
     ent = Entity(
         id="ent_000001",
         text="flu",
@@ -128,6 +133,7 @@ def test_record_validation_duplicate_entity_ids() -> None:
         Returns:
             None
     """
+    
     ent1 = Entity(
         id="ent_000001",
         text="aspirin",
@@ -136,6 +142,7 @@ def test_record_validation_duplicate_entity_ids() -> None:
         label=EntityLabel.MEDICATION,
         meta={},
     )
+    
     ent2 = Entity(
         id="ent_000001",
         text="flu",
@@ -168,6 +175,7 @@ def test_record_validation_span_out_of_bounds_raises() -> None:
         Returns:
             None
     """
+    
     ent = Entity(
         id="ent_000001",
         text="aspirin",
@@ -199,6 +207,7 @@ def test_negation_rules_basic() -> None:
         Returns:
             None
     """
+    
     ent = Entity(
         id="ent_000001",
         text="asthma",
@@ -234,6 +243,7 @@ def test_temporality_rules_basic() -> None:
         Returns:
             None
     """
+    
     ent = Entity(
         id="ent_000001",
         text="diabetes",
@@ -270,6 +280,7 @@ def test_pipeline_no_input_raises() -> None:
         Returns:
             None
     """
+    
     cfg = ProjectConfig.from_env(project_root=Path.cwd())
 
     with pytest.raises(ConfigurationError):
@@ -289,6 +300,7 @@ def test_pipeline_unlabeled_smoke(tmp_path: Path) -> None:
         Returns:
             None
     """
+    
     raw_dir = tmp_path / "raw_texts"
     raw_dir.mkdir(parents=True, exist_ok=True)
     (raw_dir / "doc1.txt").write_text("Patient denies asthma", encoding="utf-8")
@@ -664,3 +676,28 @@ def test_data_drift_strict_mode_ner() -> None:
 
     with pytest.raises(Exception):
         run_data_drift(df_ref=df_ref, df_current=df_cur, strict=True)
+       
+def test_feature_engineering_normalization() -> None:
+    """
+        Validate feature engineering normalization
+
+        High-level workflow:
+            1) Normalize noisy clinical text
+            2) Validate lowercase and whitespace cleanup
+
+        Returns:
+            None
+    """
+
+    config = get_config()
+
+    if not config.feature_engineering.enabled:
+        pytest.skip("Feature engineering disabled")
+
+    text = "ÉLÉVATION   DU  GLUCOSE !!!"
+
+    normalized = normalize_clinical_text(text)
+
+    assert isinstance(normalized, str)
+    assert normalized == normalized.lower()
+    assert "  " not in normalized

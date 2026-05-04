@@ -12,19 +12,24 @@ from __future__ import annotations
 ## Standard library imports
 from pathlib import Path
 from typing import Iterable
+   
+try:
+    import spacy  # type: ignore
+    from spacy.util import minibatch  # type: ignore
+except Exception as exc:
+    msg = "spaCy library is required for training"
+    logger.error(msg)
+    raise ConfigurationError(msg) from exc
 
-## Centralized errors and logging
 from src.core.errors import ConfigurationError, DataError
-from src.utils.logging_utils import get_logger
-
-## Core domain imports
 from src.core.schema import Record
 from src.core.entities import EntityLabel
-
+from src.core.config import get_config
+from src.nlp.normalization import normalize_clinical_text
+from src.utils.logging_utils import get_logger
 
 ## Module-level logger
 logger = get_logger(name="clinical_ner.spacy_train")
-
 
 def _build_spacy_training_data(
     records: Iterable[Record],
@@ -48,6 +53,7 @@ def _build_spacy_training_data(
 
     for rec in records:
         entities = []
+        config = get_config()
 
         for ent in rec.entities:
             if ent.label.value not in allowed_labels:
@@ -56,10 +62,15 @@ def _build_spacy_training_data(
             entities.append((ent.start, ent.end, ent.label.value))
 
         if entities:
-            training_data.append((rec.text, {"entities": entities}))
+            if config.feature_engineering.enabled:
+                processed_text = normalize_clinical_text(rec.text)
+                logger.info("Feature engineering applied in spaCy training data")
+            else:
+                processed_text = rec.text
+
+            training_data.append((processed_text, {"entities": entities}))
 
     return training_data
-
 
 def train_spacy_ner(
     records: Iterable[Record],
@@ -83,13 +94,6 @@ def train_spacy_ner(
             ConfigurationError: If spaCy is not installed
             DataError: If no training data is available
     """
-    try:
-        import spacy  # type: ignore
-        from spacy.util import minibatch  # type: ignore
-    except Exception as exc:
-        msg = "spaCy library is required for training"
-        logger.error(msg)
-        raise ConfigurationError(msg) from exc
 
     ## Build training data
     training_data = _build_spacy_training_data(records, labels)

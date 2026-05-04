@@ -11,6 +11,8 @@ from __future__ import annotations
 
 from typing import Any, Dict, List
 
+from src.core.config import get_config
+from src.nlp.normalization import normalize_clinical_text
 from src.utils import get_logger
 
 ## ============================================================
@@ -36,8 +38,14 @@ def normalize_data(data: Dict[str, Any]) -> Dict[str, Any]:
         ## Normalize string
         if isinstance(value, str):
             logger.debug(f"Normalizing string: {key}")
-            value = value.strip().lower()
 
+            config = get_config()
+
+            if config.feature_engineering.enabled:
+                value = normalize_clinical_text(value)
+            else:
+                value = value.strip().lower()
+                
         ## Normalize entities
         if key == "entities" and isinstance(value, list):
             logger.debug("Normalizing entities")
@@ -183,3 +191,53 @@ def compute_quality_score(data: Dict[str, Any]) -> float:
     logger.debug(f"Quality score: {score}")
 
     return score
+    
+## ============================================================
+## FEATURE ENGINEERING EXPORT
+## ============================================================
+def load_and_normalize_text_from_path(data: Dict[str, Any]) -> str:
+    """
+        Load and normalize text from input dictionary
+
+        High-level workflow:
+            1) Extract text field
+            2) Apply feature engineering normalization if enabled
+
+        Args:
+            data: Input dictionary
+
+        Returns:
+            Normalized text
+    """
+
+    config = get_config()
+
+    text = data.get("text", "")
+
+    if config.feature_engineering.enabled:
+        return normalize_clinical_text(text)
+
+    return str(text).strip()
+
+def export_feature_summary(data: Dict[str, Any]) -> Dict[str, Any]:
+    """
+        Export feature summary for a record
+
+        High-level workflow:
+            1) Extract text
+            2) Compute basic statistics
+
+        Args:
+            data: Input dictionary
+
+        Returns:
+            Dict with feature stats
+    """
+
+    text = data.get("text", "")
+
+    return {
+        "char_length": len(text),
+        "token_count": len(str(text).split()),
+        "quality_score": compute_quality_score(data),
+    }

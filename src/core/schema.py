@@ -209,6 +209,9 @@ class Entity:
             confidence: Optional confidence score in [0, 1]
             source: Provenance of the entity annotation
             meta: Free metadata container
+            normalized_text: Normalized entity text (feature engineering)
+            token_count: Number of tokens in entity text
+            char_length: Character length of entity text            
     """
 
     id: str
@@ -224,6 +227,9 @@ class Entity:
     confidence: float | None = None
     source: EntityProvenance = EntityProvenance.MANUAL
     meta: dict[str, Any] = field(default_factory=dict)
+    normalized_text: str | None = None
+    token_count: int | None = None
+    char_length: int | None = None
 
     def validate(self) -> None:
         """
@@ -288,6 +294,15 @@ class Entity:
         payload["dictionary"] = self.dictionary.value
         payload["negation"] = self.negation.value
         payload["source"] = self.source.value
+
+        ## Feature engineering fields
+        if self.normalized_text is not None:
+            payload["normalized_text"] = self.normalized_text
+        if self.token_count is not None:
+            payload["token_count"] = self.token_count
+        if self.char_length is not None:
+            payload["char_length"] = self.char_length
+            
         return payload
 
     @staticmethod
@@ -336,6 +351,9 @@ class Entity:
             confidence=confidence,
             source=source,
             meta=meta_raw,
+            normalized_text=data.get("normalized_text"),
+            token_count=data.get("token_count"),
+            char_length=data.get("char_length"),
         )
         ent.validate()
         return ent
@@ -498,6 +516,9 @@ class EntityPayload(BaseSchema):
             confidence: Confidence score
             source: Annotation provenance
             meta: Free metadata
+            normalized_text: Normalized entity text (feature engineering)
+            token_count: Number of tokens in entity text
+            char_length: Character length of entity text            
     """
 
     id: str
@@ -513,6 +534,9 @@ class EntityPayload(BaseSchema):
     confidence: float | None = Field(default=None, ge=0.0, le=1.0)
     source: str = EntityProvenance.MANUAL.value
     meta: dict[str, Any] = Field(default_factory=dict)
+    normalized_text: str | None = None
+    token_count: int | None = None
+    char_length: int | None = None
 
     @model_validator(mode="after")
     def validate_entity_payload(self) -> "EntityPayload":

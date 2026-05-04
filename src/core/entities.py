@@ -15,13 +15,13 @@ from enum import Enum
 from typing import Iterable
 
 ## Centralized errors and logging
+from src.core.config import get_config
 from src.core.errors import DataError
+from src.nlp.normalization import normalize_clinical_text
 from src.utils.logging_utils import get_logger
-
 
 ## Module-level logger
 logger = get_logger(name="clinical_ner.entities")
-
 
 class EntityLabel(str, Enum):
     """
@@ -49,7 +49,6 @@ class EntityLabel(str, Enum):
     DURATION = "DURATION"
     ROUTE = "ROUTE"
 
-
 class DictionarySource(str, Enum):
     """
         Dictionary or ontology source identifiers
@@ -64,7 +63,6 @@ class DictionarySource(str, Enum):
     CUSTOM = "custom"
     UMLS = "umls"
 
-
 class EntityProvenance(str, Enum):
     """
         Provenance describing how an entity annotation was obtained
@@ -75,7 +73,6 @@ class EntityProvenance(str, Enum):
     DICT_AUTO = "dict_auto"
     MODEL = "model"
 
-
 class TemporalityMedication(str, Enum):
     """
         Temporality values for MEDICATION entities
@@ -85,7 +82,6 @@ class TemporalityMedication(str, Enum):
     CURRENT = "current"
     CHRONIC = "chronic"
     FUTURE = "future"
-
 
 class TemporalityPathology(str, Enum):
     """
@@ -99,7 +95,6 @@ class TemporalityPathology(str, Enum):
     CURRENT = "current"
     CHRONIC = "chronic"
 
-
 class NegationStatus(str, Enum):
     """
         Negation status for an entity mention
@@ -108,7 +103,6 @@ class NegationStatus(str, Enum):
     NEGATED = "negated"
     NOT_NEGATED = "not_negated"
     UNKNOWN = "unknown"
-
 
 ## Default NER labels
 DEFAULT_NER_LABELS: tuple[EntityLabel, ...] = (
@@ -124,7 +118,6 @@ DEFAULT_NER_LABELS: tuple[EntityLabel, ...] = (
 TEMPORALITY_LABELS_MEDICATION: tuple[EntityLabel, ...] = (EntityLabel.MEDICATION,)
 TEMPORALITY_LABELS_PATHOLOGY: tuple[EntityLabel, ...] = (EntityLabel.DISEASE,)
 
-
 @dataclass(frozen=True, slots=True)
 class TemporalityPolicy:
     """
@@ -137,7 +130,6 @@ class TemporalityPolicy:
 
     medication_values: tuple[TemporalityMedication, ...]
     pathology_values: tuple[TemporalityPathology, ...]
-
 
 ## Global temporality policy
 TEMPORALITY_POLICY = TemporalityPolicy(
@@ -154,7 +146,53 @@ TEMPORALITY_POLICY = TemporalityPolicy(
     ),
 )
 
+## ============================================================
+## FEATURE ENGINEERING ENTITY STRUCTURE
+## ============================================================
+@dataclass(frozen=True, slots=True)
+class EntityFeatures:
+    """
+        Feature representation for an extracted entity
 
+        Args:
+            text: Raw entity text
+            normalized_text: Normalized entity text
+            token_count: Number of tokens
+            char_length: Character length
+    """
+
+    text: str
+    normalized_text: str
+    token_count: int
+    char_length: int
+
+def build_entity_features(text: str) -> EntityFeatures:
+    """
+        Build feature representation for an entity
+
+        Args:
+            text: Raw entity text
+
+        Returns:
+            EntityFeatures
+    """
+
+    config = get_config()
+
+    if config.feature_engineering.enabled:
+        normalized = normalize_clinical_text(text)
+    else:
+        normalized = text.strip()
+
+    tokens = normalized.split()
+
+    return EntityFeatures(
+        text=text,
+        normalized_text=normalized,
+        token_count=len(tokens),
+        char_length=len(normalized),
+    )
+    
 def is_temporality_applicable(label: EntityLabel) -> bool:
     """
         Check whether temporality applies to an entity label
@@ -165,11 +203,11 @@ def is_temporality_applicable(label: EntityLabel) -> bool:
         Returns:
             True if temporality applies, otherwise False
     """
+    
     return (
         label in TEMPORALITY_LABELS_MEDICATION
         or label in TEMPORALITY_LABELS_PATHOLOGY
     )
-
 
 def validate_temporality(label: EntityLabel, temporality: str | None) -> bool:
     """
@@ -211,7 +249,6 @@ def validate_temporality(label: EntityLabel, temporality: str | None) -> bool:
     ## No temporality expected for other labels
     return False
 
-
 def normalize_label(raw_label: str) -> EntityLabel:
     """
         Normalize a raw string into an EntityLabel enum
@@ -233,10 +270,13 @@ def normalize_label(raw_label: str) -> EntityLabel:
         if lbl.value == raw:
             return lbl
 
+    ## Feature engineering hook (no mutation, just trace)
+    if get_config().feature_engineering.enabled:
+        logger.debug(f"Label normalized with FE: {raw}")
+        
     msg = f"Unknown entity label: {raw_label}"
     logger.error(msg)
     raise DataError(msg)
-
 
 def normalize_dictionary_source(raw_source: str) -> DictionarySource:
     """
@@ -262,7 +302,6 @@ def normalize_dictionary_source(raw_source: str) -> DictionarySource:
     msg = f"Unknown dictionary source: {raw_source}"
     logger.error(msg)
     raise DataError(msg)
-
 
 def ensure_unique_entity_ids(entity_ids: Iterable[str]) -> bool:
     """

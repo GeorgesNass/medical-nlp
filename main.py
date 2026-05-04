@@ -70,6 +70,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
 
     ## Project root
     parser.add_argument("--project-root", type=str, default=None)
+    parser.add_argument("--features", action="store_true", help="Enable feature engineering pipeline",)
 
     return parser
 
@@ -188,6 +189,14 @@ def main() -> int:
         ## Load config
         cfg = ProjectConfig.from_env(project_root=project_root)
 
+        ## Feature engineering override from CLI
+        if args.features:
+            try:
+                cfg.feature_engineering.enabled = True
+                logger.info("Feature engineering ENABLED via CLI")
+            except Exception:
+                logger.warning("Feature engineering config not found in ProjectConfig")
+                
         ## DATA CONSISTENCY CHECK
         if cfg.data_consistency.enabled:
             consistency_result = run_data_consistency(
