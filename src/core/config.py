@@ -191,6 +191,18 @@ class RuntimeConfig:
             batch_size: Generic batch size
             batch_sleep_seconds: Sleep delay between batches
             allowed_origins: Allowed origins for future API usage
+            anomaly_detection_enabled: Enable anomaly detection
+            anomaly_method: Detection method (zscore or iqr)
+            z_threshold: Z-score threshold
+            iqr_multiplier: IQR multiplier
+            anomaly_strict_mode: Raise error if anomaly detected
+            drift_detection_enabled: Enable data drift detection
+            drift_p_value_threshold: Statistical p-value threshold for drift detection
+            drift_embedding_threshold: Threshold for embedding drift
+            drift_cluster_threshold: Threshold for cluster distribution drift
+            drift_distance_threshold: Threshold for distance drift
+            drift_evidently_enabled: Enable Evidently report generation
+            drift_strict_mode: Raise error if drift detected            
     """
 
     environment: str
@@ -204,7 +216,19 @@ class RuntimeConfig:
     batch_size: int
     batch_sleep_seconds: float
     allowed_origins: list[str]
-
+    anomaly_detection_enabled: bool
+    anomaly_method: str
+    z_threshold: float
+    iqr_multiplier: float
+    anomaly_strict_mode: bool
+    drift_detection_enabled: bool
+    drift_p_value_threshold: float
+    drift_embedding_threshold: float
+    drift_cluster_threshold: float
+    drift_distance_threshold: float
+    drift_evidently_enabled: bool
+    drift_strict_mode: bool
+    
 @dataclass(frozen=True)
 class ClusteringConfig:
     """
@@ -223,6 +247,23 @@ class ClusteringConfig:
     use_pca: bool
     pca_components: int
     scale_features: bool
+    
+@dataclass(frozen=True)
+class DataConsistencyConfig:
+    """
+        Data consistency configuration
+
+        Args:
+            enabled: Enable consistency checks
+            strict_mode: Raise error if inconsistency
+            min_text_length: Minimum text length
+            embedding_dim: Expected embedding dimension
+    """
+
+    enabled: bool
+    strict_mode: bool
+    min_text_length: int
+    embedding_dim: int
 
 @dataclass(frozen=True)
 class SecretsConfig:
@@ -261,7 +302,8 @@ class AppConfig:
     runtime: RuntimeConfig
     clustering: ClusteringConfig
     secrets: SecretsConfig
-
+    data_consistency: DataConsistencyConfig
+    
 ## ============================================================
 ## DOTENV / ENV HELPERS
 ## ============================================================
@@ -761,12 +803,65 @@ def _validate_config(config: AppConfig) -> None:
     _validate_probability(config.similarity.default_threshold, "DEFAULT_THRESHOLD")
     _validate_thresholds(config.similarity.thresholds)
 
+    ## Validate data consistency config
+    if config.data_consistency.enabled:
+
+        _validate_positive_int(
+            config.data_consistency.min_text_length,
+            "DATA_CONSISTENCY_MIN_TEXT_LENGTH",
+        )
+
+        _validate_positive_int(
+            config.data_consistency.embedding_dim,
+            "DATA_CONSISTENCY_EMBEDDING_DIM",
+        )
+
+        if config.data_consistency.strict_mode and not config.data_consistency.enabled:
+            raise ConfigurationError(
+                "DATA_CONSISTENCY_STRICT requires DATA_CONSISTENCY_ENABLED=True"
+            )
+            
     ## Validate cross-field consistency
     if config.segmentation.window_overlap_tokens >= config.segmentation.window_size_tokens:
         raise ConfigurationError("WINDOW_OVERLAP_TOKENS must be smaller than WINDOW_SIZE_TOKENS.")
     if set(config.similarity.thresholds.keys()) != set(LABELS):
         raise ConfigurationError("Similarity thresholds must contain exactly all known labels.")
 
+    ## Validate anomaly detection config
+    if config.runtime.anomaly_detection_enabled:
+
+        if config.runtime.anomaly_method not in {"zscore", "iqr"}:
+            raise ConfigurationError("ANOMALY_METHOD must be 'zscore' or 'iqr'")
+
+        if config.runtime.z_threshold <= 0:
+            raise ConfigurationError("Z_THRESHOLD must be > 0")
+
+        if config.runtime.iqr_multiplier <= 0:
+            raise ConfigurationError("IQR_MULTIPLIER must be > 0")
+ 
+    ## Validate drift parameters
+    if config.runtime.drift_detection_enabled:
+
+        _validate_probability(
+            config.runtime.drift_p_value_threshold,
+            "DRIFT_P_VALUE_THRESHOLD",
+        )
+
+        _validate_non_negative_float(
+            config.runtime.drift_embedding_threshold,
+            "DRIFT_EMBEDDING_THRESHOLD",
+        )
+
+        _validate_non_negative_float(
+            config.runtime.drift_cluster_threshold,
+            "DRIFT_CLUSTER_THRESHOLD",
+        )
+
+        _validate_non_negative_float(
+            config.runtime.drift_distance_threshold,
+            "DRIFT_DISTANCE_THRESHOLD",
+        )
+        
 ## ============================================================
 ## EXPORT HELPERS
 ## ============================================================
@@ -899,6 +994,18 @@ def get_config() -> AppConfig:
         max_workers=_get_profiled_env_int("MAX_WORKERS", 4, profile),
         batch_sleep_seconds=_get_profiled_env_float("BATCH_SLEEP_SECONDS", 0.0, profile),
         allowed_origins=_get_env_list("ALLOWED_ORIGINS", ["*"]),
+        anomaly_detection_enabled=_get_profiled_env_bool("ANOMALY_DETECTION_ENABLED", True, profile),
+        anomaly_method=_get_profiled_env("ANOMALY_METHOD", "zscore", profile),
+        z_threshold=_get_profiled_env_float("Z_THRESHOLD", 3.0, profile),
+        iqr_multiplier=_get_profiled_env_float("IQR_MULTIPLIER", 1.5, profile),
+        anomaly_strict_mode=_get_profiled_env_bool("ANOMALY_STRICT_MODE", False, profile),
+        drift_detection_enabled=_get_profiled_env_bool("DRIFT_DETECTION_ENABLED", True, profile),
+        drift_p_value_threshold=_get_profiled_env_float("DRIFT_P_VALUE_THRESHOLD", 0.05, profile),
+        drift_embedding_threshold=_get_profiled_env_float("DRIFT_EMBEDDING_THRESHOLD", 0.2, profile),
+        drift_cluster_threshold=_get_profiled_env_float("DRIFT_CLUSTER_THRESHOLD", 0.2, profile),
+        drift_distance_threshold=_get_profiled_env_float("DRIFT_DISTANCE_THRESHOLD", 0.2, profile),
+        drift_evidently_enabled=_get_profiled_env_bool("DRIFT_EVIDENTLY_ENABLED", True, profile),
+        drift_strict_mode=_get_profiled_env_bool("DRIFT_STRICT_MODE", False, profile),        
     )
 
     ## Build segmentation parameters
@@ -936,6 +1043,14 @@ def get_config() -> AppConfig:
         min_positive_labels=_get_profiled_env_int("MIN_POSITIVE_LABELS", 1, profile),
     )
 
+    ## Build data consistency config
+    data_consistency = DataConsistencyConfig(
+        enabled=_get_env_bool("DATA_CONSISTENCY_ENABLED", True),
+        strict_mode=_get_env_bool("DATA_CONSISTENCY_STRICT", False),
+        min_text_length=_get_env_int("DATA_CONSISTENCY_MIN_TEXT_LENGTH", 3),
+        embedding_dim=_get_env_int("DATA_CONSISTENCY_EMBEDDING_DIM", 768),
+    )
+    
     ## Resolve optional secrets from direct Load JSON secrets
     secrets_path = _get_env_path("APP_SECRETS_FILE", "", project_root)
 
@@ -965,6 +1080,7 @@ def get_config() -> AppConfig:
         embeddings=embeddings,
         similarity=similarity,
         secrets=secrets,
+        data_consistency=data_consistency,        
     )
 
     ## Validate final config

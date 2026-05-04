@@ -15,6 +15,7 @@ from typing import Optional, Tuple
 
 import pandas as pd
 
+from src.core.config import AppConfig
 from src.parser.regex_store import ParserResources
 from src.utils.logging_utils import get_logger
 from src.utils.utils import safe_float, safe_strip
@@ -159,27 +160,37 @@ def normalize_unit(
     unit: Optional[str],
     analyte: str,
     resources: ParserResources,
+    config: Optional[AppConfig] = None,
 ) -> Optional[str]:
     """
         Normalize and optionally convert unit based on conversion tables
 
         High-level workflow:
             1) Normalize raw unit string
-            2) Attempt mapping using canonical conversion table (Type/In/Out/Factor)
-            3) Fallback to normalized unit
+            2) Apply feature engineering normalization (e.g., micro symbol handling)
+            3) Attempt mapping using canonical conversion table (Type/In/Out/Factor)
+            4) Fallback to normalized unit
 
         Args:
             unit: Raw unit string
             analyte: Analyte name (used for Type matching in conversion table)
             resources: ParserResources container
+            config: Optional AppConfig to enable feature engineering
 
         Returns:
             Normalized unit string
     """
 
+    use_fe = getattr(config, "feature_engineering", False) if config else False
+    
     ## Normalize raw unit string
     normalized_unit = _normalize_string_unit(unit)
 
+    if use_fe and normalized_unit:
+        ## Extra normalization for noisy lab units
+        normalized_unit = normalized_unit.replace("µ", "u")
+        normalized_unit = normalized_unit.replace("μ", "u")
+        
     if normalized_unit is None:
         return None
 

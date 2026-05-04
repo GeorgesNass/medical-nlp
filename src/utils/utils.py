@@ -52,6 +52,34 @@ def normalize_text(text: Optional[str]) -> str:
 
     return normalized
 
+## ============================================================
+## FEATURE ENGINEERING - TEXT NORMALIZATION
+## ============================================================
+def normalize_clinical_text(text: str) -> str:
+    """
+        Normalize clinical / lab text
+
+        High-level workflow:
+            1) Lowercase
+            2) Remove extra spaces
+            3) Remove special characters (keep units/numbers)
+
+        Args:
+            text: Input string
+
+        Returns:
+            Normalized text
+    """
+
+    if not isinstance(text, str):
+        return ""
+
+    text = text.lower()
+    text = re.sub(r"\s+", " ", text)
+    text = re.sub(r"[^\w\s\.\-/%]", " ", text)
+
+    return text.strip()
+    
 def safe_strip(value: Any) -> str:
     """
         Convert a value to string safely and strip surrounding whitespace
