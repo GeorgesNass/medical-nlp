@@ -90,6 +90,13 @@ def track_clustering_run(
             for key, value in preprocess_params.items():
                 mlflow.log_param(f"preprocess_{key}", value)
 
+            ## Feature engineering flag
+            if "feature_engineering" in preprocess_params:
+                mlflow.log_param(
+                    "feature_engineering",
+                    preprocess_params.get("feature_engineering"),
+                )
+                
             ## Log metrics
             for metric_name, metric_value in metrics.items():
                 try:
@@ -97,6 +104,14 @@ def track_clustering_run(
                 except Exception:
                     continue
 
+            ## Feature engineering metrics (optional)
+            for fe_metric in ["avg_token_length", "avg_char_length"]:
+                if fe_metric in metrics:
+                    try:
+                        mlflow.log_metric(fe_metric, float(metrics[fe_metric]))
+                    except Exception:
+                        continue
+                        
             logger.info(
                 "MLflow run tracked | run_id=%s | experiment=%s",
                 run_id,

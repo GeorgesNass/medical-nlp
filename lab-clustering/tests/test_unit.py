@@ -13,12 +13,17 @@ from typing import Any, Dict
 
 import pandas as pd
 import pytest
+import numpy as np
 
 from src.clustering.algorithms import run_clustering_algorithm
 from src.clustering.preprocess import preprocess_dataset
+from src.core.data_quality import run_data_quality
+from src.core.data_consistency import run_data_consistency
+from src.core.data_drift import run_data_drift
 from src.core.config import AppConfig, build_config
 from src.parser.check_norms import compute_status_from_norms
 from src.parser.format_output import format_structured_output
+from src.utils.utils import normalize_clinical_text
 
 ## ============================================================
 ## TEST HELPERS
@@ -317,3 +322,308 @@ def test_preprocess_and_cluster_smoke() -> None:
     assert "labels" in result
     assert len(result["labels"]) == 4
     assert result["n_clusters"] >= 1
+    
+## ============================================================
+## DATA CONSISTENCY TESTS (CLUSTERING)
+## ============================================================
+def test_data_consistency_valid_clustering() -> None:
+    """
+        Validate correct clustering payload
+
+        High-level workflow:
+            1) Build valid text + embeddings
+            2) Run data consistency
+            3) Assert consistency is True
+
+        Returns:
+            None
+    """
+
+    data = {
+        "text": "patient sodium",
+        "embeddings": [[0.1, 0.2], [0.1, 0.2]],
+    }
+
+    result = run_data_consistency(data=data)
+
+    assert result["is_consistent"] is True
+
+def test_data_consistency_invalid_embeddings_dim() -> None:
+    """
+        Detect inconsistent embedding dimensions
+
+        High-level workflow:
+            1) Build embeddings with different sizes
+            2) Run data consistency
+            3) Assert consistency is False
+
+        Returns:
+            None
+    """
+
+    data = {
+        "text": "test",
+        "embeddings": [[0.1, 0.2], [0.1]],
+    }
+
+    result = run_data_consistency(data=data)
+
+    assert result["is_consistent"] is False
+
+def test_data_consistency_nan_embeddings() -> None:
+    """
+        Detect NaN values in embeddings
+
+        High-level workflow:
+            1) Build embeddings containing NaN
+            2) Run data consistency
+            3) Assert consistency is False
+
+        Returns:
+            None
+    """
+
+    data = {
+        "text": "test",
+        "embeddings": [[0.1, float("nan")]],
+    }
+
+    result = run_data_consistency(data=data)
+
+    assert result["is_consistent"] is False
+
+def test_data_consistency_empty_text() -> None:
+    """
+        Detect empty text input
+
+        High-level workflow:
+            1) Build payload with empty text
+            2) Run data consistency
+            3) Assert consistency is False
+
+        Returns:
+            None
+    """
+
+    data = {
+        "text": "",
+        "embeddings": [[0.1, 0.2]],
+    }
+
+    result = run_data_consistency(data=data)
+
+    assert result["is_consistent"] is False
+    
+## ============================================================
+## DATA QUALITY TESTS (CLUSTERING)
+## ============================================================
+def test_data_quality_valid_embeddings() -> None:
+    """
+        Validate correct embeddings
+    """
+
+    embeddings = [np.array([0.1, 0.2]), np.array([0.2, 0.3])]
+
+    result = run_data_quality(embeddings=embeddings)
+
+    assert result["is_valid"] is True
+
+def test_data_quality_empty_embedding() -> None:
+    """
+        Detect empty embedding
+    """
+
+    embeddings = [np.array([])]
+
+    result = run_data_quality(embeddings=embeddings)
+
+    assert result["is_valid"] is False
+
+def test_data_quality_nan_embedding() -> None:
+    """
+        Detect NaN in embedding
+    """
+
+    embeddings = [np.array([0.1, float("nan")])]
+
+    result = run_data_quality(embeddings=embeddings)
+
+    assert result["is_valid"] is False
+
+def test_data_quality_anomaly_detection() -> None:
+    """
+        Detect abnormal embedding norms
+    """
+
+    embeddings = [
+        np.array([0.1, 0.1]),
+        np.array([100.0, 100.0]),
+    ]
+
+    result = run_data_quality(embeddings=embeddings, method="zscore")
+
+    assert any(i["rule"] == "embedding_norm_anomaly" for i in result["issues"])
+
+def test_data_quality_scoring() -> None:
+    """
+        Ensure score exists
+    """
+
+    embeddings = [np.array([0.1, 0.2])]
+
+    result = run_data_quality(embeddings=embeddings)
+
+    assert "score" in result
+
+def test_data_quality_strict_mode() -> None:
+    """
+        Strict mode raises error
+    """
+
+    embeddings = [np.array([])]
+
+    with pytest.raises(Exception):
+        run_data_quality(embeddings=embeddings, strict=True)
+        
+## ============================================================
+## DATA DRIFT TESTS (CLUSTERING)
+## ============================================================
+def test_data_drift_no_drift_clustering() -> None:
+    """
+        Validate no drift scenario
+
+        High-level workflow:
+            1) Create identical datasets
+            2) Run drift detection
+            3) Validate high score
+
+        Returns:
+            None
+    """
+
+    df_ref = pd.DataFrame({
+        "cluster": [0, 0, 1, 1],
+        "embedding": [[0.1, 0.2]] * 4,
+        "text": ["a", "b", "c", "d"],
+    })
+
+    df_cur = df_ref.copy()
+
+    result = run_data_drift(df_ref=df_ref, df_current=df_cur)
+
+    assert result["drift_score"] >= 0.9
+    assert result["errors"] == 0
+
+def test_data_drift_detected_clustering() -> None:
+    """
+        Detect drift in clustering distribution
+
+        High-level workflow:
+            1) Create different cluster distributions
+            2) Run drift detection
+            3) Validate warnings
+
+        Returns:
+            None
+    """
+
+    df_ref = pd.DataFrame({
+        "cluster": [0, 0, 0, 0],
+        "embedding": [[0.1, 0.2]] * 4,
+    })
+
+    df_cur = pd.DataFrame({
+        "cluster": [1, 1, 1, 1],
+        "embedding": [[10.0, 20.0]] * 4,
+    })
+
+    result = run_data_drift(df_ref=df_ref, df_current=df_cur)
+
+    assert result["drift_score"] < 1.0
+    assert result["warnings"] > 0
+
+def test_data_drift_empty_dataset() -> None:
+    """
+        Validate empty dataset handling
+
+        High-level workflow:
+            1) Use empty datasets
+            2) Expect failure
+
+        Returns:
+            None
+    """
+
+    df_ref = pd.DataFrame()
+    df_cur = pd.DataFrame()
+
+    with pytest.raises(Exception):
+        run_data_drift(df_ref=df_ref, df_current=df_cur)
+
+def test_data_drift_strict_mode() -> None:
+    """
+        Validate strict mode
+
+        High-level workflow:
+            1) Create drift
+            2) Enable strict mode
+            3) Expect exception
+
+        Returns:
+            None
+    """
+
+    df_ref = pd.DataFrame({
+        "cluster": [0],
+    })
+
+    df_cur = pd.DataFrame({
+        "cluster": [1],
+    })
+
+    with pytest.raises(Exception):
+        run_data_drift(df_ref=df_ref, df_current=df_cur, strict=True)
+        
+## ============================================================
+## FEATURE ENGINEERING TESTS
+## ============================================================
+def test_normalize_clinical_text_basic() -> None:
+    """
+        Validate basic clinical text normalization
+
+        High-level workflow:
+            1) Provide raw text with noise
+            2) Normalize text
+            3) Assert expected cleaned output
+
+        Returns:
+            None
+    """
+
+    raw = "  Sodium µmol/L !!!  "
+    normalized = normalize_clinical_text(raw)
+
+    assert normalized == "sodium umol/l"
+    
+def test_text_feature_extraction() -> None:
+    """
+        Validate text feature extraction (length and tokens)
+
+        High-level workflow:
+            1) Normalize text
+            2) Compute token and length features
+            3) Assert expected values
+
+        Returns:
+            None
+    """
+
+    text = "Glucose 5.5 mmol/L"
+    normalized = normalize_clinical_text(text)
+
+    char_length = len(normalized)
+    token_count = len(normalized.split())
+
+    assert char_length > 0
+    assert token_count >= 2    
+    

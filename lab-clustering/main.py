@@ -13,12 +13,16 @@ import argparse
 import subprocess
 import sys
 import time
+import pandas as pd
 from pathlib import Path
 from typing import Any, Dict, Optional
 
 import uvicorn
 
 from src.core.config import config
+from src.core.data_consistency import run_data_consistency
+from src.core.data_quality import run_data_quality
+from src.core.data_drift import run_data_drift
 from src.core.errors import AutonomousAIPlatformError, DependencyError, log_structured_error
 from src.core.streamlit_app import run_streamlit_app
 from src.pipeline import run_chat, run_evaluation, run_loop
@@ -59,7 +63,10 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--version", action="version", version=f"%(prog)s {APP_VERSION}")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--validate-config", action="store_true")
-
+    parser.add_argument("--mode", type=str, default="", help="Optional mode (e.g. drift)")
+    parser.add_argument("--ref", type=str, default="", help="Reference dataset for drift")
+    parser.add_argument("--current", type=str, default="", help="Current dataset for drift")
+    
     ## Execution
     parser.add_argument("--run-ui", action="store_true")
     parser.add_argument("--run-api", action="store_true")
@@ -67,6 +74,7 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--loop", action="store_true")
     parser.add_argument("--evaluate", action="store_true")
     parser.add_argument("--ingest", action="store_true")
+    parser.add_argument("--features", action="store_true", help="Enable feature engineering")
 
     ## Runtime
     parser.add_argument("--prefer-local", action="store_true")
@@ -181,6 +189,8 @@ def main() -> int:
     parser = _build_parser()
     args = parser.parse_args()
 
+    use_fe = bool(args.features)
+    
     try:
         ## Validate config
         if args.validate_config:
@@ -193,7 +203,7 @@ def main() -> int:
             run_streamlit_app()
             return EXIT_SUCCESS
 
-        if not any([args.run_ui, args.run_api, args.chat, args.loop, args.evaluate, args.ingest]):
+        if not any([args.run_ui, args.run_api, args.chat, args.loop, args.evaluate, args.ingest, args.mode == "drift"]):
             parser.print_help()
             return EXIT_SUCCESS
 
@@ -205,6 +215,91 @@ def main() -> int:
         prefer_local = bool(args.prefer_local)
         use_gpu = bool(args.use_gpu)
 
+        ## DATA CONSISTENCY CHECK
+        if config.data_consistency.enabled:
+            consistency_result = run_data_consistency(
+                data={
+                    "text": args.prompt or args.query or "clustering_run",
+                    "embeddings": [[0.1] * config.data_consistency.embedding_dim],
+                    "feature_engineering": use_fe,
+                },
+                strict=config.data_consistency.strict_mode,
+            )
+
+            logger.info(f"Consistency OK: {consistency_result['is_consistent']}")
+
+            if not consistency_result["is_consistent"] and config.data_consistency.strict_mode:
+                raise AutonomousAIPlatformError("Data consistency failed before execution")
+
+        ## DATA QUALITY CHECK
+        if config.runtime.anomaly_detection_enabled:
+            quality_result = run_data_quality(
+                embeddings=[np.array([0.1] * config.data_consistency.embedding_dim)],
+                method=config.runtime.anomaly_method,
+                z_threshold=config.runtime.z_threshold,
+                iqr_multiplier=config.runtime.iqr_multiplier,
+                strict=config.runtime.anomaly_strict_mode,
+                text=args.prompt or args.query,
+            )
+            logger.info(f"Data quality score: {quality_result['score']}")
+
+        ## DATA DRIFT CHECK (CLUSTERING + EVIDENTLY)
+        if args.mode == "drift":
+            """
+                Run data drift detection for clustering datasets
+
+                High-level workflow:
+                    1) Validate input dataset paths
+                    2) Load reference and current datasets
+                    3) Run drift detection pipeline
+                    4) Log drift score and Evidently report
+                    5) Return without executing other actions
+
+                Args:
+                    None
+
+                Returns:
+                    EXIT_SUCCESS if successful
+            """
+
+            if not args.ref or not args.current:
+                raise ValueError("Drift mode requires --ref and --current")
+
+            ref_path = Path(args.ref)
+            cur_path = Path(args.current)
+
+            if not ref_path.exists() or not cur_path.exists():
+                raise ValueError("Drift datasets not found")
+
+            df_ref = pd.read_csv(ref_path)
+            df_cur = pd.read_csv(cur_path)
+
+            drift_result = run_data_drift(
+                df_ref=df_ref,
+                df_current=df_cur,
+                strict=config.runtime.drift_strict_mode,
+            )
+
+            logger.info("Drift score | %s", drift_result["drift_score"])
+
+            if "evidently_report" in drift_result:
+                logger.info("Evidently report | %s", drift_result["evidently_report"])
+
+            if drift_result["errors"] > 0:
+                raise RuntimeError("Data drift detected")
+
+            logger.info(
+                "Summary | %s",
+                _build_summary(
+                    "drift",
+                    True,
+                    start_time,
+                    {"drift_score": drift_result["drift_score"]},
+                ),
+            )
+
+            return EXIT_SUCCESS
+            
         ## UI
         if args.run_ui:
             _run_streamlit_subprocess()
@@ -283,7 +378,7 @@ def main() -> int:
             _safe_str(exc),
         )
         return EXIT_FAILURE
-
+        
 ## ============================================================
 ## ENTRYPOINT
 ## ============================================================

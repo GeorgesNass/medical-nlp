@@ -19,6 +19,7 @@ from src.core.errors import (
     DataValidationError,
     ResourceNotFoundError,
 )
+from src.utils.utils import normalize_clinical_text
 from src.utils.logging_utils import get_logger
 
 ## ============================================================
@@ -317,3 +318,35 @@ def assert_non_empty_df(df: pd.DataFrame, context: str) -> None:
             message=f"Empty DataFrame in {context}",
             details={"context": context},
         )
+
+## ============================================================
+## FEATURE ENGINEERING - TEXT LOADING
+## ============================================================
+def load_and_normalize_text_from_path(path: PathLike) -> str:
+    """
+        Load and normalize text file content
+
+        High-level workflow:
+            1) Validate file path
+            2) Read raw text
+            3) Apply clinical text normalization
+
+        Args:
+            path: Path to TXT file
+
+        Returns:
+            Normalized text content
+    """
+
+    file_path = assert_exists(path, kind="file")
+
+    try:
+        with file_path.open("r", encoding="utf-8", errors="ignore") as f:
+            content = f.read()
+
+        return normalize_clinical_text(content)
+
+    except Exception as exc:
+        logger.error("Failed to load text | path=%s | error=%s", file_path, str(exc))
+        logger.debug("Traceback:", exc_info=True)
+        raise

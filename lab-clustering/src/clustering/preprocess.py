@@ -15,6 +15,7 @@ from typing import Any, Dict, Tuple
 
 import numpy as np
 import pandas as pd
+import re
 from sklearn.decomposition import PCA
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler
@@ -79,6 +80,14 @@ def preprocess_dataset(
                 - Metadata dictionary
     """
 
+    use_fe = bool(preprocess_params.get("feature_engineering", False))
+    
+    if use_fe and "text" in df.columns:
+        df = df.copy()
+        df["normalized_text"] = df["text"].apply(normalize_clinical_text)
+        df["char_length"] = df["normalized_text"].apply(len)
+        df["token_count"] = df["normalized_text"].apply(lambda x: len(x.split()))
+        
     ## Select numeric columns
     numeric_df = _select_numeric_features(df)
 

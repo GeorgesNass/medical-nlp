@@ -20,8 +20,9 @@ from src.core.config import AppConfig
 from src.core.errors import ParsingError
 from src.parser.extract_analytes import extract_analytes_from_text
 from src.parser.format_output import format_structured_output
-from src.metadata.metadata_builder import build_metadata
 from src.parser.regex_store import load_parser_resources
+from src.metadata.metadata_builder import build_metadata
+from src.utils.utils import normalize_clinical_text
 from src.utils.io_utils import assert_exists
 from src.utils.logging_utils import get_logger
 
@@ -90,6 +91,11 @@ def parse_txt_file(
         ## Read TXT content
         text_content = _read_txt_file(txt_path)
 
+        use_fe = getattr(config, "feature_engineering", False)
+
+        if use_fe:
+            text_content = normalize_clinical_text(text_content)
+            
         if not text_content.strip():
             raise ParsingError(
                 message="Empty TXT file",
@@ -102,6 +108,10 @@ def parse_txt_file(
             source_file=txt_path.name,
         )
 
+        if use_fe:
+            metadata["char_length"] = len(text_content)
+            metadata["token_count"] = len(text_content.split())
+            
         ## Extract analyte-level records
         records: List[dict] = extract_analytes_from_text(
             text=text_content,

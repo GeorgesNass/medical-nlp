@@ -19,7 +19,7 @@ from src.core.errors import ValueInterpretationError
 from src.parser.interpret_values import interpret_analyte_line
 from src.parser.regex_store import ParserResources
 from src.utils.logging_utils import get_logger
-from src.utils.utils import normalize_text
+from src.utils.utils import normalize_text, normalize_clinical_text
 
 logger = get_logger(__name__)
 
@@ -118,6 +118,8 @@ def extract_analytes_from_text(
 
     ## Segment text
     lines = _segment_text_into_lines(text)
+        
+    use_fe = getattr(config, "feature_engineering", False)
 
     records: List[Dict[str, Any]] = []
 
@@ -125,8 +127,11 @@ def extract_analytes_from_text(
     for line in lines:
 
         ## Normalize line for matching
-        normalized_line = normalize_text(line)
-
+        if use_fe:
+            normalized_line = normalize_clinical_text(line)
+        else:
+            normalized_line = normalize_text(line)
+            
         ## Detect candidate analyte line
         if not _match_analyte_line(normalized_line, resources.regex):
             continue

@@ -93,6 +93,11 @@ def compute_cluster_profiles(
     df_with_labels = df.copy()
     df_with_labels["cluster"] = labels
 
+    ## Feature engineering - include text stats if present
+    for col in ["char_length", "token_count"]:
+        if col in df.columns:
+            df_with_labels[col] = df[col]
+            
     ## Compute mean profile per cluster
     profiles = (
         df_with_labels

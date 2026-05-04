@@ -20,7 +20,7 @@ from src.parser.check_norms import compute_status_from_norms
 from src.parser.regex_store import ParserResources
 from src.parser.unit_conversion import normalize_unit
 from src.utils.logging_utils import get_logger
-from src.utils.utils import safe_float, safe_strip
+from src.utils.utils import safe_float, safe_strip, normalize_clinical_text
 
 logger = get_logger(__name__)
 
@@ -305,11 +305,15 @@ def interpret_analyte_line(
         ## Prefer metadata category
         resolved_category = analysis_group if analysis_group else inferred_category
 
+        line_for_extraction = normalize_clinical_text(raw_line) if use_fe else raw_line
+
         ## Extract patient value
-        patient_value = _extract_first_number(raw_line)
+        #patient_value = _extract_first_number(raw_line)
+        patient_value = _extract_first_number(line_for_extraction)
 
         ## Extract unit
-        raw_unit = _extract_unit(raw_line)
+        #raw_unit = _extract_unit(raw_line)
+        raw_unit = _extract_unit(line_for_extraction)
 
         ## Normalize unit if possible
         normalized_unit = normalize_unit(
@@ -345,6 +349,9 @@ def interpret_analyte_line(
             "norms_max": norms_max,
             "norms_metric": norms_metric,
             "status": status,
+            "normalized_text": line_for_extraction if use_fe else None,
+            "char_length": len(line_for_extraction) if use_fe else None,
+            "token_count": len(line_for_extraction.split()) if use_fe else None,
         }
 
         return record

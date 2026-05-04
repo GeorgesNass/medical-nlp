@@ -45,6 +45,9 @@ OFFICIAL_COLUMNS: List[str] = [
     "Femme",
     "Homme",
     "Metric",
+    "normalized_text",
+    "token_count",
+    "char_length",    
 ]
 
 ## ============================================================
@@ -185,6 +188,8 @@ def format_structured_output(
 
     out = df.copy()
 
+    use_fe = getattr(config, "feature_engineering", False)
+    
     ## Mandatory metadata columns (placeholders)
     _ensure_column(out, "file", source_file)
     _ensure_column(out, "gender", "")
@@ -209,6 +214,11 @@ def format_structured_output(
     if "norms_metric" not in out.columns:
         out["norms_metric"] = out["structured_data_transform_metric"]
 
+    if use_fe:
+        _ensure_column(out, "normalized_text", "")
+        _ensure_column(out, "token_count", None)
+        _ensure_column(out, "char_length", None)
+        
     ## Type normalization
     _coerce_numeric(out, "structured_data_origin_value")
     _coerce_numeric(out, "structured_data_transform_value")

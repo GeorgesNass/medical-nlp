@@ -15,6 +15,7 @@ import re
 from datetime import date, datetime
 from typing import Dict, Optional, Tuple
 
+from src.utils.utils import normalize_clinical_text
 from src.utils.logging_utils import get_logger
 
 logger = get_logger(__name__)
@@ -245,11 +246,15 @@ def extract_time_metadata(text: str) -> Dict[str, str]:
             Dictionary with keys: sampling_time, dates_edition
     """
 
+    normalized_text = normalize_clinical_text(text)
+    
     ## Extract sampling time
-    sampling_time = extract_sampling_time(text)
+    #sampling_time = extract_sampling_time(text)
+    sampling_time = extract_sampling_time(normalized_text)
 
     ## Extract edition date
-    edition_date = extract_dates_edition(text)
+    #edition_date = extract_dates_edition(text)
+    edition_date = extract_dates_edition(normalized_text)
 
     return {
         "sampling_time": sampling_time,

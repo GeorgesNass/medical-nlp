@@ -23,6 +23,7 @@ from src.core.errors import (
     RegexLoadingError,
     ResourceNotFoundError,
 )
+from src.utils.utils import normalize_clinical_text
 from src.utils.io_utils import assert_exists, read_csv, read_json
 from src.utils.logging_utils import get_logger
 
@@ -232,6 +233,7 @@ def load_keywords(config: AppConfig) -> Dict[str, Dict[str, Any]]:
 
                 category = str(item.get("category", "unknown")).strip()
                 analyte_key = str(item.get("analyte_key", "")).strip()
+                analyte_key = normalize_clinical_text(analyte_key)
 
                 if not analyte_key:
                     continue
@@ -239,7 +241,8 @@ def load_keywords(config: AppConfig) -> Dict[str, Dict[str, Any]]:
                 mapped.setdefault(category, {})
                 mapped[category][analyte_key] = {
                     "regex": str(item.get("regex", "")).strip(),
-                    "display_name": item.get("display_name", analyte_key),
+                    #"display_name": item.get("display_name", analyte_key),
+                    "display_name" = normalize_clinical_text(str(item.get("display_name", analyte_key)))
                     "has_valeur": bool(item.get("has_valeur", False)),
                     "valeur": item.get("valeur", None),
                 }

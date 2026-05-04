@@ -18,7 +18,7 @@ from src.metadata.dim_extractions import extract_dim_metadata
 from src.metadata.time_extractions import extract_time_metadata
 from src.metadata.analysis_group import detect_analysis_group
 from src.utils.logging_utils import get_logger
-
+from src.utils.utils import normalize_clinical_text
 
 logger = get_logger(__name__)
 
@@ -56,14 +56,19 @@ def build_metadata(
     ## Ensure text is not None
     content = text or ""
 
+    normalized_content = normalize_clinical_text(content)
+    
     ## Extract DIM-related metadata
-    dim_meta = extract_dim_metadata(content)
-
+    #dim_meta = extract_dim_metadata(content)
+    dim_meta = extract_dim_metadata(normalized_content)
+    
     ## Extract time-related metadata
-    time_meta = extract_time_metadata(content)
+    #time_meta = extract_time_metadata(content)
+    time_meta = extract_time_metadata(normalized_content)
 
     ## Detect analysis group
-    analysis_group = detect_analysis_group(content)
+    #analysis_group = detect_analysis_group(content)
+    analysis_group = detect_analysis_group(normalized_content)
 
     ## Normalize file name
     file_name = Path(source_file).name
@@ -76,6 +81,9 @@ def build_metadata(
         "sampling_time": time_meta.get("sampling_time", ""),
         "dates_edition": time_meta.get("dates_edition", ""),
         "analysis_group": analysis_group,
+        "char_length": len(normalized_content),
+        "token_count": len(normalized_content.split()),
+        
     }
 
     return metadata
