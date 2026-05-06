@@ -28,6 +28,7 @@ from src.core.schema import Entity, Record
 ## NLP imports
 from src.nlp.normalization import normalize_text
 from src.nlp.rules import apply_negation_rules, apply_temporality_rules
+from src.utils.utils import build_features, push_features, get_features
 from src.nlp.normalization import normalize_clinical_text
 
 ## Pipeline imports
@@ -701,3 +702,84 @@ def test_feature_engineering_normalization() -> None:
     assert isinstance(normalized, str)
     assert normalized == normalized.lower()
     assert "  " not in normalized
+
+## ============================================================
+## FEATURE STORE TESTS
+## ============================================================
+def test_build_features_basic() -> None:
+    """
+        Validate feature engineering output structure
+
+        Design:
+            - Ensure normalized text exists
+            - Ensure length feature exists
+            - Ensure numeric feature exists
+
+        Returns:
+            None
+    """
+
+    row = {"text": "Hello", "value": 10}
+
+    ## Build features
+    features = build_features(row)
+
+    ## Assertions
+    assert "text_normalized" in features
+    assert "text_length" in features
+    assert "value_scaled" in features
+    
+def test_feature_store_roundtrip() -> None:
+    """
+        Validate feature store roundtrip
+
+        Design:
+            - Store features
+            - Retrieve features
+            - Ensure non-empty result
+
+        Returns:
+            None
+    """
+
+    entity_id = "test_entity_fs"
+    features = {"a": 1, "b": 2}
+
+    ## Store features
+    push_features(entity_id, features)
+
+    ## Retrieve features
+    retrieved = get_features(entity_id)
+
+    ## Assertions
+    assert isinstance(retrieved, dict)
+    assert len(retrieved) > 0
+   
+def test_feature_pipeline_integration() -> None:
+    """
+        Validate full feature engineering + feature store pipeline
+
+        Design:
+            - Build features
+            - Store them
+            - Retrieve them
+            - Validate pipeline
+
+        Returns:
+            None
+    """
+
+    row = {"text": "Sample Data", "num": 5}
+
+    ## Build features
+    features = build_features(row)
+
+    ## Store features
+    push_features("entity_test_fs", features)
+
+    ## Retrieve features
+    retrieved = get_features("entity_test_fs")
+
+    ## Assertions
+    assert isinstance(retrieved, dict)
+    assert len(retrieved) > 0
