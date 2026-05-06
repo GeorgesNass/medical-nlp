@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import sys
 import time
+import os
 from contextlib import asynccontextmanager
 import pandas as pd
 from pathlib import Path
@@ -26,6 +27,7 @@ from src.core.data_quality import run_data_quality
 from src.core.data_drift import run_data_drift
 from src.service.routes_expand import router as expand_router
 from src.service.routes_mesh import router as mesh_router
+from src.utils.io_utils import build_features, push_features, get_features
 from src.utils.logging_utils import get_logger
 
 ## ============================================================
@@ -155,6 +157,7 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--ref", type=str, default="", help="Reference dataset for drift")
     parser.add_argument("--current", type=str, default="", help="Current dataset for drift")
     parser.add_argument("--features", action="store_true", help="Enable feature engineering pipeline",)
+    parser.add_argument("--feature-store-mode", type=str, choices=["redis", "feast"], default=None, help="Override FEATURE_STORE_MODE",)  
     
     parser.add_argument("--host", type=str, default="0.0.0.0")
     parser.add_argument("--port", type=int, default=8000)
@@ -214,8 +217,33 @@ def main() -> int:
             config.feature_engineering.enabled = True
             logger.info("Feature engineering enabled via CLI")
         
+        ## FEATURE STORE CONFIG (CLI OVERRIDE)
+        if args.feature_store_mode:
+            os.environ["FEATURE_STORE_MODE"] = args.feature_store_mode
+            logger.info("Feature store mode override | %s", args.feature_store_mode)
+            
         if config.feature_engineering.enabled:
             logger.info("Feature engineering pipeline is ACTIVE")   
+
+        ## FEATURE STORE PIPELINE
+        if config.feature_engineering.enabled:
+
+            ## Build minimal input row
+            row = {
+                "text": "mesh_expansion_run",
+                "value": 1,
+            }
+
+            ## Build features
+            features = build_features(row)
+
+            ## Store features
+            push_features("mesh_entity", features)
+
+            ## Retrieve features
+            retrieved = get_features("mesh_entity")
+
+            logger.info("Feature Store OK | %s", bool(retrieved))
             
         if args.validate_config:
             logger.info("Config OK | env=%s version=%s", settings.environment, settings.app_version)

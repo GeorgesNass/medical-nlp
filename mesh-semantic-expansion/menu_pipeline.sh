@@ -20,10 +20,16 @@ set -euo pipefail
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PYTHON_BIN="${PYTHON_BIN:-python3}"
 
+## ============================================================
+## FEATURE STORE NEW
+## ============================================================
+: "${FEATURE_STORE_MODE:=redis}"
+
 echo "=============================================="
 echo " MeSH Semantic Expansion - Pipeline Menu"
 echo "=============================================="
 echo "Project root: ${PROJECT_ROOT}"
+echo "Feature Store Mode: ${FEATURE_STORE_MODE}"
 echo ""
 
 ## ---------------------------------------------------------------------------
@@ -61,6 +67,13 @@ while true; do
 
   read -rp "Your choice: " choice
 
+  ## ============================================================
+  ## FEATURE STORE PROMPT
+  ## ============================================================
+  read -rp "Feature store mode (redis/feast) [default: ${FEATURE_STORE_MODE}]: " FSM
+  FSM="${FSM:-$FEATURE_STORE_MODE}"
+  export FEATURE_STORE_MODE="$FSM"
+
   case "$choice" in
     1)
       read -rp "MeSH download URL: " MESH_URL
@@ -88,9 +101,9 @@ while true; do
       read -rp "Enable feature engineering? (y/n): " FE
 
       if [[ "$FE" == "y" ]]; then
-        run_python -m src.utils.utils_cli cmd_extract_candidates "$DOCS_DIR" --features
+        run_python -m src.utils.utils_cli cmd_extract_candidates "$DOCS_DIR" --features --feature-store-mode "$FSM"
       else
-        run_python -m src.utils.utils_cli cmd_extract_candidates "$DOCS_DIR"
+        run_python -m src.utils.utils_cli cmd_extract_candidates "$DOCS_DIR" --feature-store-mode "$FSM"
       fi
 
       pause
@@ -108,9 +121,9 @@ while true; do
       echo ""
 
       if [[ "$FE" == "y" ]]; then
-        uvicorn main:app --host 0.0.0.0 --port 8000 --reload --features
+        uvicorn main:app --host 0.0.0.0 --port 8000 --reload --features --feature-store-mode "$FSM"
       else
-        uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+        uvicorn main:app --host 0.0.0.0 --port 8000 --reload --feature-store-mode "$FSM"
       fi
       ;;
     9)
@@ -121,7 +134,8 @@ while true; do
       run_python main.py \
         --mode drift \
         --ref "$REF" \
-        --current "$CUR"
+        --current "$CUR" \
+        --feature-store-mode "$FSM"
 
       pause
       ;;
