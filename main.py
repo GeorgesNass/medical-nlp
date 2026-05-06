@@ -16,6 +16,7 @@ import time
 import pandas as pd
 from pathlib import Path
 from typing import Any, Dict, Optional
+import os
 
 import uvicorn
 
@@ -30,6 +31,7 @@ from src.utils.env_utils import _get_env_int
 from src.utils.logging_utils import get_logger
 from src.utils.safe_utils import _safe_json, _safe_str
 from src.utils.validation_utils import _must_be_non_empty
+from src.utils.io_utils import build_features, push_features, get_features
 
 ## ============================================================
 ## CONSTANTS
@@ -75,6 +77,7 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--evaluate", action="store_true")
     parser.add_argument("--ingest", action="store_true")
     parser.add_argument("--features", action="store_true", help="Enable feature engineering")
+    parser.add_argument("--feature-store-mode", type=str, choices=["redis", "feast"], default=None, help="Override FEATURE_STORE_MODE",)
 
     ## Runtime
     parser.add_argument("--prefer-local", action="store_true")
@@ -189,8 +192,31 @@ def main() -> int:
     parser = _build_parser()
     args = parser.parse_args()
 
+    if args.feature_store_mode:
+        os.environ["FEATURE_STORE_MODE"] = args.feature_store_mode
+        
     use_fe = bool(args.features)
-    
+ 
+    ## FEATURE ENGINEERING + FEATURE STORE
+    if use_fe:
+
+        ## Build input row from CLI context
+        sample_row = {
+            "text": args.prompt or args.query or "clustering_run",
+            "value": 1,
+        }
+
+        ## Build features
+        features = build_features(sample_row)
+
+        ## Store features
+        push_features("clustering_entity", features)
+
+        ## Retrieve features
+        retrieved_features = get_features("clustering_entity")
+
+        logger.info("Feature Store OK | %s", bool(retrieved_features))
+        
     try:
         ## Validate config
         if args.validate_config:

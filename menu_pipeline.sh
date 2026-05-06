@@ -20,10 +20,14 @@ set -euo pipefail
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PYTHON_BIN="${PYTHON_BIN:-python3}"
 
+## FEATURE STORE NEW
+: "${FEATURE_STORE_MODE:=redis}"
+
 echo "=============================================="
 echo " Lab-Clustering - Pipeline Menu (data consistency + data quality)"
 echo "=============================================="
 echo "Project root: ${PROJECT_ROOT}"
+echo "Feature Store Mode: ${FEATURE_STORE_MODE}"
 echo ""
 
 pause() {
@@ -52,6 +56,11 @@ while true; do
 
   read -rp "Your choice: " choice
 
+  ## FEATURE STORE NEW
+  read -rp "Feature store mode (redis/feast) [default: ${FEATURE_STORE_MODE}]: " FSM
+  FSM="${FSM:-$FEATURE_STORE_MODE}"
+  export FEATURE_STORE_MODE="$FSM"
+
   case "$choice" in
     1)
       read -rp "TXT files (comma separated) [default: all in ./data/raw]: " TXT_FILES
@@ -65,15 +74,15 @@ while true; do
 
       if [[ "$OVERWRITE" == "y" || "$OVERWRITE" == "Y" ]]; then
         if [[ "$FE" == "y" || "$FE" == "Y" ]]; then
-          run_python main.py --parse-txt --txt-files "$TXT_FILES" --overwrite --features
+          run_python main.py --parse-txt --txt-files "$TXT_FILES" --overwrite --features --feature-store-mode "$FSM"
         else
-          run_python main.py --parse-txt --txt-files "$TXT_FILES" --overwrite
+          run_python main.py --parse-txt --txt-files "$TXT_FILES" --overwrite --feature-store-mode "$FSM"
         fi
       else
         if [[ "$FE" == "y" || "$FE" == "Y" ]]; then
-          run_python main.py --parse-txt --txt-files "$TXT_FILES" --features
+          run_python main.py --parse-txt --txt-files "$TXT_FILES" --features --feature-store-mode "$FSM"
         else
-          run_python main.py --parse-txt --txt-files "$TXT_FILES"
+          run_python main.py --parse-txt --txt-files "$TXT_FILES" --feature-store-mode "$FSM"
         fi
       fi
 
@@ -92,15 +101,15 @@ while true; do
 
       if [[ "$OVERWRITE" == "y" || "$OVERWRITE" == "Y" ]]; then
         if [[ "$FE" == "y" || "$FE" == "Y" ]]; then
-          run_python main.py --build-dataset --dataset-format "$FORMAT" --overwrite --features
+          run_python main.py --build-dataset --dataset-format "$FORMAT" --overwrite --features --feature-store-mode "$FSM"
         else
-          run_python main.py --build-dataset --dataset-format "$FORMAT" --overwrite
+          run_python main.py --build-dataset --dataset-format "$FORMAT" --overwrite --feature-store-mode "$FSM"
         fi
       else
         if [[ "$FE" == "y" || "$FE" == "Y" ]]; then
-          run_python main.py --build-dataset --dataset-format "$FORMAT" --features
+          run_python main.py --build-dataset --dataset-format "$FORMAT" --features --feature-store-mode "$FSM"
         else
-          run_python main.py --build-dataset --dataset-format "$FORMAT"
+          run_python main.py --build-dataset --dataset-format "$FORMAT" --feature-store-mode "$FSM"
         fi
       fi
 
@@ -125,7 +134,7 @@ while true; do
       APPLY_PCA="${APPLY_PCA:-n}"
       OVERWRITE="${OVERWRITE:-n}"
 
-      CMD="main.py --cluster --dataset-path \"$DATASET_PATH\" --algorithm \"$ALGO\" --n-clusters \"$NCLUST\" --pca-n-components \"$PCA_COMP\""
+      CMD="main.py --cluster --dataset-path \"$DATASET_PATH\" --algorithm \"$ALGO\" --n-clusters \"$NCLUST\" --pca-n-components \"$PCA_COMP\" --feature-store-mode \"$FSM\""
 
       if [[ "$APPLY_PCA" == "y" || "$APPLY_PCA" == "Y" ]]; then
         CMD="$CMD --apply-pca"
@@ -148,9 +157,9 @@ while true; do
       FE="${FE:-n}"
 
       if [[ "$FE" == "y" || "$FE" == "Y" ]]; then
-        run_python main.py --eda --features
+        run_python main.py --eda --features --feature-store-mode "$FSM"
       else
-        run_python main.py --eda
+        run_python main.py --eda --feature-store-mode "$FSM"
       fi
 
       pause
@@ -169,9 +178,9 @@ while true; do
       NCLUST="${NCLUST:-3}"
 
       if [[ "$FE" == "y" || "$FE" == "Y" ]]; then
-        run_python main.py --run-all --dataset-format "$FORMAT" --algorithm "$ALGO" --n-clusters "$NCLUST" --features
+        run_python main.py --run-all --dataset-format "$FORMAT" --algorithm "$ALGO" --n-clusters "$NCLUST" --features --feature-store-mode "$FSM"
       else
-        run_python main.py --run-all --dataset-format "$FORMAT" --algorithm "$ALGO" --n-clusters "$NCLUST"
+        run_python main.py --run-all --dataset-format "$FORMAT" --algorithm "$ALGO" --n-clusters "$NCLUST" --feature-store-mode "$FSM"
       fi
 
       pause
@@ -186,9 +195,9 @@ while true; do
       RELOAD="${RELOAD:-n}"
 
       if [[ "$RELOAD" == "y" || "$RELOAD" == "Y" ]]; then
-        run_python main.py --run-api --host "$HOST" --port "$PORT" --reload
+        run_python main.py --run-api --host "$HOST" --port "$PORT" --reload --feature-store-mode "$FSM"
       else
-        run_python main.py --run-api --host "$HOST" --port "$PORT"
+        run_python main.py --run-api --host "$HOST" --port "$PORT" --feature-store-mode "$FSM"
       fi
 
       pause
@@ -198,7 +207,7 @@ while true; do
       echo "Running data quality check..."
       echo ""
 
-      run_python main.py --validate-config
+      run_python main.py --validate-config --feature-store-mode "$FSM"
 
       pause
       ;;
@@ -209,7 +218,8 @@ while true; do
       run_python main.py \
         --mode drift \
         --ref "$REF" \
-        --current "$CUR"
+        --current "$CUR" \
+        --feature-store-mode "$FSM"
 
       pause
       ;;

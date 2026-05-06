@@ -23,6 +23,7 @@ from src.core.data_drift import run_data_drift
 from src.core.config import AppConfig, build_config
 from src.parser.check_norms import compute_status_from_norms
 from src.parser.format_output import format_structured_output
+from src.utils.io_utils import build_features, push_features, get_features
 from src.utils.utils import normalize_clinical_text
 
 ## ============================================================
@@ -626,4 +627,84 @@ def test_text_feature_extraction() -> None:
 
     assert char_length > 0
     assert token_count >= 2    
+
+## ============================================================
+## FEATURE STORE TESTS
+## ============================================================
+def test_build_features_basic() -> None:
+    """
+        Validate feature engineering output structure
+
+        Design:
+            - Ensure normalized text feature exists
+            - Ensure length feature exists
+            - Ensure numeric feature exists
+
+        Returns:
+            None
+    """
+
+    row = {"text": "Hello", "value": 10}
+
+    ## Build features
+    features = build_features(row)
+
+    ## Assertions
+    assert "text_normalized" in features
+    assert "text_length" in features
+    assert "value_scaled" in features
     
+def test_feature_store_roundtrip() -> None:
+    """
+        Validate feature store roundtrip (Redis / Feast)
+
+        Design:
+            - Store features
+            - Retrieve features
+            - Ensure non-empty result
+
+        Returns:
+            None
+    """
+
+    entity_id = "test_entity_fs"
+    features = {"a": 1, "b": 2}
+
+    ## Store features
+    push_features(entity_id, features)
+
+    ## Retrieve features
+    retrieved = get_features(entity_id)
+
+    ## Assertions
+    assert isinstance(retrieved, dict)
+    assert len(retrieved) > 0
+    
+def test_feature_engineering_pipeline_integration() -> None:
+    """
+        Validate full feature engineering + feature store integration
+
+        Design:
+            - Build features
+            - Store them
+            - Retrieve them
+            - Validate pipeline consistency
+
+        Returns:
+            None
+    """
+
+    row = {"text": "Sample Data", "num": 5}
+
+    ## Build features
+    features = build_features(row)
+
+    ## Store features
+    push_features("entity_test_fs", features)
+
+    ## Retrieve features
+    retrieved = get_features("entity_test_fs")
+
+    ## Assertions
+    assert isinstance(retrieved, dict)
+    assert len(retrieved) > 0
