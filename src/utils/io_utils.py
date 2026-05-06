@@ -10,12 +10,18 @@ __desc__ = "Safe IO helpers for CSV/JSONL/Parquet, with path validation and cons
 from __future__ import annotations
 
 ## Standard library imports
+## Third-party imports
 import json
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional
-
-## Third-party imports
 import pandas as pd
+import os
+import redis
+
+try:
+    from feast import FeatureStore
+except Exception:
+    FeatureStore = None
 
 ## Internal imports
 from src.core.config import get_config
@@ -24,6 +30,19 @@ from src.utils.logging_utils import get_logger
 from src.core.errors import (
     log_and_raise_missing_file,
     log_and_raise_missing_folder,
+)
+
+FEATURE_STORE_MODE = os.getenv("FEATURE_STORE_MODE", "redis")
+
+REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
+REDIS_PORT = int(os.getenv("REDIS_PORT", 6379))
+
+FEAST_REPO_PATH = os.getenv("FEAST_REPO_PATH", "./feature_repo")
+
+redis_client = redis.Redis(
+    host=REDIS_HOST,
+    port=REDIS_PORT,
+    decode_responses=True
 )
 
 ## ============================================================
@@ -376,3 +395,122 @@ def load_and_normalize_text_from_path(
         return normalize_medical_text(text)
 
     return text    
+    
+## ============================================================
+## FEATURE ENGINEERING (STORE READY)
+## ============================================================
+def build_features(row: Dict[str, Any]) -> Dict[str, Any]:
+    """
+        Build structured features from input row
+
+        Design:
+            - Lightweight feature engineering
+            - Compatible with all pipelines
+            - Uses normalized text when available
+
+        Args:
+            row: Input dictionary
+
+        Returns:
+            Feature dictionary
+    """
+
+    features: Dict[str, Any] = {}
+
+    for key, value in row.items():
+
+        ## Convert safely to string
+        value_str = str(value)
+
+        ## TEXT FEATURES
+        if isinstance(value, str):
+
+            normalized = value_str.lower()
+
+            features[f"{key}_normalized"] = normalized
+            features[f"{key}_length"] = len(normalized)
+
+        ## NUMERIC FEATURES
+        if isinstance(value, (int, float)):
+
+            features[f"{key}_scaled"] = value
+
+    logger.debug("Features built | keys=%s", list(features.keys()))
+
+    return features
+    
+## ============================================================
+## FEATURE STORE (REDIS + FEAST)
+## ============================================================
+def push_features(entity_id: str, features: Dict[str, Any]) -> None:
+    """
+        Store features in feature store
+
+        Design:
+            - Redis for local mode
+            - Feast for production mode
+            - Controlled via FEATURE_STORE_MODE
+
+        Args:
+            entity_id: Unique identifier
+            features: Feature dictionary
+
+        Returns:
+            None
+    """
+
+    if FEATURE_STORE_MODE == "redis":
+
+        redis_client.hset(entity_id, mapping=features)
+        logger.info("Features stored in Redis | entity_id=%s", entity_id)
+
+    else:
+
+        import pandas as pd
+
+        if FeatureStore is None:
+            raise ImportError("Feast is not installed")
+
+        store = FeatureStore(repo_path=FEAST_REPO_PATH)
+
+        df = pd.DataFrame([{**features, "entity_id": entity_id}])
+
+        store.write_to_online_store(df)
+
+        logger.info("Features stored in Feast | entity_id=%s", entity_id)
+
+def get_features(entity_id: str) -> Dict[str, Any]:
+    """
+        Retrieve features from feature store
+
+        Design:
+            - Unified interface (Redis / Feast)
+
+        Args:
+            entity_id: Unique identifier
+
+        Returns:
+            Feature dictionary
+    """
+
+    if FEATURE_STORE_MODE == "redis":
+
+        result = redis_client.hgetall(entity_id)
+        logger.info("Features retrieved from Redis | entity_id=%s", entity_id)
+        return result
+
+    else:
+
+        if FeatureStore is None:
+            raise ImportError("Feast is not installed")
+
+        store = FeatureStore(repo_path=FEAST_REPO_PATH)
+
+        result = store.get_online_features(
+            features=["features:*"],
+            entity_rows=[{"entity_id": entity_id}]
+        ).to_dict()
+
+        logger.info("Features retrieved from Feast | entity_id=%s", entity_id)
+
+        return result

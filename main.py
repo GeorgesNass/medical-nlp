@@ -12,12 +12,14 @@ from __future__ import annotations
 import argparse
 import sys
 import time
+import os
 from pathlib import Path
 from typing import Optional
 
 import pandas as pd
 import uvicorn
 
+from src.utils.io_utils import build_features, push_features, get_features
 from src.utils.logging_utils import get_logger
 from src.core.data_consistency import run_data_consistency
 from src.core.data_quality import run_data_quality
@@ -75,6 +77,7 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--validate-config", action="store_true", help="Validate configuration loading and resolved default paths, then exit.")
     parser.add_argument("--mode", type=str, default="", help="Optional mode (e.g. drift).")
     parser.add_argument("--features", action="store_true", help="Enable feature engineering pipeline")
+    parser.add_argument("--feature-store-mode", type=str, choices=["redis", "feast"], default=None, help="Override FEATURE_STORE_MODE",)
 
     ## Main action flags
     parser.add_argument("--parse-rss", action="store_true", help="Parse all raw RSS files and export a consolidated CSV.")
@@ -278,6 +281,30 @@ def main() -> int:
             logger.info("Feature engineering ENABLED via CLI")
         else:
             logger.info("Feature engineering DISABLED (using config)")
+ 
+        if args.feature_store_mode:
+            os.environ["FEATURE_STORE_MODE"] = args.feature_store_mode
+            logger.info("Feature store mode override | %s", args.feature_store_mode)
+
+        ## FEATURE STORE PIPELINE
+        if config.feature_engineering.enabled:
+
+            ## Minimal row for feature pipeline
+            row = {
+                "text": "icd10_run",
+                "value": 1,
+            }
+
+            ## Build features
+            features = build_features(row)
+
+            ## Push to store
+            push_features("icd10_entity", features)
+
+            ## Retrieve
+            retrieved = get_features("icd10_entity")
+
+            logger.info("Feature Store OK | %s", bool(retrieved))
             
         if args.validate_config:
             logger.info("Configuration validation succeeded")

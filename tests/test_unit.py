@@ -23,6 +23,7 @@ from src.nlp.vectorizers import build_tfidf_vectorizer, fit_transform_tfidf
 from src.model.train import TrainingConfig, train_model
 from src.model.predict import predict_with_probabilities
 from src.model.evaluate import compute_basic_metrics
+from src.utils.io_utils import build_features, push_features, get_features
 
 ## ============================================================
 ## TEST: TOP-K SELECTION
@@ -455,3 +456,66 @@ def test_feature_engineering_vectorizer_pipeline() -> None:
     X = fit_transform_tfidf(vectorizer, texts)
 
     assert X.shape[0] == len(texts)
+  
+## ============================================================
+## FEATURE STORE TESTS
+## ============================================================
+def test_feature_store_build_features() -> None:
+    """
+        Validate feature engineering output
+
+        Returns:
+            None
+    """
+
+    row = {
+        "text": "Diabetes",
+        "value": 10,
+    }
+
+    features = build_features(row)
+
+    assert isinstance(features, dict)
+    assert "text_normalized" in features
+    
+def test_feature_store_push_get() -> None:
+    """
+        Validate feature store roundtrip
+
+        Returns:
+            None
+    """
+
+    entity_id = "test_entity_fs"
+    features = {"a": "1", "b": "2"}
+
+    push_features(entity_id, features)
+
+    result = get_features(entity_id)
+
+    assert isinstance(result, dict)
+    assert len(result) > 0
+    
+def test_feature_store_full_pipeline() -> None:
+    """
+        Validate full feature store pipeline
+
+        Returns:
+            None
+    """
+
+    row = {
+        "text": "Hypertension",
+        "num": 5,
+    }
+
+    features = build_features(row)
+
+    push_features("entity_fs_pipeline", features)
+
+    result = get_features("entity_fs_pipeline")
+
+    assert isinstance(result, dict)
+    assert len(result) > 0
+    assert "text_length" in features
+    assert "value_scaled" in features
