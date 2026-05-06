@@ -27,6 +27,7 @@ from src.nlp.embeddings import emb_mod, embed_texts
 from src.nlp.expand_terms import _find_abbreviation_patterns
 from src.nlp.judge_quality import JudgeResult, judge_baseline
 from src.nlp.ner_mesh import build_label_dictionary, detect_entities
+from src.utils.io_utils import build_features, push_features, get_features
 
 ## ============================================================
 ## NLP: JUDGE QUALITY
@@ -809,3 +810,93 @@ def test_feature_engineering_normalization() -> None:
     assert isinstance(normalized, str)
     assert normalized == normalized.lower()
     assert "  " not in normalized
+    
+## ============================================================
+## FEATURE STORE TESTS
+## ============================================================
+def test_feature_store_build_features() -> None:
+    """
+        Validate feature engineering output
+
+        High-level workflow:
+            1) Build features from simple input
+            2) Validate presence of expected keys
+
+        Returns:
+            None
+    """
+
+    ## Prepare input
+    row = {
+        "text": "Hypertension",
+        "value": 10,
+    }
+
+    ## Build features
+    features = build_features(row)
+
+    ## Validate output structure
+    assert isinstance(features, dict)
+    assert "text_normalized" in features
+    assert "text_length" in features
+    assert "value_scaled" in features
+    
+def test_feature_store_push_get() -> None:
+    """
+        Validate feature store roundtrip
+
+        High-level workflow:
+            1) Push features to store
+            2) Retrieve them
+            3) Validate non-empty output
+
+        Returns:
+            None
+    """
+
+    ## Prepare data
+    entity_id = "test_entity"
+    features = {"a": 1, "b": 2}
+
+    ## Push features
+    push_features(entity_id, features)
+
+    ## Retrieve features
+    result = get_features(entity_id)
+
+    ## Validate result
+    assert isinstance(result, dict)
+    assert len(result) > 0
+
+def test_feature_store_full_pipeline() -> None:
+    """
+        Validate full feature engineering pipeline
+
+        High-level workflow:
+            1) Build features
+            2) Store them
+            3) Retrieve them
+            4) Validate pipeline
+
+        Returns:
+            None
+    """
+
+    ## Prepare input
+    row = {
+        "text": "Diabetes Mellitus",
+        "num": 5,
+    }
+
+    ## Build features
+    features = build_features(row)
+
+    ## Push features
+    push_features("entity_fs", features)
+
+    ## Retrieve features
+    result = get_features("entity_fs")
+
+    ## Validate pipeline
+    assert isinstance(result, dict)
+    assert len(result) > 0    
