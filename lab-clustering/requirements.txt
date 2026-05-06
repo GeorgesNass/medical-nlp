@@ -8,6 +8,8 @@ matplotlib==3.8.4
 seaborn==0.13.2
 pytest==8.1.1
 tqdm==4.66.4
+redis>=5.0.0
+feast>=0.39.0
 
 # pandas==2.2.2
 # numpy==1.26.4
