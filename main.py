@@ -13,6 +13,7 @@ from __future__ import annotations
 import argparse
 import sys
 import time
+import os
 import pandas as pd
 from pathlib import Path
 from typing import Optional
@@ -29,6 +30,7 @@ from src.pipeline import (
     predict_labels_for_unlabeled,
 )
 from src.utils.normalization import normalize_medical_text
+from src.utils.io_utils import build_features, push_features, get_features
 from src.utils.logging_utils import get_logger
 
 ## ============================================================
@@ -60,6 +62,7 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--ref", type=str, default="", help="Reference dataset path for drift.")
     parser.add_argument("--current", type=str, default="", help="Current dataset path for drift.")    
     parser.add_argument("--features", action="store_true", help="Enable feature engineering pipeline")
+    parser.add_argument("--feature-store-mode", type=str, choices=["redis", "feast"], default=None, help="Override FEATURE_STORE_MODE",)
 
     ## Actions
     parser.add_argument("--build-index", action="store_true")
@@ -138,13 +141,7 @@ def main() -> int:
 
     parser = _build_parser()
     args = parser.parse_args()
-
-    ## Feature engineering flag (CLI override)
-    if args.features:
-        logger.info("Feature engineering ENABLED via CLI")
-    else:
-        logger.info("Feature engineering DISABLED via CLI (using config)")
-        
+      
     try:
         ## Validate runtime
         runtime = _validate_runtime()
@@ -159,6 +156,37 @@ def main() -> int:
 
             logger.info("Consistency OK | %s", consistency_result["is_consistent"])
 
+        ## Feature engineering flag (CLI override)
+        if args.features:
+            logger.info("Feature engineering ENABLED via CLI")
+        else:
+            logger.info("Feature engineering DISABLED via CLI (using config)")
+       
+        ## FEATURE STORE CONFIG (CLI OVERRIDE)
+        if args.feature_store_mode:
+            os.environ["FEATURE_STORE_MODE"] = args.feature_store_mode
+            logger.info("Feature store mode override | %s", args.feature_store_mode)
+      
+        ## FEATURE STORE PIPELINE
+        if CONFIG.feature_engineering.enabled or args.features:
+
+            ## Minimal example row (adaptable)
+            row = {
+                "text": "doc_classification_run",
+                "value": 1,
+            }
+
+            ## Build features
+            features = build_features(row)
+
+            ## Store
+            push_features("doc_entity", features)
+
+            ## Retrieve
+            retrieved = get_features("doc_entity")
+
+            logger.info("Feature Store OK | %s", bool(retrieved))
+            
         ## DATA QUALITY CHECK
         if CONFIG.runtime.anomaly_detection_enabled:
 
