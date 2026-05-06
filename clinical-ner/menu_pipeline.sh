@@ -20,6 +20,9 @@ set -euo pipefail
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PYTHON_BIN="${PYTHON_BIN:-python3}"
 
+## FEATURE STORE NEW
+: "${FEATURE_STORE_MODE:=redis}"
+
 ## Ensure project root is on PYTHONPATH
 export PYTHONPATH="${PROJECT_ROOT}:${PYTHONPATH:-}"
 
@@ -28,6 +31,7 @@ echo " Clinical NER - Pipeline Menu (data consistency + data quality)"
 echo "=============================================="
 echo "Project root: ${PROJECT_ROOT}"
 echo "Python bin  : ${PYTHON_BIN}"
+echo "Feature Store Mode: ${FEATURE_STORE_MODE}"
 echo ""
 
 ## ---------------------------------------------------------------------------
@@ -78,6 +82,11 @@ while true; do
 
   read -rp "Your choice: " choice
 
+  ## FEATURE STORE NEW
+  read -rp "Feature store mode (redis/feast) [default: ${FEATURE_STORE_MODE}]: " FSM
+  FSM="${FSM:-$FEATURE_STORE_MODE}"
+  export FEATURE_STORE_MODE="$FSM"
+
   case "${choice}" in
 
     1)
@@ -94,12 +103,14 @@ while true; do
           --labeled-csv "${LABELED_CSV}" \
           --output-csv "${OUT_CSV}" \
           --project-root "${PROJECT_ROOT}" \
-          --features
+          --features \
+          --feature-store-mode "${FSM}"
       else
         run_python "${PROJECT_ROOT}/main.py" \
           --labeled-csv "${LABELED_CSV}" \
           --output-csv "${OUT_CSV}" \
-          --project-root "${PROJECT_ROOT}"
+          --project-root "${PROJECT_ROOT}" \
+          --feature-store-mode "${FSM}"
       fi
 
       pause
@@ -119,12 +130,14 @@ while true; do
           --unlabeled-texts "${DOCS_DIR}" \
           --output-csv "${OUT_CSV}" \
           --project-root "${PROJECT_ROOT}" \
-          --features
+          --features \
+          --feature-store-mode "${FSM}"
       else
         run_python "${PROJECT_ROOT}/main.py" \
           --unlabeled-texts "${DOCS_DIR}" \
           --output-csv "${OUT_CSV}" \
-          --project-root "${PROJECT_ROOT}"
+          --project-root "${PROJECT_ROOT}" \
+          --feature-store-mode "${FSM}"
       fi
 
       pause
@@ -155,12 +168,14 @@ while true; do
           --unlabeled-texts "${SMOKE_DIR}" \
           --output-csv "${OUT_CSV}" \
           --project-root "${PROJECT_ROOT}" \
-          --features
+          --features \
+          --feature-store-mode "${FSM}"
       else
         run_python "${PROJECT_ROOT}/main.py" \
           --unlabeled-texts "${SMOKE_DIR}" \
           --output-csv "${OUT_CSV}" \
-          --project-root "${PROJECT_ROOT}"
+          --project-root "${PROJECT_ROOT}" \
+          --feature-store-mode "${FSM}"
       fi
 
       echo "Smoke output: ${OUT_CSV}"
@@ -170,7 +185,7 @@ while true; do
     5)
       echo ""
       echo "Running data quality check..."
-      run_python "${PROJECT_ROOT}/main.py" --validate-config
+      run_python "${PROJECT_ROOT}/main.py" --validate-config --feature-store-mode "${FSM}"
       pause
       ;;
 
@@ -185,7 +200,8 @@ while true; do
         --mode drift \
         --ref "${REF}" \
         --current "${CUR}" \
-        --project-root "${PROJECT_ROOT}"
+        --project-root "${PROJECT_ROOT}" \
+        --feature-store-mode "${FSM}"
 
       pause
       ;;

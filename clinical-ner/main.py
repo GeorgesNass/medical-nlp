@@ -16,6 +16,7 @@ import time
 import pandas as pd
 from pathlib import Path
 from typing import Optional
+import os
 
 ## Core config and pipeline
 from src.core.data_consistency import run_data_consistency
@@ -26,6 +27,7 @@ from src.pipeline import run_pipeline
 
 ## Errors and logging
 from src.core.errors import ClinicalNERError
+from src.utils.utils import build_features, push_features, get_features
 from src.utils.logging_utils import get_logger
 
 ## ============================================================
@@ -60,6 +62,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--mode", type=str, default="", help="Optional mode (e.g. drift)")
     parser.add_argument("--ref", type=str, default=None, help="Reference dataset for drift")
     parser.add_argument("--current", type=str, default=None, help="Current dataset for drift")
+    parser.add_argument("--feature-store-mode", type=str, choices=["redis", "feast"], default=None, help="Override FEATURE_STORE_MODE",)
     
     ## Input
     parser.add_argument("--labeled-csv", type=str, default=None)
@@ -161,6 +164,9 @@ def main() -> int:
     parser = build_arg_parser()
     args = parser.parse_args()
 
+    if args.feature_store_mode:
+        os.environ["FEATURE_STORE_MODE"] = args.feature_store_mode
+        
     ## Normalize project root
     project_root: Optional[Path] = None
     if args.project_root:
@@ -196,7 +202,29 @@ def main() -> int:
                 logger.info("Feature engineering ENABLED via CLI")
             except Exception:
                 logger.warning("Feature engineering config not found in ProjectConfig")
-                
+ 
+        ## ============================================================
+        ## FEATURE STORE PIPELINE
+        ## ============================================================
+        if args.features:
+
+            ## Build minimal input row (pipeline context)
+            sample_row = {
+                "text": "clinical_ner_run",
+                "value": 1,
+            }
+
+            ## Build features
+            features = build_features(sample_row)
+
+            ## Store features
+            push_features("clinical_entity", features)
+
+            ## Retrieve features
+            retrieved_features = get_features("clinical_entity")
+
+            logger.info("Feature Store OK | %s", bool(retrieved_features))
+            
         ## DATA CONSISTENCY CHECK
         if cfg.data_consistency.enabled:
             consistency_result = run_data_consistency(
