@@ -23,7 +23,8 @@ from src.domain.schema import DocumentSegment
 from src.nlp.segmenter import SegmenterConfig, normalize_text, segment_text, tokenize_words
 from src.nlp.similarity_index import SimilarityIndex
 from src.utils.normalization import normalize_medical_text
-from src.utils.io_utils import load_text_from_bytes, load_text_from_path
+from src.utils.io_utils import load_text_from_bytes, load_text_from_path, 
+build_features, push_features, get_features
 
 ## ============================================================
 ## TESTS: LOADERS
@@ -743,4 +744,73 @@ def test_data_drift_returns_evidently_report_key_doc_classification() -> None:
 
     result = run_data_drift(df_ref=df_ref, df_current=df_cur)
 
-    assert "evidently_report" in result or "warnings" in result        
+    assert "evidently_report" in result or "warnings" in result
+    
+## ============================================================
+## FEATURE STORE TESTS
+## ============================================================
+def test_feature_store_build_features() -> None:
+    """
+        Validate feature engineering output
+
+        Returns:
+            None
+    """
+
+    ## Arrange
+    row = {
+        "text": "Diabetes",
+        "value": 10,
+    }
+
+    ## Act
+    features = build_features(row)
+
+    ## Assert
+    assert isinstance(features, dict)
+    assert "text_normalized" in features
+    assert "text_length" in features
+    assert "value_scaled" in features
+
+def test_feature_store_push_get() -> None:
+    """
+        Validate feature store roundtrip
+
+        Returns:
+            None
+    """
+
+    ## Arrange
+    entity_id = "test_entity_fs"
+    features = {"a": "1", "b": "2"}
+
+    ## Act
+    push_features(entity_id, features)
+    result = get_features(entity_id)
+
+    ## Assert
+    assert isinstance(result, dict)
+    assert len(result) > 0
+
+def test_feature_store_full_pipeline() -> None:
+    """
+        Validate full feature store pipeline
+
+        Returns:
+            None
+    """
+
+    ## Arrange
+    row = {
+        "text": "Hypertension",
+        "num": 5,
+    }
+
+    ## Act
+    features = build_features(row)
+    push_features("entity_fs_pipeline", features)
+    result = get_features("entity_fs_pipeline")
+
+    ## Assert
+    assert isinstance(result, dict)
+    assert len(result) > 0
